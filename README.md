@@ -17,3 +17,9 @@ npm i -g ts-node
 ```bash
 npm i
 ```
+6. Для проверки установленных зависимостей прописываем команду:
+```bash
+npm list
+```
+Скриншот для сверки:
+![list packages](https://live.staticflickr.com/65535/54579757197_5494624e2f_b.jpg?raw=true)

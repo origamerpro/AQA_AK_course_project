@@ -7,7 +7,7 @@ export interface ICustomer {
     name: string;
     country: COUNTRIES;
     city: string;
-    street: String;
+    street: string;
     house: number;
     flat: number;
     phone: string;
@@ -26,10 +26,26 @@ export interface ICustomerResponse extends IResponseFields {
     Customer: ICustomerFromResponse;
 }
 
-export interface ICustomersResponse extends IResponseFields {
+export interface ICustomersAllResponse extends IResponseFields {
     Customers: ICustomerFromResponse[];
+}
+
+export interface ICustomersFilteredResponse extends IResponseFields {
+    Customers: ICustomerFromResponse[];
+    total: number;
+    page: number;
+    limit: number;
+    search: string;
+    country: COUNTRIES[];
     sorting: {
         sortField: customersSortField;
         sortOrder: sortDirection;
     };
+}
+
+export interface ICustomerFilterParams {
+    search?: string;
+    country?: COUNTRIES[];
+    sortField?: customersSortField;
+    sortOrder?: sortDirection;
 }

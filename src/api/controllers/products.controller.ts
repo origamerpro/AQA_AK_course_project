@@ -3,6 +3,7 @@ import { apiConfig } from 'config/api-config'
 import { IRequestOptions } from 'types/api.types'
 import {
   IProduct,
+  IProductFilterParams,
   IProductResponse,
   IProductsAllResponse,
   IProductsFilteredResponse,
@@ -36,7 +37,7 @@ export class ProductsController {
   @logStep('GET/product via API')
   async getById(productId: string, token: string) {
     const options: IRequestOptions = {
-      url: `${apiConfig.ENDPOINTS.PRODUCTS}/${productId}`,
+      url: `${apiConfig.ENDPOINTS.PRODUCT_BY_ID(productId)}`,
       baseURL: apiConfig.BASE_URL,
       method: 'get',
       headers: {
@@ -48,7 +49,7 @@ export class ProductsController {
   }
 
   @logStep('GET ALL/ filtered and sorted list of products via API')
-  async getFilteredProducts(token: string, params?: Record<string, string>) {
+  async getFilteredProducts(token: string, params?: IProductFilterParams) {
     const options: IRequestOptions = {
       baseURL: apiConfig.BASE_URL,
       url:
@@ -77,11 +78,11 @@ export class ProductsController {
     return await this.request.send<IProductsAllResponse>(options)
   }
 
-  @logStep('UPDATE/product via API')
+  @logStep('PUT/product via API')
   async update(id: string, body: Partial<IProduct>, token: string) {
     const options: IRequestOptions = {
       baseURL: apiConfig.BASE_URL,
-      url: apiConfig.ENDPOINTS.CUSTOMER_BY_ID(id),
+      url: apiConfig.ENDPOINTS.PRODUCT_BY_ID(id),
       method: 'put',
       data: body,
       headers: {

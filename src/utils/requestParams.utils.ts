@@ -7,7 +7,7 @@ export function convertRequestParams(params: AllowedFilterParams): string {
   if (!params || Object.keys(params).length === 0) return ''
 
   let url = '?'
-  for (const key of Object.keys(params) as Array<keyof ICustomerFilterParams>) {
+  for (const key of Object.keys(params) as Array<keyof AllowedFilterParams>) {
     if (Array.isArray(params[key])) {
       for (const value of params[key]) {
         url += `${url.length === 1 ? '' : '&'}${key}=${value.replaceAll(' ', '%20')}`

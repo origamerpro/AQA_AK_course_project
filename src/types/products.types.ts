@@ -18,8 +18,17 @@ export interface IProductResponse extends IResponseFields {
   Product: IProductFromResponse
 }
 
-export interface IProductsResponse extends IResponseFields {
+export interface IProductsAllResponse extends IResponseFields {
   Products: IProductFromResponse[]
+}
+
+export interface IProductsFilteredResponse extends IResponseFields {
+  Products: IProductFromResponse[]
+  total: number
+  page: number
+  limit: number
+  search: string
+  country: MANUFACTURERS[]
   sorting: {
     sortField: productsSortField
     sortOrder: sortDirection

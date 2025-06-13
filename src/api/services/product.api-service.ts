@@ -2,7 +2,11 @@ import { APIRequestContext } from '@playwright/test'
 import { ProductsController } from 'api/controllers/products.controller'
 import { generateProductData } from 'data/products/generateProduct'
 import { STATUS_CODES } from 'data/statusCodes'
-import { IProduct, IProductFromResponse } from 'types/products.types'
+import {
+  IProduct,
+  IProductFromResponse,
+  IProductsAllResponse,
+} from 'types/products.types'
 import { logStep } from 'utils/reporter.utils'
 import { validateResponse } from 'utils/validations/responseValidation'
 
@@ -28,15 +32,10 @@ export class ProductsApiService {
   }
 
   @logStep('Update Product via API')
-  async update(token: string, productId: string, productData?: IProduct) {
-    const body = generateProductData(productData)
-    const response = await this.controller.update({
-      productData: body,
-      id: productId,
-      token,
-    })
+  async updateProduct(id: string, updates: Partial<IProduct>, token: string) {
+    const response = await this.controller.update(id, updates, token)
     validateResponse(response, STATUS_CODES.OK, true, null)
-    return response.body.Product as IProductFromResponse
+    return response.body.Product
   }
 
   @logStep('Delete Product via API')
@@ -44,11 +43,10 @@ export class ProductsApiService {
     const response = await this.controller.delete(productId, token)
     validateResponse(response, STATUS_CODES.DELETED, null, null)
   }
-
-  @logStep('Get All Products via API')
-  async getAll(token: string, params?: Record<string, string>) {
-    const response = await this.controller.getAll(token, params)
+  @logStep('Get all products via API')
+  async getAllProducts(token: string) {
+    const response = await this.controller.getAll(token)
     validateResponse(response, STATUS_CODES.OK, true, null)
-    return response.body.Products
+    return response.body as IProductsAllResponse
   }
 }

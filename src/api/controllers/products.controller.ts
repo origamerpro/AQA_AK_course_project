@@ -4,7 +4,8 @@ import { IRequestOptions } from 'types/api.types'
 import {
   IProduct,
   IProductResponse,
-  IProductsResponse,
+  IProductsAllResponse,
+  IProductsFilteredResponse,
 } from 'types/products.types'
 import { logStep } from 'utils/reporter.utils'
 import { APIRequestContext } from '@playwright/test'
@@ -46,8 +47,8 @@ export class ProductsController {
     return await this.request.send<IProductResponse>(options)
   }
 
-  @logStep('GET ALL/products via API')
-  async getAll(token: string, params?: Record<string, string>) {
+  @logStep('GET ALL/ filtered and sorted list of products via API')
+  async getFilteredProducts(token: string, params?: Record<string, string>) {
     const options: IRequestOptions = {
       baseURL: apiConfig.BASE_URL,
       url:
@@ -59,20 +60,34 @@ export class ProductsController {
         Authorization: `Bearer ${token}`,
       },
     }
-    return await this.request.send<IProductsResponse>(options)
+    return await this.request.send<IProductsFilteredResponse>(options)
+  }
+
+  @logStep('GET ALL/ products via API')
+  async getAll(token: string) {
+    const options: IRequestOptions = {
+      baseURL: apiConfig.BASE_URL,
+      url: apiConfig.ENDPOINTS.ALL_PRODUCTS,
+      method: 'get',
+      headers: {
+        'content-type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    }
+    return await this.request.send<IProductsAllResponse>(options)
   }
 
   @logStep('UPDATE/product via API')
-  async update(data: { id: string; token: string; productData: IProduct }) {
+  async update(id: string, body: Partial<IProduct>, token: string) {
     const options: IRequestOptions = {
       baseURL: apiConfig.BASE_URL,
-      url: apiConfig.ENDPOINTS.PRODUCT_BY_ID(data.id),
+      url: apiConfig.ENDPOINTS.CUSTOMER_BY_ID(id),
       method: 'put',
+      data: body,
       headers: {
         'content-type': 'application/json',
-        Authorization: data.token,
+        Authorization: `Bearer ${token}`,
       },
-      data: data.productData,
     }
     return await this.request.send<IProductResponse>(options)
   }

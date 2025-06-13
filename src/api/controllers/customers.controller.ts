@@ -14,11 +14,11 @@ export class CustomersController {
         this.request = new RequestApi(context);
     }
 
-    @logStep("Create a new customer via API")
+    @logStep("POST /customers via API")
     async create(body: ICustomer, token: string) {
         const options: IRequestOptions = {
             baseURL: apiConfig.BASE_URL,
-            url: apiConfig.ENDPOINTS.ALL_CUSTOMERS,
+            url: apiConfig.ENDPOINTS.CUSTOMERS,
             method: "post",
             data: body,
             headers: {
@@ -29,11 +29,11 @@ export class CustomersController {
         return await this.request.send<ICustomerResponse>(options);
     }
 
-    @logStep("Get filtered and sorted list of customers via API")
+    @logStep("GET /customers filtered and sorted list of customers via API")
     async getFilteredCustomers(token: string, params?: ICustomerFilterParams) {
         const options: IRequestOptions = {
             baseURL: apiConfig.BASE_URL,
-            url: apiConfig.ENDPOINTS.CUSTOMERS_WITH_PARAMS + (params ? convertRequestParams(params) : ""),
+            url: apiConfig.ENDPOINTS.CUSTOMERS + (params ? convertRequestParams(params) : ""),
             method: "get",
             headers: {
                 "content-type": "application/json",
@@ -43,7 +43,7 @@ export class CustomersController {
         return await this.request.send<ICustomersFilteredResponse>(options);
     }
 
-    @logStep("Get all customers via API")
+    @logStep("GET /customers/all via API")
     async getAllCustomers(token: string) {
         const options: IRequestOptions = {
             baseURL: apiConfig.BASE_URL,
@@ -57,7 +57,7 @@ export class CustomersController {
         return await this.request.send<ICustomersAllResponse>(options);
     }
 
-    @logStep("Get customer by ID via API")
+    @logStep("GET /customers/{id} via API")
     async getById(id: string, token: string) {
         const options: IRequestOptions = {
             baseURL: apiConfig.BASE_URL,
@@ -71,7 +71,7 @@ export class CustomersController {
         return await this.request.send<ICustomerResponse>(options);
     }
 
-    @logStep("Update customer by ID via API")
+    @logStep("PUT /customers/{id} via API")
     async update(id: string, body: Partial<ICustomer>, token: string) {
 
         const options: IRequestOptions = {
@@ -88,7 +88,7 @@ export class CustomersController {
 
     }
 
-    @logStep("Delete customer by ID via API")
+    @logStep("DELETE /customers/{id} via API")
     async delete(id: string, token: string) {
         const options: IRequestOptions = {
             baseURL: apiConfig.BASE_URL,

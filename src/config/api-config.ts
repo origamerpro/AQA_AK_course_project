@@ -3,7 +3,7 @@ import { ALL } from "dns";
 export const apiConfig = {
   BASE_URL: "https://aqa-course-project.app",
   ENDPOINTS: {
-    CUSTOMERS_WITH_PARAMS: "/api/customers",
+    CUSTOMERS: "/api/customers",
     ALL_CUSTOMERS: "/api/customers/all",
     CUSTOMER_BY_ID: (id: string) => `/api/customers/${id}/`,
     PRODUCTS: "/api/products",

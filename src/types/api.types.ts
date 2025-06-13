@@ -22,6 +22,8 @@ export type sortDirection = "asc" | "desc";
 
 export type customersSortField = "createdOn" | "email" | "name" | "country";
 
+export type productsSortField = 'createdOn' | 'price' | 'name' | 'manufacturer';
+
 export interface ILoginResponseBody extends IResponseFields {
     User: {
         _id: string;

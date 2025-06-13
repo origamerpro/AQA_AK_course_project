@@ -1,6 +1,9 @@
 import { ICustomerFilterParams } from "types/customer.types";
+import { IProductFilterParams } from "types/product.types";
 
-export function convertRequestParams(params: ICustomerFilterParams): string {
+type AllowedFilterParams = ICustomerFilterParams | IProductFilterParams;
+
+export function convertRequestParams(params: AllowedFilterParams): string {
     if (!params || Object.keys(params).length === 0) return "";
 
     let url = "?";

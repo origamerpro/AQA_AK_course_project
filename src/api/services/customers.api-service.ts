@@ -14,7 +14,7 @@ export class CustomersApiService {
         this.controller = new CustomersController(request);
     }
 
-    @logStep("Create a new customer via API")
+    @logStep("Create Customer via API")
     async createCustomer(token: string, customData?: ICustomer) {
         const body = generateCustomerData(customData);
         const response = await this.controller.create(body, token);
@@ -36,27 +36,27 @@ export class CustomersApiService {
         return response.body as ICustomersAllResponse;
     }
 
-    @logStep("Get customer by ID via API")
+    @logStep("Get Customer by ID via API")
     async getCustomerById(id: string, token: string) {
         const response = await this.controller.getById(id, token);
         validateResponse(response, STATUS_CODES.OK, true, null);
         return response.body.Customer;
     }
 
-    @logStep("Update customer by ID via API")
+    @logStep("Update Customer by ID via API")
     async updateCustomer(id: string, updates: Partial<ICustomer>, token: string) {
         const response = await this.controller.update(id, updates, token);
         validateResponse(response, STATUS_CODES.OK, true, null);
         return response.body.Customer;
     }
 
-    @logStep("Delete customer by ID via API")
+    @logStep("Delete Customer by ID via API")
     async deleteCustomer(id: string, token: string) {
         const response = await this.controller.delete(id, token);
         validateResponse(response, STATUS_CODES.DELETED, true, null);
     }
 
-    @logStep("Delete non-existent customer by ID via API")
+    @logStep("Delete non-existent Customer by ID via API")
     async deleteNonExistentCustomer(token: string) {
         const fakeID = "6840b36c1c508c5d5e50fd1d";
         const response = await this.controller.delete(fakeID, token);

@@ -56,10 +56,4 @@ export class CustomersApiService {
         validateResponse(response, STATUS_CODES.DELETED, true, null);
     }
 
-    @logStep("Delete non-existent Customer by ID via API")
-    async deleteNonExistentCustomer(token: string) {
-        const fakeID = "6840b36c1c508c5d5e50fd1d";
-        const response = await this.controller.delete(fakeID, token);
-        validateResponse(response, STATUS_CODES.NOT_FOUND, true, `Customer with id '${fakeID}' wasn't found`);
-    }
 }

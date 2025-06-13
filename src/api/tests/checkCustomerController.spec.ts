@@ -31,6 +31,7 @@ test.describe("[API] [Customers] Smoke Test", () => {
             console.log(customersResponse);
         }
     );
+
     test('Get customer with filters',
         { tag: [TAGS.SMOKE] },
         async ({ customersApiService, request }) => {

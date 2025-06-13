@@ -33,7 +33,7 @@ export class CustomersApiService {
     async getAllCustomers(token: string) {
         const response = await this.controller.getAllCustomers(token);
         validateResponse(response, STATUS_CODES.OK, true, null);
-        return response.body as ICustomersAllResponse;
+        return response.body;
     }
 
     @logStep("Get Customer by ID via API")
@@ -55,5 +55,4 @@ export class CustomersApiService {
         const response = await this.controller.delete(id, token);
         validateResponse(response, STATUS_CODES.DELETED, null, null);
     }
-
 }

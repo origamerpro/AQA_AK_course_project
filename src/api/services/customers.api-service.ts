@@ -53,7 +53,7 @@ export class CustomersApiService {
     @logStep("Delete Customer by ID via API")
     async deleteCustomer(id: string, token: string) {
         const response = await this.controller.delete(id, token);
-        validateResponse(response, STATUS_CODES.DELETED, true, null);
+        validateResponse(response, STATUS_CODES.DELETED, null, null);
     }
 
 }

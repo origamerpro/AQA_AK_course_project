@@ -34,3 +34,10 @@ export interface IProductsFilteredResponse extends IResponseFields {
     sortOrder: sortDirection
   }
 }
+
+export interface IProductFilterParams {
+  search?: string
+  country?: MANUFACTURERS[]
+  sortField?: productsSortField
+  sortOrder?: sortDirection
+}

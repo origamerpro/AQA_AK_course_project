@@ -8,6 +8,7 @@ export interface IRequestOptions {
 
 export interface IResponse<T extends object | null> {
   status: number
+  // headers: object;
   headers: Record<string, string>
   body: T
 }
@@ -22,14 +23,3 @@ export type sortDirection = 'asc' | 'desc'
 export type customersSortField = 'createdOn' | 'email' | 'name' | 'country'
 
 export type productsSortField = 'createdOn' | 'price' | 'name' | 'manufacturer'
-
-export interface ILoginResponseBody extends IResponseFields {
-  User: {
-    _id: string
-    username: string
-    firstName: string
-    lastName: string
-    roles: string[]
-    createdOn: string
-  }
-}

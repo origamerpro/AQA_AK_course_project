@@ -21,14 +21,14 @@ export class ProductsApiService {
     const body = generateProductData(productData)
     const response = await this.controller.create(body, token)
     validateResponse(response, STATUS_CODES.CREATED, true, null)
-    return response.body.Product as IProductFromResponse
+    return response.body.Product
   }
 
   @logStep('Get Product by ID via API')
   async getById(token: string, productId: string) {
     const response = await this.controller.getById(productId, token)
     validateResponse(response, STATUS_CODES.OK, true, null)
-    return response.body.Product as IProductFromResponse
+    return response.body.Product
   }
 
   @logStep('Update Product via API')
@@ -47,6 +47,6 @@ export class ProductsApiService {
   async getAllProducts(token: string) {
     const response = await this.controller.getAll(token)
     validateResponse(response, STATUS_CODES.OK, true, null)
-    return response.body as IProductsAllResponse
+    return response.body
   }
 }

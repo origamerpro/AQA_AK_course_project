@@ -1,43 +1,43 @@
-import { MANUFACTURERS } from 'data/products/manufacturers.data'
-import { productsSortField, IResponseFields, sortDirection } from './api.types'
+import { MANUFACTURERS } from 'data/products/manufacturers.data';
+import { productsSortField, IResponseFields, sortDirection } from './api.types';
 
 export interface IProduct {
-  name: string
-  price: number
-  manufacturer: MANUFACTURERS
-  amount: number
-  notes?: string
+  name: string;
+  price: number;
+  manufacturer: MANUFACTURERS;
+  amount: number;
+  notes?: string;
 }
 
 export interface IProductFromResponse extends IProduct {
-  _id: string
-  createdOn: string
+  _id: string;
+  createdOn: string;
 }
 
 export interface IProductResponse extends IResponseFields {
-  Product: IProductFromResponse
+  Product: IProductFromResponse;
 }
 
 export interface IProductsAllResponse extends IResponseFields {
-  Products: IProductFromResponse[]
+  Products: IProductFromResponse[];
 }
 
 export interface IProductsFilteredResponse extends IResponseFields {
-  Products: IProductFromResponse[]
-  total: number
-  page: number
-  limit: number
-  search: string
-  country: MANUFACTURERS[]
+  Products: IProductFromResponse[];
+  total: number;
+  page: number;
+  limit: number;
+  search: string;
+  country: MANUFACTURERS[];
   sorting: {
-    sortField: productsSortField
-    sortOrder: sortDirection
-  }
+    sortField: productsSortField;
+    sortOrder: sortDirection;
+  };
 }
 
 export interface IProductFilterParams {
-  search?: string
-  country?: MANUFACTURERS[]
-  sortField?: productsSortField
-  sortOrder?: sortDirection
+  search?: string;
+  country?: MANUFACTURERS[];
+  sortField?: productsSortField;
+  sortOrder?: sortDirection;
 }

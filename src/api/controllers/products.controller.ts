@@ -1,22 +1,22 @@
-import { RequestApi } from 'api/apiClients/request'
-import { apiConfig } from 'config/api-config'
-import { IRequestOptions } from 'types/api.types'
+import { RequestApi } from 'api/apiClients/request';
+import { apiConfig } from 'config/api-config';
+import { IRequestOptions } from 'types/api.types';
 import {
   IProduct,
   IProductFilterParams,
   IProductResponse,
   IProductsAllResponse,
   IProductsFilteredResponse,
-} from 'types/products.types'
-import { logStep } from 'utils/reporter.utils'
-import { APIRequestContext } from '@playwright/test'
-import { convertRequestParams } from 'utils/requestParams.utils'
+} from 'types/products.types';
+import { logStep } from 'utils/reporter.utils';
+import { APIRequestContext } from '@playwright/test';
+import { convertRequestParams } from 'utils/requestParams.utils';
 
 export class ProductsController {
-  private request: RequestApi
+  private request: RequestApi;
 
   constructor(context: APIRequestContext) {
-    this.request = new RequestApi(context)
+    this.request = new RequestApi(context);
   }
 
   @logStep('POST/product via API')
@@ -30,8 +30,8 @@ export class ProductsController {
         Authorization: `Bearer ${token}`,
       },
       data: productData,
-    }
-    return await this.request.send<IProductResponse>(options)
+    };
+    return await this.request.send<IProductResponse>(options);
   }
 
   @logStep('GET/product via API')
@@ -44,8 +44,8 @@ export class ProductsController {
         'content-type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-    }
-    return await this.request.send<IProductResponse>(options)
+    };
+    return await this.request.send<IProductResponse>(options);
   }
 
   @logStep('GET ALL/ filtered and sorted list of products via API')
@@ -60,8 +60,8 @@ export class ProductsController {
         'content-type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-    }
-    return await this.request.send<IProductsFilteredResponse>(options)
+    };
+    return await this.request.send<IProductsFilteredResponse>(options);
   }
 
   @logStep('GET ALL/ products via API')
@@ -74,8 +74,8 @@ export class ProductsController {
         'content-type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-    }
-    return await this.request.send<IProductsAllResponse>(options)
+    };
+    return await this.request.send<IProductsAllResponse>(options);
   }
 
   @logStep('PUT/product via API')
@@ -89,8 +89,8 @@ export class ProductsController {
         'content-type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-    }
-    return await this.request.send<IProductResponse>(options)
+    };
+    return await this.request.send<IProductResponse>(options);
   }
 
   @logStep('DELETE/product via API')
@@ -102,8 +102,8 @@ export class ProductsController {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    }
-    console.log(options)
-    return await this.request.send<null>(options)
+    };
+    console.log(options);
+    return await this.request.send<null>(options);
   }
 }

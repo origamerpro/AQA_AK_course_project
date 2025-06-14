@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
     "lint": "eslint .",
     "lint-fix": "eslint . --fix",
     "format": "prettier --config .prettierrc src/**/*.ts --check src/",
@@ -14,7 +13,7 @@
     "report-html-open": "npx playwright show-report",
     "allure-report": "allure generate allure-results -o allure-report --clean",
     "allure-report-open": "npm run allure-report && allure open allure-report",
-    "prepare": "husky"
+    "pre": "husky"
   },
   "keywords": [],
   "author": "",

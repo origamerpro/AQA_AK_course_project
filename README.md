@@ -32,9 +32,9 @@ USER_PASSWORD=yourpassword
 
 ## Команды:
 
-0. Полная проверка кода:
+0. Коммит без проверки кода:
 ```bash
-npm run pre
+git commit -(a)m "commit message" -n
 ```
 1. Запуск тестов UI:
 ```bash

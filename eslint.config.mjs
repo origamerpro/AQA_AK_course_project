@@ -12,7 +12,7 @@ export default defineConfig([
     extends: ['js/recommended'],
   },
   {
-    files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
+    files: ['./src/**/*.{js,mjs,cjs,ts,mts,cts}'],
     languageOptions: { globals: globals.browser },
   },
   tseslint.configs.recommended,
@@ -28,6 +28,6 @@ export default defineConfig([
     },
   },
   {
-    ignores: ['dist', 'node_modules', 'allure-report', 'test-results', 'eslint.config.mjs'],
+    ignores: ['dist', 'node_modules', 'allure-report', 'test-results', 'allure-results', 'playwright-report', 'blob-report', 'eslint.config.mjs'],
   },
 ]);

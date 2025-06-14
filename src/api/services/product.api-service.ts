@@ -1,12 +1,8 @@
 import { APIRequestContext } from '@playwright/test';
 import { ProductsController } from 'api/controllers/products.controller';
-import { generateProductData } from 'data/products/generateProduct';
+import { generateProductData } from 'data/products/generateProduct.data';
 import { STATUS_CODES } from 'data/statusCodes';
-import {
-  IProduct,
-  IProductFromResponse,
-  IProductsAllResponse,
-} from 'types/products.types';
+import { IProduct } from 'types/products.types';
 import { logStep } from 'utils/reporter.utils';
 import { validateResponse } from 'utils/validations/responseValidation';
 
@@ -39,7 +35,7 @@ export class ProductsApiService {
   }
 
   @logStep('Delete Product via API')
-  async delete(token: string, productId: string) {
+  async delete(productId: string, token: string) {
     const response = await this.controller.delete(productId, token);
     validateResponse(response, STATUS_CODES.DELETED, null, null);
   }

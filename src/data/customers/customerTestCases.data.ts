@@ -1,91 +1,156 @@
-import { ICustomer } from "types/customer.types";
 import { COUNTRIES } from "./countries.data";
 import { generateCustomerData } from "./generateCustomer.data";
+import { STATUS_CODES } from "data/statusCodes";
+import { omit } from "lodash";
 
-export const positiveTestCases = [
+export const positiveTestCasesForCreate = [
     {
         name: "Full valid data",
         data: generateCustomerData(),
+        expectedStatusCode: STATUS_CODES.CREATED,
+        isSuccess: true,
+        errorMessage: null,
+
     },
     {
         name: "Without notes field",
         data: generateCustomerData({ notes: undefined }),
+        expectedStatusCode: STATUS_CODES.CREATED,
+        isSuccess: true,
+        errorMessage: null,
     },
     {
         name: "Email with post/prefix spaces",
         data: generateCustomerData({ email: " newSpecialEmail@fake.com " }),
+        expectedStatusCode: STATUS_CODES.CREATED,
+        isSuccess: true,
+        errorMessage: null,
     },
     {
         name: "1-char name",
         data: generateCustomerData({ name: "A" }),
+        expectedStatusCode: STATUS_CODES.CREATED,
+        isSuccess: true,
+        errorMessage: null,
     },
     {
-        name: "40-char name",
-        data: generateCustomerData({ name: "A".repeat(10) + ' ' + "A".repeat(29) }),
+        name: "40-char name including one space",
+        data: generateCustomerData({ name: `${"A".repeat(10)} ${"A".repeat(29)}` }),
+        expectedStatusCode: STATUS_CODES.CREATED,
+        isSuccess: true,
+        errorMessage: null,
     },
     {
         name: "Name with post/prefix spaces",
         data: generateCustomerData({ name: " Evilla Roberts " }),
+        expectedStatusCode: STATUS_CODES.CREATED,
+        isSuccess: true,
+        errorMessage: null,
     },
     {
         name: "1-char city",
         data: generateCustomerData({ city: "A" }),
+        expectedStatusCode: STATUS_CODES.CREATED,
+        isSuccess: true,
+        errorMessage: null,
     },
     {
-        name: "20-char city",
-        data: generateCustomerData({ name: "A".repeat(5) + ' ' + "A".repeat(14) }),
+        name: "20-char city including one space",
+        data: generateCustomerData({ name: `${"A".repeat(5)} ${"A".repeat(14)}` }),
+        expectedStatusCode: STATUS_CODES.CREATED,
+        isSuccess: true,
+        errorMessage: null,
     },
     {
         name: "City with post/prefix spaces",
         data: generateCustomerData({ city: " Stockholm " }),
+        expectedStatusCode: STATUS_CODES.CREATED,
+        isSuccess: true,
+        errorMessage: null,
     },
     {
         name: "1-char street",
         data: generateCustomerData({ street: "A" }),
+        expectedStatusCode: STATUS_CODES.CREATED,
+        isSuccess: true,
+        errorMessage: null,
     },
     {
-        name: "40-char street",
-        data: generateCustomerData({ name: "A".repeat(15) + ' ' + "A".repeat(24) }),
+        name: "40-char street including one space",
+        data: generateCustomerData({ name: `${"A".repeat(15)} ${"A".repeat(24)}` }),
+        expectedStatusCode: STATUS_CODES.CREATED,
+        isSuccess: true,
+        errorMessage: null,
     },
     {
         name: "Street with post/prefix spaces",
         data: generateCustomerData({ street: " Mannerheim katu " }),
+        expectedStatusCode: STATUS_CODES.CREATED,
+        isSuccess: true,
+        errorMessage: null,
     },
     {
         name: "House = 1",
         data: generateCustomerData({ house: 1 }),
+        expectedStatusCode: STATUS_CODES.CREATED,
+        isSuccess: true,
+        errorMessage: null,
     },
     {
         name: "House = 999",
         data: generateCustomerData({ house: 999 }),
+        expectedStatusCode: STATUS_CODES.CREATED,
+        isSuccess: true,
+        errorMessage: null,
     },
     {
         name: "Flat = 1",
         data: generateCustomerData({ flat: 1 }),
+        expectedStatusCode: STATUS_CODES.CREATED,
+        isSuccess: true,
+        errorMessage: null,
     },
     {
         name: "Flat = 9999",
         data: generateCustomerData({ flat: 9999 }),
+        expectedStatusCode: STATUS_CODES.CREATED,
+        isSuccess: true,
+        errorMessage: null,
     },
     {
         name: "Min valid phone",
         data: generateCustomerData({ phone: "+1234567890" }),
+        expectedStatusCode: STATUS_CODES.CREATED,
+        isSuccess: true,
+        errorMessage: null,
     },
     {
         name: "Max length phone",
         data: generateCustomerData({ phone: "+12345678909876543210" }),
+        expectedStatusCode: STATUS_CODES.CREATED,
+        isSuccess: true,
+        errorMessage: null,
     },
     {
         name: "Phone with post/prefix spaces",
         data: generateCustomerData({ phone: " +1234567890  " }),
+        expectedStatusCode: STATUS_CODES.CREATED,
+        isSuccess: true,
+        errorMessage: null,
     },
     {
         name: "250-char notes",
         data: generateCustomerData({ notes: "N".repeat(250) }),
+        expectedStatusCode: STATUS_CODES.CREATED,
+        isSuccess: true,
+        errorMessage: null,
     },
     {
         name: "Notes with post/prefix spaces",
         data: generateCustomerData({ notes: " Some notes " }),
+        expectedStatusCode: STATUS_CODES.CREATED,
+        isSuccess: true,
+        errorMessage: null,
     },
     {
         name: "Extra unknown field",
@@ -93,113 +158,157 @@ export const positiveTestCases = [
             ...generateCustomerData(),
             extraField: "should be ignored",
         },
+        expectedStatusCode: STATUS_CODES.CREATED,
+        isSuccess: true,
+        errorMessage: null,
     },
 ];
 
-export const negativeTestCases = [
+export const negativeTestCasesForCreateWithoutToken = [
     {
         name: "Missing auth token",
         data: generateCustomerData(),
-        expectedError: "Not authorized"
+        token: "",
+        expectedStatusCode: STATUS_CODES.UNAUTHORIZED,
+        isSuccess: false,
+        errorMessage: "Not authorized",
     },
     {
         name: "Invalid auth token",
         data: generateCustomerData(),
-        expectedError: "Invalid access token"
+        token: "invalid_token",
+        expectedStatusCode: STATUS_CODES.UNAUTHORIZED,
+        isSuccess: false,
+        errorMessage: "Invalid access token"
     },
+];
+
+export const negativeTestCasesForCreate = [
     {
         name: "Empty email",
         data: generateCustomerData({ email: "" }),
-        expectedError: "Incorrect request body"
+        expectedStatusCode: STATUS_CODES.BAD_REQUEST,
+        isSuccess: false,
+        errorMessage: "Incorrect request body",
     },
     {
         name: "Email without @",
         data: generateCustomerData({ email: "invalidemail.com" }),
-        expectedError: "Incorrect request body"
+        expectedStatusCode: STATUS_CODES.BAD_REQUEST,
+        isSuccess: false,
+        errorMessage: "Incorrect request body",
     },
     {
         name: "Missing email field",
-        data: generateCustomerData(),
-        override: (newCustomerData: ICustomer) => {
-            const { email, ...rest } = newCustomerData;
-            return rest;
-        },
-        expectedError: "Incorrect request body"
+        data: omit(generateCustomerData(), 'email'),
+        expectedStatusCode: STATUS_CODES.BAD_REQUEST,
+        isSuccess: false,
+        errorMessage: "Incorrect request body",
     },
     {
         name: "Empty name",
         data: generateCustomerData({ name: "" }),
-        expectedError: "Incorrect request body"
+        expectedStatusCode: STATUS_CODES.BAD_REQUEST,
+        isSuccess: false,
+        errorMessage: "Incorrect request body",
     },
     {
         name: "Name too long (41 chars)",
-        data: generateCustomerData({ name: "A".repeat(30) + ' ' + "A".repeat(10) }),
-        expectedError: "Incorrect request body"
+        data: generateCustomerData({ name: `${"A".repeat(30)} ${"A".repeat(10)}` }),
+        expectedStatusCode: STATUS_CODES.BAD_REQUEST,
+        isSuccess: false,
+        errorMessage: "Incorrect request body",
     },
     {
         name: "Invalid country",
         data: generateCustomerData({ country: "Sweden" as COUNTRIES }),
-        expectedError: "Incorrect request body"
+        expectedStatusCode: STATUS_CODES.BAD_REQUEST,
+        isSuccess: false,
+        errorMessage: "Incorrect request body",
     },
     {
         name: "Empty city",
         data: generateCustomerData({ city: "" }),
-        expectedError: "Incorrect request body"
+        expectedStatusCode: STATUS_CODES.BAD_REQUEST,
+        isSuccess: false,
+        errorMessage: "Incorrect request body",
     },
     {
         name: "City contains numbers",
         data: generateCustomerData({ city: "City123" }),
-        expectedError: "Incorrect request body"
+        expectedStatusCode: STATUS_CODES.BAD_REQUEST,
+        isSuccess: false,
+        errorMessage: "Incorrect request body",
     },
     {
         name: "Empty street",
         data: generateCustomerData({ street: "" }),
-        expectedError: "Incorrect request body"
+        expectedStatusCode: STATUS_CODES.BAD_REQUEST,
+        isSuccess: false,
+        errorMessage: "Incorrect request body",
     },
     {
         name: "Street too long (41 chars)",
-        data: generateCustomerData({ street: "A".repeat(35) + ' ' + "A".repeat(5) }),
-        expectedError: "Incorrect request body"
+        data: generateCustomerData({ name: `${"A".repeat(35)} ${"A".repeat(5)}` }),
+        expectedStatusCode: STATUS_CODES.BAD_REQUEST,
+        isSuccess: false,
+        errorMessage: "Incorrect request body",
     },
     {
         name: "House is zero",
         data: generateCustomerData({ house: 0 }),
-        expectedError: "Incorrect request body"
+        expectedStatusCode: STATUS_CODES.BAD_REQUEST,
+        isSuccess: false,
+        errorMessage: "Incorrect request body",
     },
     {
         name: "House exceeds upper limit",
         data: generateCustomerData({ house: 1000 }),
-        expectedError: "Incorrect request body"
+        expectedStatusCode: STATUS_CODES.BAD_REQUEST,
+        isSuccess: false,
+        errorMessage: "Incorrect request body",
     },
     {
         name: "Flat is zero",
         data: generateCustomerData({ flat: 0 }),
-        expectedError: "Incorrect request body"
+        expectedStatusCode: STATUS_CODES.BAD_REQUEST,
+        isSuccess: false,
+        errorMessage: "Incorrect request body",
     },
     {
         name: "Flat exceeds upper limit",
         data: generateCustomerData({ flat: 10000 }),
-        expectedError: "Incorrect request body"
+        expectedStatusCode: STATUS_CODES.BAD_REQUEST,
+        isSuccess: false,
+        errorMessage: "Incorrect request body",
     },
     {
         name: "Phone without plus sign",
         data: generateCustomerData({ phone: "1234567890" }),
-        expectedError: "Incorrect request body"
+        expectedStatusCode: STATUS_CODES.BAD_REQUEST,
+        isSuccess: false,
+        errorMessage: "Incorrect request body",
     },
     {
         name: "Phone too long",
         data: generateCustomerData({ phone: "+123456789012345678901" }),
-        expectedError: "Incorrect request body"
+        expectedStatusCode: STATUS_CODES.BAD_REQUEST,
+        isSuccess: false,
+        errorMessage: "Incorrect request body",
     },
     {
         name: "Notes contain < >",
         data: generateCustomerData({ notes: "This note contains <script>" }),
-        expectedError: "Incorrect request body"
+        expectedStatusCode: STATUS_CODES.BAD_REQUEST,
+        isSuccess: false,
+        errorMessage: "Incorrect request body",
     },
     {
         name: "Notes exceed max length (251 chars)",
         data: generateCustomerData({ notes: "A".repeat(251) }),
-        expectedError: "Incorrect request body"
+        expectedStatusCode: STATUS_CODES.BAD_REQUEST,
+        isSuccess: false,
+        errorMessage: "Incorrect request body",
     },
     {
         name: "Flat is a string",
@@ -207,6 +316,8 @@ export const negativeTestCases = [
             ...generateCustomerData(),
             flat: "not-a-number" as unknown as number
         },
-        expectedError: "Incorrect request body"
+        expectedStatusCode: STATUS_CODES.BAD_REQUEST,
+        isSuccess: false,
+        errorMessage: "Incorrect request body",
     },
 ];

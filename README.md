@@ -22,4 +22,57 @@ npm i
 npm list
 ```
 Скриншот для сверки:
-![list packages](https://live.staticflickr.com/65535/54579757197_5494624e2f_b.jpg?raw=true)
+![list packages](https://live.staticflickr.com/65535/54587212677_9ac9e4f918_b.jpg?raw=true)
+7. Создаем файл .env в папке с проектом и добавляем в него свои данные:
+```bash
+USER_LOGIN=yourlogin
+USER_PASSWORD=yourpassword
+```
+8. Файл .env.dist для записи используемых переменных в проекте с комментариями:
+
+## Команды:
+
+0. Коммит без проверки кода:
+```bash
+git commit -(a)m "commit message" -n
+```
+1. Запуск тестов UI:
+```bash
+npm run test:ui
+```
+2. Запуск тестов API:
+```bash
+npm run test:api
+```
+3. Проверка кода на ошибки:
+```bash
+npm run lint
+```
+4. Проверка формата кода:
+```bash
+npm run format
+```
+5. Исправление ошибок в коде:
+```bash
+npm run lint-fix
+```
+6. Исправления формата кода:
+```bash
+npm run format-fix
+```
+7. Запуск Playwright в режиме UI:
+```bash
+npm run ui-mode
+```
+8. Открытие отчета Playwright:
+```bash
+npm run report-html-open
+```
+9. Генерация отчета Allure:
+```bash
+npm run allure-report
+```
+10. Открытие отчета Allure:
+```bash
+npm run allure-report-open
+```

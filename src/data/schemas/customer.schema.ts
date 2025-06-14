@@ -1,12 +1,12 @@
-import { COUNTRIES } from 'data/customers/countries.data'
+import { COUNTRIES } from 'data/customers/countries.data';
 import {
   baseSchemaPart,
   customersMetaSchema,
   sortingSchemaPart,
-} from 'data/schemas/base.schema'
-import { productOrderSchema } from 'data/schemas/product.schema'
-import { DELIVERY } from 'data/orders/delivery'
-import { ORDER_STATUS } from 'data/orders/statuses'
+} from 'data/schemas/base.schema';
+import { productOrderSchema } from 'data/schemas/product.schema';
+import { DELIVERY } from 'data/orders/delivery';
+import { ORDER_STATUS } from 'data/orders/statuses';
 
 export const customerSchema = {
   type: 'object',
@@ -58,7 +58,7 @@ export const customerSchema = {
     'flat',
     'phone',
   ],
-}
+};
 
 export const oneCustomerSchema = {
   type: 'object',
@@ -69,7 +69,7 @@ export const oneCustomerSchema = {
     ...baseSchemaPart,
   },
   required: ['Customer', 'IsSuccess', 'ErrorMessage'],
-}
+};
 
 export const allCustomersResponseSchema = {
   type: 'object',
@@ -81,7 +81,7 @@ export const allCustomersResponseSchema = {
     ...baseSchemaPart,
   },
   required: ['Customers', 'IsSuccess', 'ErrorMessage'],
-}
+};
 
 export const customersListSchema = {
   type: 'object',
@@ -109,7 +109,7 @@ export const customersListSchema = {
     'search',
     'country',
   ],
-}
+};
 
 export const addressSchema = {
   type: 'object',
@@ -124,7 +124,7 @@ export const addressSchema = {
     flat: { type: 'number' },
   },
   required: ['country', 'city', 'street', 'house', 'flat'],
-}
+};
 
 const deliverySchema = {
   type: 'object',
@@ -140,7 +140,7 @@ const deliverySchema = {
     address: addressSchema,
   },
   required: ['finalDate', 'condition', 'address'],
-}
+};
 
 const commentSchema = {
   type: 'object',
@@ -153,7 +153,7 @@ const commentSchema = {
     },
   },
   required: ['_id', 'text', 'createdOn'],
-}
+};
 
 const historySchema = {
   type: 'object',
@@ -182,7 +182,7 @@ const historySchema = {
     'action',
     'changedOn',
   ],
-}
+};
 
 export const customerAssociatedOrdersSchema = {
   type: 'object',
@@ -222,9 +222,9 @@ export const customerAssociatedOrdersSchema = {
     'total_price',
     'createdOn',
   ],
-}
+};
 
 export const orderListSchema = {
   type: 'array',
   items: customerAssociatedOrdersSchema,
-}
+};

@@ -5,18 +5,18 @@ import { validateSchema } from 'utils/validations/schemaValidation';
 import { allProductsResponseSchema } from 'data/schemas/product.schema';
 import { TAGS } from 'data/testTags.data';
 
-test.describe('[API][Products] /api/products/all', () => {
+test.describe('[API] [Products] Get All Products', () => {
   let token = '';
 
   test.beforeEach(async ({ signInApiService }) => {
     token = await signInApiService.loginAsLocalUser();
   });
 
-  test.describe('Smoke', () => {
+  test.describe('Positive', () => {
     test(
       'Get all products - 200 OK',
       { tag: [TAGS.API, TAGS.PRODUCTS, TAGS.SMOKE, TAGS.REGRESSION] },
-      async ({ productsController, signInController }) => {
+      async ({ productsController }) => {
         const response = await productsController.getAll(token);
         validateResponse(response, STATUS_CODES.OK, true, null);
         validateSchema(allProductsResponseSchema, response.body);
@@ -42,22 +42,20 @@ test.describe('[API][Products] /api/products/all', () => {
         );
       },
     );
-  });
 
-  test.describe('Validation', () => {
     test(
-      'Get all products with invalid token - 401 Not authorized',
-      { tag: [TAGS.API, TAGS.PRODUCTS, TAGS.REGRESSION] },
-      async ({ productsController }) => {
-        const token = 'Invalid access token';
-        const response = await productsController.getAll(token);
-        validateResponse(
-          response,
-          STATUS_CODES.UNAUTHORIZED,
-          false,
-          'Invalid access token',
-        );
-      },
-    );
+        'Get all products with invalid token - 401 Not authorized',
+        { tag: [TAGS.API, TAGS.PRODUCTS, TAGS.REGRESSION] },
+        async ({ productsController }) => {
+          const token = 'Invalid access token';
+          const response = await productsController.getAll(token);
+          validateResponse(
+            response,
+            STATUS_CODES.UNAUTHORIZED,
+            false,
+            'Invalid access token',
+          );
+        },
+      );
   });
 });

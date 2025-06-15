@@ -38,13 +38,6 @@ test.describe("[API] [Customers] Create a new customer", () => {
 
     test.describe("Negative", () => {
 
-        let token = "";
-        let id = "";
-
-        test.beforeEach(async ({ signInApiService }) => {
-            token = await signInApiService.loginAsLocalUser();
-        });
-
         negativeTestCasesForCreateWithoutToken.forEach(({ name, data, token, expectedStatusCode, isSuccess, errorMessage }) => {
             test(`Should NOT create customer: ${name}`,
                 { tag: [TAGS.API, TAGS.CUSTOMERS, TAGS.REGRESSION] },

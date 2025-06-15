@@ -38,3 +38,20 @@ export const productsMetaSchema = {
     items: { type: 'string' },
   },
 };
+
+export const errorSchemaPart = {
+  type: 'object',
+  properties: {
+    IsSuccess: {
+      type: 'boolean',
+    },
+    ErrorMessage: {
+      type: ['string', 'null'],
+    },
+  },
+};
+
+export const validationErrorSchema = {
+  ...errorSchemaPart,
+  required: ['IsSuccess', 'ErrorMessage'],
+};

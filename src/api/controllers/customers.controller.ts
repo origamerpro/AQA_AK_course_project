@@ -1,7 +1,13 @@
 import { APIRequestContext, test } from '@playwright/test';
 import { RequestApi } from 'api/apiClients/request';
 import { apiConfig } from 'config/api-config';
-import { IRequestOptions } from 'types/api.types';
+import { create } from 'domain';
+import { update } from 'lodash';
+import {
+  customersSortField,
+  IRequestOptions,
+  sortDirection,
+} from 'types/api.types';
 import {
   ICustomer,
   ICustomerFilterParams,
@@ -17,6 +23,41 @@ export class CustomersController {
 
   constructor(context: APIRequestContext) {
     this.request = new RequestApi(context);
+  }
+
+  @logStep('GET /customers with pagination via API')
+  async getCustomersWithPagination(
+    token: string,
+    page?: number,
+    limit?: number,
+    sortField: customersSortField = 'createdOn',
+    sortOrder: sortDirection = 'desc',
+  ) {
+    const params: Record<string, string> = {};
+
+    // Добавляем параметры только если они переданы
+    if (page !== undefined) {
+      params.page = page.toString();
+    }
+
+    if (limit !== undefined) {
+      params.limit = limit.toString();
+    }
+
+    // Сортировка всегда добавляется (есть значения по умолчанию)
+    params.sortField = sortField;
+    params.sortOrder = sortOrder;
+
+    const options: IRequestOptions = {
+      baseURL: apiConfig.BASE_URL,
+      url: `${apiConfig.ENDPOINTS.CUSTOMERS}?${new URLSearchParams(params)}`,
+      method: 'get',
+      headers: {
+        'content-type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    return await this.request.send<ICustomersFilteredResponse>(options);
   }
 
   @logStep('POST /customers via API')

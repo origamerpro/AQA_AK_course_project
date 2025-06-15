@@ -23,4 +23,11 @@ export class SignInApiService {
     const token = response.headers['authorization'];
     return token;
   }
+
+  @logStep('Logout as local user via API with default credentials')
+  async logoutAsLocalUser(token: string) {
+    const response = await this.controller.signOut(token);
+
+    validateResponse(response, STATUS_CODES.OK, true, null);
+  }
 }

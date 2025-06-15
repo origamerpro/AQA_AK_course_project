@@ -5,7 +5,7 @@ export const baseSchemaPart = {
   ErrorMessage: {
     type: ['string', 'null'],
   },
-}
+};
 
 export const sortingSchemaPart = {
   sortField: {
@@ -15,7 +15,7 @@ export const sortingSchemaPart = {
     type: 'string',
     enum: ['asc', 'desc'],
   },
-}
+};
 
 export const customersMetaSchema = {
   total: { type: 'number' },
@@ -26,7 +26,7 @@ export const customersMetaSchema = {
     type: 'array',
     items: { type: 'string' },
   },
-}
+};
 
 export const productsMetaSchema = {
   total: { type: 'number' },
@@ -37,4 +37,21 @@ export const productsMetaSchema = {
     type: 'array',
     items: { type: 'string' },
   },
-}
+};
+
+export const errorSchemaPart = {
+  type: 'object',
+  properties: {
+    IsSuccess: {
+      type: 'boolean',
+    },
+    ErrorMessage: {
+      type: ['string', 'null'],
+    },
+  },
+};
+
+export const validationErrorSchema = {
+  ...errorSchemaPart,
+  required: ['IsSuccess', 'ErrorMessage'],
+};

@@ -10,6 +10,7 @@ test.describe("[API] [Customers] Update the customer by ID", () => {
 
     let token = "";
     let originalCustomerID = "";
+    let dublicateCustomerID = "";
     let originalCustomerData: ICustomer = {} as ICustomer;
 
     test.beforeEach(async ({ signInApiService, customersApiService }) => {
@@ -20,7 +21,12 @@ test.describe("[API] [Customers] Update the customer by ID", () => {
     });
 
     test.afterEach(async ({ customersApiService }) => {
-        await customersApiService.deleteCustomer(originalCustomerID, token);
+        if (originalCustomerID) {
+            await customersApiService.deleteCustomer(originalCustomerID, token);
+        }
+        if (dublicateCustomerID) {
+            await customersApiService.deleteCustomer(dublicateCustomerID, token);
+        }
     });
 
 
@@ -65,12 +71,10 @@ test.describe("[API] [Customers] Update the customer by ID", () => {
 
                 const dublicateCustomerData = generateCustomerData();
                 const dublicateCustomer = await customersApiService.createCustomer(token, dublicateCustomerData);
-                const dublicateCustomerID = dublicateCustomer._id;
+                dublicateCustomerID = dublicateCustomer._id;
 
                 const response = await customersController.update(originalCustomerID, { ...originalCustomerData, email: dublicateCustomerData.email }, token);
                 validateResponse(response, STATUS_CODES.CONFLICT, false, `Customer with email '${dublicateCustomerData.email}' already exists`);
-
-                await customersApiService.deleteCustomer(dublicateCustomerID, token);
             });
 
         test("Should NOT update customer: ID of non-existent customer",

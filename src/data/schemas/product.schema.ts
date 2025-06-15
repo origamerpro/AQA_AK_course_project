@@ -1,9 +1,9 @@
-import { MANUFACTURERS } from 'data/products/manufacturers.data'
+import { MANUFACTURERS } from 'data/products/manufacturers.data';
 import {
   baseSchemaPart,
   productsMetaSchema,
   sortingSchemaPart,
-} from 'data/schemas/base.schema'
+} from 'data/schemas/base.schema';
 
 export const productSchema = {
   type: 'object',
@@ -33,7 +33,7 @@ export const productSchema = {
   },
   required: ['_id', 'name', 'amount', 'price', 'manufacturer', 'createdOn'],
   additionalProperties: false,
-}
+};
 
 export const oneProductResponseSchema = {
   type: 'object',
@@ -44,7 +44,7 @@ export const oneProductResponseSchema = {
     ...baseSchemaPart,
   },
   required: ['Product', 'IsSuccess', 'ErrorMessage'],
-}
+};
 
 export const allProductsResponseSchema = {
   type: 'object',
@@ -56,7 +56,7 @@ export const allProductsResponseSchema = {
     ...baseSchemaPart,
   },
   required: ['Products', 'IsSuccess', 'ErrorMessage'],
-}
+};
 
 export const productsListSchema = {
   type: 'object',
@@ -84,7 +84,7 @@ export const productsListSchema = {
     'search',
     'manufacturer',
   ],
-}
+};
 
 export const productOrderSchema = {
   type: 'object',
@@ -114,4 +114,4 @@ export const productOrderSchema = {
   },
   required: ['_id', 'name', 'amount', 'price', 'manufacturer', 'received'],
   additionalProperties: false,
-}
+};

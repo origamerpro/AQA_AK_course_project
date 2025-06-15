@@ -22,7 +22,7 @@ test.describe('[API][Customer] Get Customer By Id', () => {
       { tag: [TAGS.API, TAGS.CUSTOMERS, TAGS.SMOKE, TAGS.REGRESSION] },
       async ({ customersController }) => {
         const response = await customersController.delete(customer._id, token);
-        validateResponse(response, STATUS_CODES.DELETED, null, null);
+        validateResponse(response, STATUS_CODES.DELETED);
         expect.soft(response.body).toBe('');
 
         const responseAfterDelete = await customersController.getById(
@@ -42,10 +42,10 @@ test.describe('[API][Customer] Get Customer By Id', () => {
   });
   test.describe('Negative', () => {
     test(
-      'Should DELETE customer by incorrect id - 404 Not Found',
+      'Should NOT DELETE customer by incorrect id - 404 Not Found',
       { tag: [TAGS.API, TAGS.CUSTOMERS, TAGS.REGRESSION] },
       async ({ customersController }) => {
-        const incorrectID = customer._id.slice(13) + Date.now();
+        const incorrectID = `${customer._id.slice(13)}${Date.now()}`;
         const response = await customersController.delete(incorrectID, token);
         validateResponse(
           response,
@@ -57,7 +57,7 @@ test.describe('[API][Customer] Get Customer By Id', () => {
       },
     );
     test(
-      'Should DELETE customer with empty token - 401 Not authorized',
+      'Should NOT DELETE customer with empty token - 401 Not authorized',
       { tag: [TAGS.API, TAGS.CUSTOMERS, TAGS.REGRESSION] },
       async ({ customersController }) => {
         const token = '';
@@ -72,7 +72,7 @@ test.describe('[API][Customer] Get Customer By Id', () => {
     );
 
     test(
-      'Should DELETE customer with invalid token - 401 Not authorized',
+      'Should NOT DELETE customer with invalid token - 401 Not authorized',
       { tag: [TAGS.API, TAGS.CUSTOMERS, TAGS.REGRESSION] },
       async ({ customersController }) => {
         const token = 'Beer eyJhbGci';

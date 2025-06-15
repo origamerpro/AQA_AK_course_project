@@ -8,5 +8,6 @@ export const apiConfig = {
     ALL_PRODUCTS: '/api/products/all',
     PRODUCT_BY_ID: (id: string) => `/api/products/${id}/`,
     LOGIN: '/api/login',
+    LOGOUT: '/api/logout',
   },
 } as const;

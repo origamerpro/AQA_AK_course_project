@@ -4,7 +4,7 @@ import { generateCustomerData } from "data/customers/generateCustomer.data";
 import { TAGS } from "data/testTags.data";
 import { validateResponse } from "utils/validations/responseValidation";
 
-import { positiveTestCasesForCreate, negativeTestCasesForCreate, negativeTestCasesForCreateWithoutToken } from "data/customers/customerTestCases.data";
+import { positiveTestCasesForCreate, negativeTestCasesForCreate, negativeTestCasesForCreateWithoutToken } from "data/customers/createCustomerCases.data";
 
 test.describe("[API] [Customers] Create a new customer", () => {
 
@@ -15,12 +15,12 @@ test.describe("[API] [Customers] Create a new customer", () => {
         token = await signInApiService.loginAsLocalUser();
     });
 
-
-
     test.describe("Positive", () => {
 
         test.afterEach(async ({ customersApiService }) => {
-            await customersApiService.deleteCustomer(id, token);
+            if (id) {
+                await customersApiService.deleteCustomer(id, token);
+            }
         });
 
         positiveTestCasesForCreate.forEach(({ name, data, expectedStatusCode, isSuccess, errorMessage }) => {
@@ -78,7 +78,9 @@ test.describe("[API] [Customers] Create a new customer", () => {
                 validateResponse(createResponse2, STATUS_CODES.CONFLICT, false, `Customer with email '${customer2Data.email}' already exists`);
 
                 id = createResponse1._id;
-                await customersApiService.deleteCustomer(id, token);
+                if (id) {
+                    await customersApiService.deleteCustomer(id, token);
+                }
             });
     });
 });

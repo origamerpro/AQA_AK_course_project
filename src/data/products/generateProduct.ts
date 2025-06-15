@@ -1,7 +1,7 @@
-import { faker } from '@faker-js/faker'
-import { IProduct } from 'types/products.types'
-import { getRandromEnumValue } from 'utils/enum.utils'
-import { MANUFACTURERS } from 'data/products/manufacturers.data'
+import { faker } from '@faker-js/faker';
+import { IProduct } from 'types/products.types';
+import { getRandromEnumValue } from 'utils/enum.utils';
+import { MANUFACTURERS } from 'data/products/manufacturers.data';
 
 export function generateProductData(params?: Partial<IProduct>): IProduct {
   return {
@@ -11,5 +11,5 @@ export function generateProductData(params?: Partial<IProduct>): IProduct {
     amount: faker.number.int({ min: 1, max: 999 }),
     notes: `Notes ${faker.string.alpha({ length: 10 })}`,
     ...params,
-  }
+  };
 }

@@ -1,5 +1,5 @@
-import { expect, test } from '@playwright/test'
-import { IResponse, IResponseFields } from 'types/api.types'
+import { expect, test } from '@playwright/test';
+import { IResponse, IResponseFields } from 'types/api.types';
 
 export function validateResponse<T extends IResponseFields | null>(
   response: IResponse<T>,
@@ -8,14 +8,14 @@ export function validateResponse<T extends IResponseFields | null>(
   ErrorMessage: string | null,
 ) {
   return test.step(`Validate response status: ${status}, IsSuccess: ${IsSuccess}, ErrorMessage: ${ErrorMessage}`, () => {
-    expect.soft(response.status).toBe(status)
+    expect.soft(response.status).toBe(status);
 
     if (response.body) {
-      expect.soft(response.body.IsSuccess).toBe(IsSuccess)
-      expect.soft(response.body.ErrorMessage).toBe(ErrorMessage)
+      expect.soft(response.body.IsSuccess).toBe(IsSuccess);
+      expect.soft(response.body.ErrorMessage).toBe(ErrorMessage);
     } else {
-      expect.soft(IsSuccess).toBeNull()
-      expect.soft(ErrorMessage).toBeNull()
+      expect.soft(IsSuccess).toBeNull();
+      expect.soft(ErrorMessage).toBeNull();
     }
-  })
+  });
 }

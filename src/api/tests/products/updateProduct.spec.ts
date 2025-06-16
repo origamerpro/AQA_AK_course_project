@@ -3,11 +3,16 @@ import {
   negativeTestCasesForUpdate,
   positiveTestCasesForUpdate,
 } from 'data/products/updateProductCases.data';
+import {
+  errorResponseSchema,
+  oneProductResponseSchema,
+} from 'data/schemas/product.schema';
 import { STATUS_CODES } from 'data/statusCodes';
 import { TAGS } from 'data/testTags.data';
 import { test } from 'fixtures/api-services.fixture';
 import { IProduct } from 'types/products.types';
 import { validateResponse } from 'utils/validations/responseValidation';
+import { validateSchema } from 'utils/validations/schemaValidation';
 
 test.describe('[API] [Products] Update product by ID', () => {
   let token = '';
@@ -43,6 +48,7 @@ test.describe('[API] [Products] Update product by ID', () => {
             updateProduct,
             token,
           );
+          validateSchema(oneProductResponseSchema, response.body);
           validateResponse(response, STATUS_CODES.OK, true, null);
         },
       );
@@ -72,6 +78,7 @@ test.describe('[API] [Products] Update product by ID', () => {
               data,
               usedToken,
             );
+            validateSchema(errorResponseSchema, response.body);
             validateResponse(response, statusCode, false, expectedError);
           },
         );
@@ -98,6 +105,7 @@ test.describe('[API] [Products] Update product by ID', () => {
           token,
         );
 
+        validateSchema(errorResponseSchema, duplicateResponse.body);
         validateResponse(
           duplicateResponse,
           STATUS_CODES.CONFLICT,
@@ -125,7 +133,7 @@ test.describe('[API] [Products] Update product by ID', () => {
           generateProductData(),
           token,
         );
-
+        validateSchema(errorResponseSchema, response.body);
         validateResponse(
           response,
           STATUS_CODES.NOT_FOUND,

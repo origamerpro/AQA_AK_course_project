@@ -7,6 +7,11 @@ import {
 } from 'data/products/createProductCases.data';
 import { TAGS } from 'data/testTags.data';
 import { validateResponse } from 'utils/validations/responseValidation';
+import { validateSchema } from 'utils/validations/schemaValidation';
+import {
+  errorResponseSchema,
+  oneProductResponseSchema,
+} from 'data/schemas/product.schema';
 
 test.describe('[API] [Products] Create a new product', () => {
   let token = '';
@@ -29,6 +34,7 @@ test.describe('[API] [Products] Create a new product', () => {
         { tag: [TAGS.API, TAGS.PRODUCTS, TAGS.SMOKE, TAGS.REGRESSION] },
         async ({ productsController }) => {
           const response = await productsController.create(data, token);
+          validateSchema(oneProductResponseSchema, response.body);
           validateResponse(response, STATUS_CODES.CREATED, true, null);
           productId = response.body.Product._id;
         },
@@ -53,6 +59,7 @@ test.describe('[API] [Products] Create a new product', () => {
             const statusCode = expectedStatusCode ?? STATUS_CODES.BAD_REQUEST;
 
             const response = await productsController.create(data, usedToken);
+            validateSchema(errorResponseSchema, response.body);
             validateResponse(response, statusCode, false, expectedError);
           },
         );
@@ -78,6 +85,7 @@ test.describe('[API] [Products] Create a new product', () => {
           token,
         );
 
+        validateSchema(errorResponseSchema, duplicateResponse.body);
         validateResponse(
           duplicateResponse,
           STATUS_CODES.CONFLICT,

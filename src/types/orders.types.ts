@@ -3,7 +3,7 @@ import {
   ordersSortField,
   sortDirection,
 } from 'types/api.types';
-import { ICustomerFromResponse } from 'types/customer.types';
+import { ICustomer, ICustomerFromResponse } from 'types/customer.types';
 import { IProductFromResponse } from 'types/products.types';
 import { COUNTRIES } from 'data/customers/countries.data';
 import { ORDER_STATUS } from 'data/orders/statuses';
@@ -91,7 +91,7 @@ export interface IDelivery {
 export interface IHistory {
   readonly action: ORDER_HISTORY_ACTIONS;
   readonly status: ORDER_STATUS;
-  readonly customer: string;
+  readonly customer: ICustomer;
   readonly products: IProductFromResponse[];
   readonly total_price: number;
   readonly delivery: IDelivery | null;

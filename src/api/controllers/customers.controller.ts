@@ -1,7 +1,11 @@
-import { APIRequestContext, test } from '@playwright/test';
+import { APIRequestContext } from '@playwright/test';
 import { RequestApi } from 'api/apiClients/request';
 import { apiConfig } from 'config/api-config';
-import { IRequestOptions } from 'types/api.types';
+import {
+  customersSortField,
+  IRequestOptions,
+  sortDirection,
+} from 'types/api.types';
 import {
   ICustomer,
   ICustomerFilterParams,
@@ -17,6 +21,45 @@ export class CustomersController {
 
   constructor(context: APIRequestContext) {
     this.request = new RequestApi(context);
+  }
+
+  @logStep('GET /customers with pagination via API')
+  async getCustomersWithPagination(
+    token: string,
+    params?: {
+      page?: number;
+      limit?: number;
+      sortField?: customersSortField;
+      sortOrder?: sortDirection;
+    },
+  ) {
+    // Устанавливаем значения по умолчанию
+    const {
+      page = 1,
+      limit = 10,
+      sortField = 'createdOn',
+      sortOrder = 'desc',
+    } = params || {};
+
+    const queryParams: Record<string, string> = {};
+
+    queryParams.page = page.toString();
+
+    queryParams.limit = limit.toString();
+
+    queryParams.sortField = sortField;
+    queryParams.sortOrder = sortOrder;
+
+    const options: IRequestOptions = {
+      baseURL: apiConfig.BASE_URL,
+      url: `${apiConfig.ENDPOINTS.CUSTOMERS}?${new URLSearchParams(queryParams)}`,
+      method: 'get',
+      headers: {
+        'content-type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    return await this.request.send<ICustomersFilteredResponse>(options);
   }
 
   @logStep('POST /customers via API')

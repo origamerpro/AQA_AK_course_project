@@ -1,4 +1,4 @@
-import { APIRequestContext, test } from '@playwright/test';
+import { APIRequestContext } from '@playwright/test';
 import { SignInController } from 'api/controllers/signIn.controller';
 import { USER_LOGIN, USER_PASSWORD } from 'config/environment';
 import { STATUS_CODES } from 'data/statusCodes';

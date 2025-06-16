@@ -1,8 +1,4 @@
-import test, {
-  APIRequestContext,
-  APIResponse,
-  request,
-} from '@playwright/test';
+import test, { APIRequestContext, APIResponse } from '@playwright/test';
 import _ from 'lodash';
 import { IRequestOptions, IResponse } from 'types/api.types';
 import { logStep } from 'utils/reporter.utils';

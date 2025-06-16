@@ -24,6 +24,8 @@ export type customersSortField = 'createdOn' | 'email' | 'name' | 'country';
 
 export type productsSortField = 'createdOn' | 'price' | 'name' | 'manufacturer';
 
+export type ordersSortField = 'createdOn' | 'status' | 'total_price'; //дописать все поля
+
 export interface ILoginResponseBody extends IResponseFields {
   User: {
     _id: string;

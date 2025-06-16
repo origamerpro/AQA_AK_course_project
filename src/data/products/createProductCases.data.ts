@@ -3,7 +3,7 @@ import { generateProductData } from './generateProduct.data';
 import { MANUFACTURERS } from './manufacturers.data';
 import { faker } from '@faker-js/faker';
 
-export const positiveTestCases = [
+export const positiveTestCasesForCreate = [
   {
     name: 'Full valid data',
     data: generateProductData(),
@@ -53,7 +53,7 @@ export const positiveTestCases = [
   },
 ];
 
-export const negativeTestCases = [
+export const negativeTestCasesForCreate = [
   {
     name: 'Missing auth token',
     data: generateProductData(),

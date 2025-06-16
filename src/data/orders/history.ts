@@ -1,4 +1,4 @@
-export enum ORDER_HISTORY {
+export enum ORDER_HISTORY_ACTIONS {
   CREATED = 'Order created',
   CUSTOMER_CHANGED = 'Customer changed',
   REQUIRED_PRODUCTS_CHANGED = 'Requested products changed',

@@ -7,36 +7,45 @@ import { ICustomerFromResponse } from 'types/customer.types';
 import { IProductFromResponse } from 'types/products.types';
 import { COUNTRIES } from 'data/customers/countries.data';
 import { ORDER_STATUS } from 'data/orders/statuses';
-import { DELIVERY, DELIVERY_LOCATION } from 'data/orders/delivery';
-import { ORDER_HISTORY } from 'data/orders/history';
+import { DELIVERY } from 'data/orders/delivery';
+import { ORDER_HISTORY_ACTIONS } from 'data/orders/history';
+import { ROLES } from 'data/orders/roles';
 
+// ===== Запросы =====
 export interface IOrderRequestParams {
   search?: string;
-  status?: ORDER_STATUS[];
+  status?: ORDER_STATUS;
   sortField?: ordersSortField;
   sortOrder?: sortDirection;
-}
-
-export interface IHistory {
-  readonly action: ORDER_HISTORY;
-  readonly status: string;
-  readonly customer: string;
-  readonly products: IProductFromResponse[];
-  readonly delivery: IDelivery | null;
-  readonly total_price: number;
-  readonly changedOn: string;
-}
-
-export interface ICommentFromResponse {
-  readonly _id: string;
-  readonly text: string;
-  readonly createdOn: string;
 }
 
 export interface IAddCommentRequest {
   comment: string;
 }
 
+// ===== Ответы =====
+export interface IOrderResponse extends IResponseFields {
+  Order: IOrderFromResponse;
+}
+
+export interface IOrdersResponse extends IResponseFields {
+  Orders: IOrderFromResponse[];
+}
+
+export interface IOrderFilteredResponse extends IResponseFields {
+  Orders: IOrderFromResponse[];
+  total: number;
+  page: number;
+  limit: number;
+  search: string;
+  status: ORDER_STATUS[];
+  sorting: {
+    sortField: ordersSortField;
+    sortOrder: sortDirection;
+  };
+}
+
+// ===== Основные сущности =====
 export interface IOrderData {
   customer: string;
   products: string[];
@@ -60,40 +69,14 @@ export interface IOrder {
   readonly createdOn: string;
   readonly history: IHistory[];
   readonly comments: ICommentFromResponse[];
+  readonly assignedManager: IManager | null;
 }
 
 export interface IOrderFromResponse extends IOrder {
   readonly _id: string;
 }
 
-export interface IOrderResponse extends IResponseFields {
-  Order: IOrderFromResponse;
-}
-
-export interface IOrdersResponse extends IResponseFields {
-  Orders: IOrderFromResponse[];
-}
-
-export interface IOrderFilteredResponse extends IResponseFields {
-  Orders: IOrderFromResponse[];
-  total: number;
-  page: number;
-  limit: number;
-  search: string;
-  status: ORDER_STATUS[];
-  sorting: {
-    sortField: ordersSortField;
-    sortOrder: sortDirection;
-  };
-}
-
-export interface IOrderFilterParams {
-  search?: string;
-  status?: ORDER_STATUS[];
-  sortField?: ordersSortField;
-  sortOrder?: sortDirection;
-}
-
+// ===== Подсущности =====
 export interface IProductFromOrder extends IProductFromResponse {
   received: boolean;
 }
@@ -101,12 +84,38 @@ export interface IProductFromOrder extends IProductFromResponse {
 export interface IDelivery {
   finalDate: string;
   condition: DELIVERY;
-  location?: DELIVERY_LOCATION;
-  address?: {
+  address: {
     country: COUNTRIES;
     city: string;
     street: string;
     house: number;
     flat: number;
   };
+}
+
+export interface IHistory {
+  readonly action: ORDER_HISTORY_ACTIONS;
+  readonly status: ORDER_STATUS;
+  readonly customer: string;
+  readonly products: IProductFromResponse[];
+  readonly total_price: number;
+  readonly delivery: IDelivery | null;
+  readonly changedOn: string;
+  readonly performer: IManager;
+  readonly assignedManager: IManager | null;
+}
+
+export interface ICommentFromResponse {
+  readonly _id: string;
+  readonly text: string;
+  readonly createdOn: string;
+}
+
+export interface IManager {
+  _id: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  roles: ROLES[];
+  createdOn: string;
 }

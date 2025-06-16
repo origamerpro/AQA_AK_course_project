@@ -63,19 +63,6 @@ export class OrdersAPIController {
     return await this.request.send<IOrderResponse>(options);
   }
 
-  @logStep('DELETE/ order via API')
-  async delete(id: string, token: string) {
-    const options: IRequestOptions = {
-      url: apiConfig.ENDPOINTS.ORDER_BY_ID(id),
-      method: 'delete',
-      headers: {
-        Authorization: token,
-      },
-    };
-
-    return await this.request.send<null>(options);
-  }
-
   @logStep('PUT/ order via API')
   async updateOrder(id: string, data: IOrderData, token: string) {
     const options: IRequestOptions = {
@@ -90,32 +77,37 @@ export class OrdersAPIController {
     return await this.request.send<IOrderResponse>(options);
   }
 
-  @logStep('PUT/ order status via API')
-  async updateStatus(data: {
-    id: string;
-    status: ORDER_STATUS;
-    token: string;
-  }) {
+  @logStep('DELETE/ order via API')
+  async delete(id: string, token: string) {
     const options: IRequestOptions = {
-      url: apiConfig.ENDPOINTS.ORDER_STATUS(data.id),
-      method: 'put',
-      data: { status: data.status },
+      url: apiConfig.ENDPOINTS.ORDER_BY_ID(id),
+      method: 'delete',
       headers: {
-        'content-type': 'application/json',
-        Authorization: data.token,
+        Authorization: token,
+      },
+    };
+
+    return await this.request.send<null>(options);
+  }
+
+  @logStep('PUT/ assign manager to order')
+  async assignManager(orderId: string, managerId: string, token: string) {
+    const options: IRequestOptions = {
+      url: apiConfig.ENDPOINTS.ASSIGN_MANAGER(orderId, managerId),
+      method: 'put',
+      headers: {
+        Authorization: token,
       },
     };
     return await this.request.send<IOrderResponse>(options);
   }
 
-  @logStep('POST/ order delivery via API')
-  async updateDelivery(id: string, delivery: IDelivery, token: string) {
+  @logStep('PUT/ unassign manager from order')
+  async unassignManager(orderId: string, token: string) {
     const options: IRequestOptions = {
-      url: apiConfig.ENDPOINTS.ORDER_DELIVERY(id),
-      method: 'post',
-      data: delivery,
+      url: apiConfig.ENDPOINTS.UNASSIGN_MANAGER(orderId),
+      method: 'put',
       headers: {
-        'content-type': 'application/json',
         Authorization: token,
       },
     };
@@ -139,6 +131,32 @@ export class OrdersAPIController {
     return await this.request.send<IOrderResponse>(options);
   }
 
+  @logStep('DELETE/ order comment via API')
+  async deleteComment(order_id: string, comment_id: string, token: string) {
+    const options: IRequestOptions = {
+      url: apiConfig.ENDPOINTS.ORDER_COMMENT_BY_ID(order_id, comment_id),
+      method: 'delete',
+      headers: {
+        Authorization: token,
+      },
+    };
+    return await this.request.send<IOrderResponse>(options);
+  }
+
+  @logStep('POST/ order delivery via API')
+  async updateDelivery(id: string, delivery: IDelivery, token: string) {
+    const options: IRequestOptions = {
+      url: apiConfig.ENDPOINTS.ORDER_DELIVERY(id),
+      method: 'post',
+      data: delivery,
+      headers: {
+        'content-type': 'application/json',
+        Authorization: token,
+      },
+    };
+    return await this.request.send<IOrderResponse>(options);
+  }
+
   @logStep('POST/ order receive via API')
   async receiveProducts(id: string, productIds: string[], token: string) {
     const options: IRequestOptions = {
@@ -153,37 +171,19 @@ export class OrdersAPIController {
     return await this.request.send<IOrderResponse>(options);
   }
 
-  @logStep('DELETE/ order comment via API')
-  async deleteComment(order_id: string, comment_id: string, token: string) {
+  @logStep('PUT/ order status via API')
+  async updateStatus(data: {
+    id: string;
+    status: ORDER_STATUS;
+    token: string;
+  }) {
     const options: IRequestOptions = {
-      url: apiConfig.ENDPOINTS.ORDER_COMMENT_BY_ID(order_id, comment_id),
-      method: 'delete',
-      headers: {
-        Authorization: token,
-      },
-    };
-    return await this.request.send<IOrderResponse>(options);
-  }
-
-  @logStep('PUT/ assign manager to order')
-  async assignManager(orderId: string, managerId: string, token: string) {
-    const options: IRequestOptions = {
-      url: apiConfig.ENDPOINTS.ASSIGN_MANAGER(orderId, managerId),
+      url: apiConfig.ENDPOINTS.ORDER_STATUS(data.id),
       method: 'put',
+      data: { status: data.status },
       headers: {
-        Authorization: token,
-      },
-    };
-    return await this.request.send<IOrderResponse>(options);
-  }
-
-  @logStep('PUT/ unassign manager from order')
-  async unassignManager(orderId: string, token: string) {
-    const options: IRequestOptions = {
-      url: apiConfig.ENDPOINTS.UNASSIGN_MANAGER(orderId),
-      method: 'put',
-      headers: {
-        Authorization: token,
+        'content-type': 'application/json',
+        Authorization: data.token,
       },
     };
     return await this.request.send<IOrderResponse>(options);

@@ -55,11 +55,6 @@ export interface IOrderDataWithId extends IOrderData {
   _id: string;
 }
 
-export interface IOrderStatus {
-  _id: string;
-  status: ORDER_STATUS.CANCELED | ORDER_STATUS.IN_PROCESS;
-}
-
 export interface IOrder {
   readonly status: ORDER_STATUS;
   readonly customer: ICustomerFromResponse;

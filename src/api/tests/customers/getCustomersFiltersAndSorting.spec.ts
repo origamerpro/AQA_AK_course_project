@@ -439,8 +439,14 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
         createdCustomerIds.push(...users.map((u) => u._id));
 
         const [firstPage, secondPage] = await Promise.all([
-          customersController.getCustomersWithPagination(token, 1, 10),
-          customersController.getCustomersWithPagination(token, 2, 10),
+          customersController.getCustomersWithPagination(token, {
+            page: 1,
+            limit: 10,
+          }),
+          customersController.getCustomersWithPagination(token, {
+            page: 2,
+            limit: 10,
+          }),
         ]);
 
         validateResponse(secondPage, STATUS_CODES.OK, true, null);
@@ -577,7 +583,9 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
 
         const response = await customersController.getCustomersWithPagination(
           token,
-          1,
+          {
+            page: 1,
+          },
         );
 
         validateResponse(response, STATUS_CODES.OK, true, null);
@@ -605,8 +613,9 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
 
         const response = await customersController.getCustomersWithPagination(
           token,
-          undefined,
-          10,
+          {
+            limit: 10,
+          },
         );
 
         validateResponse(response, STATUS_CODES.OK, true, null);
@@ -640,8 +649,10 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
 
         const response = await customersController.getCustomersWithPagination(
           token,
-          firstNonexistentPage,
-          limit,
+          {
+            page: firstNonexistentPage,
+            limit: limit,
+          },
         );
 
         validateResponse(response, STATUS_CODES.OK, true, null);

@@ -26,29 +26,33 @@ export class CustomersController {
   @logStep('GET /customers with pagination via API')
   async getCustomersWithPagination(
     token: string,
-    page?: number,
-    limit?: number,
-    sortField: customersSortField = 'createdOn',
-    sortOrder: sortDirection = 'desc',
+    params?: {
+      page?: number;
+      limit?: number;
+      sortField?: customersSortField;
+      sortOrder?: sortDirection;
+    },
   ) {
-    const params: Record<string, string> = {};
+    // Устанавливаем значения по умолчанию
+    const {
+      page = 1,
+      limit = 10,
+      sortField = 'createdOn',
+      sortOrder = 'desc',
+    } = params || {};
 
-    // Добавляем параметры только если они переданы
-    if (page !== undefined) {
-      params.page = page.toString();
-    }
+    const queryParams: Record<string, string> = {};
 
-    if (limit !== undefined) {
-      params.limit = limit.toString();
-    }
+    queryParams.page = page.toString();
 
-    // Сортировка всегда добавляется (есть значения по умолчанию)
-    params.sortField = sortField;
-    params.sortOrder = sortOrder;
+    queryParams.limit = limit.toString();
+
+    queryParams.sortField = sortField;
+    queryParams.sortOrder = sortOrder;
 
     const options: IRequestOptions = {
       baseURL: apiConfig.BASE_URL,
-      url: `${apiConfig.ENDPOINTS.CUSTOMERS}?${new URLSearchParams(params)}`,
+      url: `${apiConfig.ENDPOINTS.CUSTOMERS}?${new URLSearchParams(queryParams)}`,
       method: 'get',
       headers: {
         'content-type': 'application/json',

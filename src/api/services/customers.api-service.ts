@@ -61,15 +61,15 @@ export class CustomersApiService {
 
   @logStep('Create multiple test customers via API')
   async createTestUsers(
-    token: string, 
+    token: string,
     count = 3,
-    customData: Partial<ICustomer> = {}
+    customData: Partial<ICustomer> = {},
   ) {
     const users = [];
     for (let i = 0; i < count; i++) {
       const userData: ICustomer = {
         ...generateCustomerData(), // Полностью сгенерированный объект
-        ...customData // Перезаписываем кастомными данными
+        ...customData, // Перезаписываем кастомными данными
       };
       const user = await this.createCustomer(token, userData);
       users.push(user);

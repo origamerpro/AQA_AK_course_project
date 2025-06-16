@@ -28,6 +28,15 @@ export default defineConfig([
     },
   },
   {
-    ignores: ['dist', 'node_modules', 'allure-report', 'test-results', 'allure-results', 'playwright-report', 'blob-report', 'eslint.config.mjs'],
+    ignores: [
+      'dist',
+      'node_modules',
+      'allure-report',
+      'test-results',
+      'allure-results',
+      'playwright-report',
+      'blob-report',
+      'eslint.config.mjs',
+    ],
   },
 ]);

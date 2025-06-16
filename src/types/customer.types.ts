@@ -4,7 +4,6 @@ import {
   IResponseFields,
   sortDirection,
 } from './api.types';
-import { String } from 'lodash';
 
 export interface ICustomer {
   email?: string;

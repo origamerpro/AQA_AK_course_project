@@ -1,8 +1,6 @@
-import { APIRequestContext, test } from '@playwright/test';
+import { APIRequestContext } from '@playwright/test';
 import { RequestApi } from 'api/apiClients/request';
 import { apiConfig } from 'config/api-config';
-import { create } from 'domain';
-import { update } from 'lodash';
 import {
   customersSortField,
   IRequestOptions,

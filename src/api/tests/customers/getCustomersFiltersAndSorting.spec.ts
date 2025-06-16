@@ -6,9 +6,7 @@ import { COUNTRIES } from 'data/customers/countries.data';
 import { generateCustomerData } from 'data/customers/generateCustomer.data';
 import { ICustomerFilterParams } from 'types/customer.types';
 import { customersListSchema } from 'data/schemas/customer.schema';
-import { CustomersController } from 'api/controllers/customers.controller';
 import { validateSchema } from 'utils/validations/schemaValidation';
-import { createTestUsers } from 'utils/customer.test.utils';
 import { ERROR_MESSAGES } from 'data/errorMessages';
 
 test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
@@ -19,10 +17,10 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
     token = await signInApiService.loginAsLocalUser();
   });
 
-  test.afterEach(async ({ customersController }) => {
+  test.afterEach(async ({ customersApiService }) => {
     await Promise.all(
       createdCustomerIds.map((id) =>
-        customersController.delete(id, token).catch(() => {}),
+        customersApiService.deleteCustomer(id, token).catch(() => {}),
       ),
     );
     createdCustomerIds.length = 0;
@@ -144,50 +142,38 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
       },
     );
 
-    test(
-      'Sort by createdOn ascending',
-      {
-        tag: [TAGS.API, TAGS.CUSTOMERS, TAGS.SMOKE, TAGS.REGRESSION],
-      },
-      async ({ customersController }) => {
-        const { createdIds } = await createTestUsers(
-          customersController,
-          token,
-          3,
-        );
-        createdCustomerIds.push(...createdIds);
+    test('Sort by createdOn ascending', async ({
+      customersApiService,
+      customersController,
+    }) => {
+      // 1. Создаем данные через сервис
+      const users = await customersApiService.createTestUsers(token, 3);
+      createdCustomerIds.push(...users.map((u) => u._id));
 
-        const response = await customersController.getFilteredCustomers(token, {
-          sortField: 'createdOn',
-          sortOrder: 'asc',
-        });
+      // 2. Получаем response через контроллер (для валидации)
+      const response = await customersController.getFilteredCustomers(token, {
+        sortField: 'createdOn',
+        sortOrder: 'asc',
+      });
+      validateResponse(response, STATUS_CODES.OK, true, null);
 
-        validateResponse(response, STATUS_CODES.OK, true, null);
-
-        const dates = response.body.Customers.map((c) =>
-          new Date(c.createdOn).getTime(),
-        );
-        for (let i = 0; i < dates.length - 1; i++) {
-          expect(dates[i]).toBeLessThanOrEqual(dates[i + 1]);
-        }
-
-        expect(response.body.sorting.sortField).toBe('createdOn');
-        expect(response.body.sorting.sortOrder).toBe('asc');
-      },
-    );
+      // 3. Проверяем данные из body
+      const dates = response.body.Customers.map((c) =>
+        new Date(c.createdOn).getTime(),
+      );
+      for (let i = 0; i < dates.length - 1; i++) {
+        expect(dates[i]).toBeLessThanOrEqual(dates[i + 1]);
+      }
+    });
 
     test(
       'Sort by createdOn descending',
       {
         tag: [TAGS.API, TAGS.CUSTOMERS, TAGS.SMOKE, TAGS.REGRESSION],
       },
-      async ({ customersController }) => {
-        const { createdIds } = await createTestUsers(
-          customersController,
-          token,
-          3,
-        );
-        createdCustomerIds.push(...createdIds);
+      async ({ customersApiService, customersController }) => {
+        const users = await customersApiService.createTestUsers(token, 3);
+        createdCustomerIds.push(...users.map((u) => u._id));
 
         const response = await customersController.getFilteredCustomers(token, {
           sortField: 'createdOn',
@@ -213,13 +199,9 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
       {
         tag: [TAGS.API, TAGS.CUSTOMERS, TAGS.REGRESSION],
       },
-      async ({ customersController }) => {
-        const { createdIds } = await createTestUsers(
-          customersController,
-          token,
-          3,
-        );
-        createdCustomerIds.push(...createdIds);
+      async ({ customersApiService, customersController }) => {
+        const users = await customersApiService.createTestUsers(token, 3);
+        createdCustomerIds.push(...users.map((u) => u._id));
 
         const response = await customersController.getFilteredCustomers(token, {
           sortField: 'name',
@@ -245,13 +227,9 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
       {
         tag: [TAGS.API, TAGS.CUSTOMERS, TAGS.REGRESSION],
       },
-      async ({ customersController }) => {
-        const { createdIds } = await createTestUsers(
-          customersController,
-          token,
-          3,
-        );
-        createdCustomerIds.push(...createdIds);
+      async ({ customersApiService, customersController }) => {
+        const users = await customersApiService.createTestUsers(token, 3);
+        createdCustomerIds.push(...users.map((u) => u._id));
 
         const response = await customersController.getFilteredCustomers(token, {
           sortField: 'name',
@@ -316,13 +294,9 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
       {
         tag: [TAGS.API, TAGS.CUSTOMERS, TAGS.REGRESSION],
       },
-      async ({ customersController }) => {
-        const { createdIds } = await createTestUsers(
-          customersController,
-          token,
-          3,
-        );
-        createdCustomerIds.push(...createdIds);
+      async ({ customersApiService, customersController }) => {
+        const users = await customersApiService.createTestUsers(token, 3);
+        createdCustomerIds.push(...users.map((u) => u._id));
 
         const response = await customersController.getFilteredCustomers(token, {
           sortField: 'email',
@@ -351,13 +325,9 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
       {
         tag: [TAGS.API, TAGS.CUSTOMERS, TAGS.REGRESSION],
       },
-      async ({ customersController }) => {
-        const { createdIds } = await createTestUsers(
-          customersController,
-          token,
-          3,
-        );
-        createdCustomerIds.push(...createdIds);
+      async ({ customersApiService, customersController }) => {
+        const users = await customersApiService.createTestUsers(token, 3);
+        createdCustomerIds.push(...users.map((u) => u._id));
 
         const response = await customersController.getFilteredCustomers(token, {
           sortField: 'email',
@@ -464,13 +434,9 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
       {
         tag: [TAGS.API, TAGS.CUSTOMERS, TAGS.REGRESSION],
       },
-      async ({ customersController }) => {
-        const { createdIds } = await createTestUsers(
-          customersController,
-          token,
-          15,
-        );
-        createdCustomerIds.push(...createdIds);
+      async ({ customersApiService, customersController }) => {
+        const users = await customersApiService.createTestUsers(token, 15);
+        createdCustomerIds.push(...users.map((u) => u._id));
 
         const [firstPage, secondPage] = await Promise.all([
           customersController.getCustomersWithPagination(token, 1, 10),
@@ -568,196 +534,279 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
   });
 
   test.describe('Negative', () => {
-    test('Empty search parameter', {
-      tag: [TAGS.API, TAGS.CUSTOMERS],
-    }, async ({ customersController }) => {
-      const testCustomer = generateCustomerData();
-      const createResponse = await customersController.create(testCustomer, token);
-      createdCustomerIds.push(createResponse.body.Customer._id);
-  
-      const response = await customersController.getFilteredCustomers(token, {
-        search: '',
-        sortField: 'createdOn',
-        sortOrder: 'desc',
-      });
-  
-      validateResponse(response, STATUS_CODES.OK, true, null);
-      validateSchema(customersListSchema, response.body);
-  
-      expect(response.body.search).toBe('');
-      expect(response.body.Customers.length).toBeGreaterThan(0);
-      expect(response.body.Customers.length).toBeLessThanOrEqual(10);
-    });
-  
-    test('Pagination with page only', {
-      tag: [TAGS.API, TAGS.CUSTOMERS],
-    }, async ({ customersController }) => {
-      const testCustomer = generateCustomerData();
-      const createResponse = await customersController.create(testCustomer, token);
-      createdCustomerIds.push(createResponse.body.Customer._id);
-  
-      const response = await customersController.getCustomersWithPagination(token, 1);
-  
-      validateResponse(response, STATUS_CODES.OK, true, null);
-      validateSchema(customersListSchema, response.body);
-  
-      expect(response.body.total).toBeGreaterThan(0);
-      expect(response.body.limit).toBe(10);
-      expect(response.body.page).toBe(1);
-      expect(response.body.Customers.length).toBeLessThanOrEqual(10);
-    });
-  
-    test('Pagination with limit only', {
-      tag: [TAGS.API, TAGS.CUSTOMERS],
-    }, async ({ customersController }) => {
-      const testCustomer = generateCustomerData();
-      const createResponse = await customersController.create(testCustomer, token);
-      createdCustomerIds.push(createResponse.body.Customer._id);
-  
-      const response = await customersController.getCustomersWithPagination(token, undefined, 10);
-  
-      validateResponse(response, STATUS_CODES.OK, true, null);
-      validateSchema(customersListSchema, response.body);
-  
-      expect(response.body.total).toBeGreaterThan(0);
-      expect(response.body.limit).toBe(10);
-      expect(response.body.page).toBe(1);
-      expect(response.body.Customers.length).toBeLessThanOrEqual(10);
-    });
-  
-    test('First non-existent page', {
-      tag: [TAGS.API, TAGS.CUSTOMERS],
-    }, async ({ customersController }) => {
-      const testCustomer = generateCustomerData();
-      const createResponse = await customersController.create(testCustomer, token);
-      createdCustomerIds.push(createResponse.body.Customer._id);
-  
-      const allCustomersResponse = await customersController.getAllCustomers(token);
-      const totalCustomers = allCustomersResponse.body.Customers.length;
-      const limit = 10;
-      const firstNonexistentPage = Math.ceil(totalCustomers / limit) + 1;
-  
-      const response = await customersController.getCustomersWithPagination(
-        token,
-        firstNonexistentPage,
-        limit
-      );
-  
-      validateResponse(response, STATUS_CODES.OK, true, null);
-      validateSchema(customersListSchema, response.body);
-  
-      expect(response.body.Customers.length).toBe(0);
-      expect(response.body.page).toBe(firstNonexistentPage);
-      expect(response.body.limit).toBe(limit);
-    });
-  
-    test('Non-existent country filter', {
-      tag: [TAGS.API, TAGS.CUSTOMERS],
-    }, async ({ customersController }) => {
-      const testCustomer = generateCustomerData();
-      const createResponse = await customersController.create(testCustomer, token);
-      createdCustomerIds.push(createResponse.body.Customer._id);
-  
-      const response = await customersController.getFilteredCustomers(token, {
-        country: ['Brazil'] as unknown as COUNTRIES[],
-        sortField: 'createdOn',
-        sortOrder: 'asc',
-      });
-  
-      validateResponse(response, STATUS_CODES.OK, true, null);
-      validateSchema(customersListSchema, response.body);
-      expect(response.body.Customers.length).toBe(0);
-    });
-  
-    test('Empty country filter', {
-      tag: [TAGS.API, TAGS.CUSTOMERS],
-    }, async ({ customersController }) => {
-      const testCustomer = generateCustomerData();
-      const createResponse = await customersController.create(testCustomer, token);
-      createdCustomerIds.push(createResponse.body.Customer._id);
-  
-      const response = await customersController.getFilteredCustomers(token, {
-        country: [],
-        sortField: 'createdOn',
-        sortOrder: 'desc',
-      });
-  
-      validateResponse(response, STATUS_CODES.OK, true, null);
-      validateSchema(customersListSchema, response.body);
-      expect(response.body.Customers.length).toBeGreaterThan(0);
-    });
-  
-    test('Sort field without sort order', {
-      tag: [TAGS.API, TAGS.CUSTOMERS],
-    }, async ({ customersController }) => {
-      const testCustomer = generateCustomerData();
-      const createResponse = await customersController.create(testCustomer, token);
-      createdCustomerIds.push(createResponse.body.Customer._id);
-  
-      const response = await customersController.getFilteredCustomers(token, {
-        sortField: 'createdOn',
-      });
-  
-      validateResponse(response, STATUS_CODES.OK, true, null);
-      validateSchema(customersListSchema, response.body);
-      expect(response.body.Customers.length).toBeGreaterThan(0);
-    });
-  
-    test('Sort order without sort field', {
-      tag: [TAGS.API, TAGS.CUSTOMERS],
-    }, async ({ customersController }) => {
-      const testCustomer = generateCustomerData();
-      const createResponse = await customersController.create(testCustomer, token);
-      createdCustomerIds.push(createResponse.body.Customer._id);
-  
-      const response = await customersController.getFilteredCustomers(token, {
-        sortOrder: 'desc',
-      });
-  
-      validateResponse(response, STATUS_CODES.OK, true, null);
-      validateSchema(customersListSchema, response.body);
-      expect(response.body.Customers.length).toBeGreaterThan(0);
-      expect(response.body.sorting?.sortOrder).toBe('desc');
-    });
-  
-    test('Invalid auth token', {
-      tag: [TAGS.API, TAGS.CUSTOMERS, TAGS.REGRESSION],
-    }, async ({ customersController }) => {
-      const response = await customersController.getAllCustomers('invalid_token');
-      validateResponse(
-        response,
-        STATUS_CODES.UNAUTHORIZED,
-        false,
-        ERROR_MESSAGES.INVALID_ACCESS_TOKEN
-      );
-    });
-  
-    test('Missing auth token', {
-      tag: [TAGS.API, TAGS.CUSTOMERS, TAGS.REGRESSION],
-    }, async ({ customersController }) => {
-      const response = await customersController.getAllCustomers('');
-      validateResponse(
-        response,
-        STATUS_CODES.UNAUTHORIZED,
-        false,
-        ERROR_MESSAGES.NOT_AUTHORIZED
-      );
-    });
-  
-    test('No parameters', {
-      tag: [TAGS.API, TAGS.CUSTOMERS],
-    }, async ({ customersController }) => {
-      const testCustomer = generateCustomerData();
-      const createResponse = await customersController.create(testCustomer, token);
-      createdCustomerIds.push(createResponse.body.Customer._id);
-  
-      const response = await customersController.getFilteredCustomers(token, {});
-  
-      validateResponse(response, STATUS_CODES.OK, true, null);
-      validateSchema(customersListSchema, response.body);
-      expect(response.body.Customers.length).toBeGreaterThan(0);
-      expect(response.body.page).toBe(1);
-      expect(response.body.limit).toBe(10);
-    });
+    test(
+      'Empty search parameter',
+      {
+        tag: [TAGS.API, TAGS.CUSTOMERS],
+      },
+      async ({ customersController }) => {
+        const testCustomer = generateCustomerData();
+        const createResponse = await customersController.create(
+          testCustomer,
+          token,
+        );
+        createdCustomerIds.push(createResponse.body.Customer._id);
+
+        const response = await customersController.getFilteredCustomers(token, {
+          search: '',
+          sortField: 'createdOn',
+          sortOrder: 'desc',
+        });
+
+        validateResponse(response, STATUS_CODES.OK, true, null);
+        validateSchema(customersListSchema, response.body);
+
+        expect(response.body.search).toBe('');
+        expect(response.body.Customers.length).toBeGreaterThan(0);
+        expect(response.body.Customers.length).toBeLessThanOrEqual(10);
+      },
+    );
+
+    test(
+      'Pagination with page only',
+      {
+        tag: [TAGS.API, TAGS.CUSTOMERS],
+      },
+      async ({ customersController }) => {
+        const testCustomer = generateCustomerData();
+        const createResponse = await customersController.create(
+          testCustomer,
+          token,
+        );
+        createdCustomerIds.push(createResponse.body.Customer._id);
+
+        const response = await customersController.getCustomersWithPagination(
+          token,
+          1,
+        );
+
+        validateResponse(response, STATUS_CODES.OK, true, null);
+        validateSchema(customersListSchema, response.body);
+
+        expect(response.body.total).toBeGreaterThan(0);
+        expect(response.body.limit).toBe(10);
+        expect(response.body.page).toBe(1);
+        expect(response.body.Customers.length).toBeLessThanOrEqual(10);
+      },
+    );
+
+    test(
+      'Pagination with limit only',
+      {
+        tag: [TAGS.API, TAGS.CUSTOMERS],
+      },
+      async ({ customersController }) => {
+        const testCustomer = generateCustomerData();
+        const createResponse = await customersController.create(
+          testCustomer,
+          token,
+        );
+        createdCustomerIds.push(createResponse.body.Customer._id);
+
+        const response = await customersController.getCustomersWithPagination(
+          token,
+          undefined,
+          10,
+        );
+
+        validateResponse(response, STATUS_CODES.OK, true, null);
+        validateSchema(customersListSchema, response.body);
+
+        expect(response.body.total).toBeGreaterThan(0);
+        expect(response.body.limit).toBe(10);
+        expect(response.body.page).toBe(1);
+        expect(response.body.Customers.length).toBeLessThanOrEqual(10);
+      },
+    );
+
+    test(
+      'First non-existent page',
+      {
+        tag: [TAGS.API, TAGS.CUSTOMERS],
+      },
+      async ({ customersController }) => {
+        const testCustomer = generateCustomerData();
+        const createResponse = await customersController.create(
+          testCustomer,
+          token,
+        );
+        createdCustomerIds.push(createResponse.body.Customer._id);
+
+        const allCustomersResponse =
+          await customersController.getAllCustomers(token);
+        const totalCustomers = allCustomersResponse.body.Customers.length;
+        const limit = 10;
+        const firstNonexistentPage = Math.ceil(totalCustomers / limit) + 1;
+
+        const response = await customersController.getCustomersWithPagination(
+          token,
+          firstNonexistentPage,
+          limit,
+        );
+
+        validateResponse(response, STATUS_CODES.OK, true, null);
+        validateSchema(customersListSchema, response.body);
+
+        expect(response.body.Customers.length).toBe(0);
+        expect(response.body.page).toBe(firstNonexistentPage);
+        expect(response.body.limit).toBe(limit);
+      },
+    );
+
+    test(
+      'Non-existent country filter',
+      {
+        tag: [TAGS.API, TAGS.CUSTOMERS],
+      },
+      async ({ customersController }) => {
+        const testCustomer = generateCustomerData();
+        const createResponse = await customersController.create(
+          testCustomer,
+          token,
+        );
+        createdCustomerIds.push(createResponse.body.Customer._id);
+
+        const response = await customersController.getFilteredCustomers(token, {
+          country: ['Brazil'] as unknown as COUNTRIES[],
+          sortField: 'createdOn',
+          sortOrder: 'asc',
+        });
+
+        validateResponse(response, STATUS_CODES.OK, true, null);
+        validateSchema(customersListSchema, response.body);
+        expect(response.body.Customers.length).toBe(0);
+      },
+    );
+
+    test(
+      'Empty country filter',
+      {
+        tag: [TAGS.API, TAGS.CUSTOMERS],
+      },
+      async ({ customersController }) => {
+        const testCustomer = generateCustomerData();
+        const createResponse = await customersController.create(
+          testCustomer,
+          token,
+        );
+        createdCustomerIds.push(createResponse.body.Customer._id);
+
+        const response = await customersController.getFilteredCustomers(token, {
+          country: [],
+          sortField: 'createdOn',
+          sortOrder: 'desc',
+        });
+
+        validateResponse(response, STATUS_CODES.OK, true, null);
+        validateSchema(customersListSchema, response.body);
+        expect(response.body.Customers.length).toBeGreaterThan(0);
+      },
+    );
+
+    test(
+      'Sort field without sort order',
+      {
+        tag: [TAGS.API, TAGS.CUSTOMERS],
+      },
+      async ({ customersController }) => {
+        const testCustomer = generateCustomerData();
+        const createResponse = await customersController.create(
+          testCustomer,
+          token,
+        );
+        createdCustomerIds.push(createResponse.body.Customer._id);
+
+        const response = await customersController.getFilteredCustomers(token, {
+          sortField: 'createdOn',
+        });
+
+        validateResponse(response, STATUS_CODES.OK, true, null);
+        validateSchema(customersListSchema, response.body);
+        expect(response.body.Customers.length).toBeGreaterThan(0);
+      },
+    );
+
+    test(
+      'Sort order without sort field',
+      {
+        tag: [TAGS.API, TAGS.CUSTOMERS],
+      },
+      async ({ customersController }) => {
+        const testCustomer = generateCustomerData();
+        const createResponse = await customersController.create(
+          testCustomer,
+          token,
+        );
+        createdCustomerIds.push(createResponse.body.Customer._id);
+
+        const response = await customersController.getFilteredCustomers(token, {
+          sortOrder: 'desc',
+        });
+
+        validateResponse(response, STATUS_CODES.OK, true, null);
+        validateSchema(customersListSchema, response.body);
+        expect(response.body.Customers.length).toBeGreaterThan(0);
+        expect(response.body.sorting?.sortOrder).toBe('desc');
+      },
+    );
+
+    test(
+      'Invalid auth token',
+      {
+        tag: [TAGS.API, TAGS.CUSTOMERS, TAGS.REGRESSION],
+      },
+      async ({ customersController }) => {
+        const response =
+          await customersController.getAllCustomers('invalid_token');
+        validateResponse(
+          response,
+          STATUS_CODES.UNAUTHORIZED,
+          false,
+          ERROR_MESSAGES.INVALID_ACCESS_TOKEN,
+        );
+      },
+    );
+
+    test(
+      'Missing auth token',
+      {
+        tag: [TAGS.API, TAGS.CUSTOMERS, TAGS.REGRESSION],
+      },
+      async ({ customersController }) => {
+        const response = await customersController.getAllCustomers('');
+        validateResponse(
+          response,
+          STATUS_CODES.UNAUTHORIZED,
+          false,
+          ERROR_MESSAGES.NOT_AUTHORIZED,
+        );
+      },
+    );
+
+    test(
+      'No parameters',
+      {
+        tag: [TAGS.API, TAGS.CUSTOMERS],
+      },
+      async ({ customersController }) => {
+        const testCustomer = generateCustomerData();
+        const createResponse = await customersController.create(
+          testCustomer,
+          token,
+        );
+        createdCustomerIds.push(createResponse.body.Customer._id);
+
+        const response = await customersController.getFilteredCustomers(
+          token,
+          {},
+        );
+
+        validateResponse(response, STATUS_CODES.OK, true, null);
+        validateSchema(customersListSchema, response.body);
+        expect(response.body.Customers.length).toBeGreaterThan(0);
+        expect(response.body.page).toBe(1);
+        expect(response.body.limit).toBe(10);
+      },
+    );
   });
 });

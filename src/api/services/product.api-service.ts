@@ -39,6 +39,7 @@ export class ProductsApiService {
     const response = await this.controller.delete(productId, token);
     validateResponse(response, STATUS_CODES.DELETED, null, null);
   }
+
   @logStep('Get all products via API')
   async getAllProducts(token: string) {
     const response = await this.controller.getAll(token);

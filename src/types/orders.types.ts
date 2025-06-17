@@ -93,7 +93,7 @@ export interface IHistory {
   readonly action: ORDER_HISTORY_ACTIONS;
   readonly status: ORDER_STATUS;
   readonly customer: string;
-  readonly products: IProduct[];
+  readonly products: IProductFromOrder[];
   readonly total_price: number;
   readonly delivery: IDelivery | null;
   readonly changedOn: string;

@@ -73,6 +73,7 @@ export interface IOrderFromResponse extends IOrder {
 
 // ===== Подсущности =====
 export interface IProductFromOrder extends IProduct {
+  _id: string;
   received: boolean;
 }
 

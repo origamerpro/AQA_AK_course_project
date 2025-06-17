@@ -3,8 +3,8 @@ import {
   ordersSortField,
   sortDirection,
 } from 'types/api.types';
-import { ICustomer, ICustomerFromResponse } from 'types/customer.types';
-import { IProductFromResponse } from 'types/products.types';
+import { ICustomerFromResponse } from 'types/customer.types';
+import { IProduct } from 'types/products.types';
 import { COUNTRIES } from 'data/customers/countries.data';
 import { ORDER_STATUS } from 'data/orders/statuses';
 import { DELIVERY } from 'data/orders/delivery';
@@ -72,7 +72,7 @@ export interface IOrderFromResponse extends IOrder {
 }
 
 // ===== Подсущности =====
-export interface IProductFromOrder extends IProductFromResponse {
+export interface IProductFromOrder extends IProduct {
   received: boolean;
 }
 
@@ -91,8 +91,8 @@ export interface IDelivery {
 export interface IHistory {
   readonly action: ORDER_HISTORY_ACTIONS;
   readonly status: ORDER_STATUS;
-  readonly customer: ICustomer;
-  readonly products: IProductFromResponse[];
+  readonly customer: string;
+  readonly products: IProduct[];
   readonly total_price: number;
   readonly delivery: IDelivery | null;
   readonly changedOn: string;

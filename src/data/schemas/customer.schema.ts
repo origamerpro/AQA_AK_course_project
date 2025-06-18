@@ -5,8 +5,8 @@ import {
   sortingSchemaPart,
 } from 'data/schemas/base.schema';
 import { productOrderSchema } from 'data/schemas/product.schema';
-import { DELIVERY } from 'data/orders/delivery';
-import { ORDER_STATUS } from 'data/orders/statuses';
+import { DELIVERY } from 'data/orders/delivery.data';
+import { ORDER_STATUS } from 'data/orders/statuses.data';
 
 export const customerSchema = {
   type: 'object',

@@ -11,7 +11,7 @@ import { IRequestOptions } from 'types/api.types';
 import { convertRequestParams } from 'utils/requestParams.utils';
 import { RequestApi } from 'api/apiClients/request';
 import { APIRequestContext } from '@playwright/test';
-import { ORDER_STATUS } from 'data/orders/statuses';
+import { ORDER_STATUS } from 'data/orders/statuses.data';
 
 export class OrdersAPIController {
   private request: RequestApi;
@@ -104,6 +104,7 @@ export class OrdersAPIController {
 
   @logStep('PUT/ unassign manager from order')
   async unassignManager(orderId: string, token: string) {
+    // разные названия orderId
     const options: IRequestOptions = {
       url: apiConfig.ENDPOINTS.UNASSIGN_MANAGER(orderId),
       method: 'put',
@@ -172,18 +173,14 @@ export class OrdersAPIController {
   }
 
   @logStep('PUT/ order status via API')
-  async updateStatus(data: {
-    id: string;
-    status: ORDER_STATUS;
-    token: string;
-  }) {
+  async updateStatus(id: string, status: ORDER_STATUS, token: string) {
     const options: IRequestOptions = {
-      url: apiConfig.ENDPOINTS.ORDER_STATUS(data.id),
+      url: apiConfig.ENDPOINTS.ORDER_STATUS(id),
       method: 'put',
-      data: { status: data.status },
+      data: { status: status },
       headers: {
         'content-type': 'application/json',
-        Authorization: data.token,
+        Authorization: token,
       },
     };
     return await this.request.send<IOrderResponse>(options);

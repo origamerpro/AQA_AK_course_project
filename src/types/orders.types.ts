@@ -6,15 +6,15 @@ import {
 import { ICustomerFromResponse } from 'types/customer.types';
 import { IProduct } from 'types/products.types';
 import { COUNTRIES } from 'data/customers/countries.data';
-import { ORDER_STATUS } from 'data/orders/statuses';
-import { DELIVERY } from 'data/orders/delivery';
-import { ORDER_HISTORY_ACTIONS } from 'data/orders/history';
-import { ROLES } from 'data/orders/roles';
+import { ORDER_STATUS } from 'data/orders/statuses.data';
+import { DELIVERY } from 'data/orders/delivery.data';
+import { ORDER_HISTORY_ACTIONS } from 'data/orders/history.data';
+import { ROLES } from 'data/orders/roles.data';
 
 // ===== Запросы =====
 export interface IOrderRequestParams {
   search?: string;
-  status?: ORDER_STATUS;
+  status?: ORDER_STATUS[];
   sortField?: ordersSortField;
   sortOrder?: sortDirection;
 }

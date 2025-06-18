@@ -221,4 +221,26 @@ export class OrdersAPIService {
 
     return { order: updatedOrder, token };
   }
+
+  @logStep('Create cancelled and reopened order via API')
+  async createOrderCancelAndReopen(
+    numProducts: number = 1,
+  ): Promise<{ order: IOrderFromResponse; token: string }> {
+    const { order: draftOrder, token } =
+      await this.createDraftOrder(numProducts);
+
+    const canceledOrder = await this.ordersApiService.updateStatus(
+      draftOrder._id,
+      ORDER_STATUS.CANCELED,
+      token,
+    );
+
+    const reopenedOrder = await this.ordersApiService.updateStatus(
+      canceledOrder._id,
+      ORDER_STATUS.DRAFT,
+      token,
+    );
+
+    return { order: reopenedOrder, token };
+  }
 }

@@ -10,16 +10,9 @@ import { OrdersAPIService } from './orders.api-service';
 import { SignInApiService } from './signIn.api-service';
 
 export class ProductsApiService {
-  private ordersApiService: OrdersAPIService;
-  private customersApiService: CustomersApiService;
-  private productsApiService: ProductsApiService;
-  private signInApiService: SignInApiService;
-
-  constructor(context: APIRequestContext) {
-    this.ordersApiService = new OrdersAPIService(context);
-    this.customersApiService = new CustomersApiService(context);
-    this.productsApiService = new ProductsApiService(context);
-    this.signInApiService = new SignInApiService(context);
+  controller: ProductsController;
+  constructor(request: APIRequestContext) {
+    this.controller = new ProductsController(request);
   }
 
   @logStep('Create Product via API')

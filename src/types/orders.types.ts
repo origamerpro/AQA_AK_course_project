@@ -14,7 +14,7 @@ import { ROLES } from 'data/orders/roles.data';
 // ===== Запросы =====
 export interface IOrderRequestParams {
   search?: string;
-  status?: ORDER_STATUS; // Видела, что изначально тут был массив. Разве массив статусов был неверен?
+  status?: ORDER_STATUS[];
   sortField?: ordersSortField;
   sortOrder?: sortDirection;
 }

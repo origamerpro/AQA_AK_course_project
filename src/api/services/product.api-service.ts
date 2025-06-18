@@ -2,14 +2,24 @@ import { APIRequestContext } from '@playwright/test';
 import { ProductsController } from 'api/controllers/products.controller';
 import { generateProductData } from 'data/products/generateProduct.data';
 import { STATUS_CODES } from 'data/statusCodes';
-import { IProduct } from 'types/products.types';
+import { IProduct, IProductFromResponse } from 'types/products.types';
 import { logStep } from 'utils/reporter.utils';
 import { validateResponse } from 'utils/validations/responseValidation';
+import { CustomersApiService } from './customers.api-service';
+import { OrdersAPIService } from './orders.api-service';
+import { SignInApiService } from './signIn.api-service';
 
 export class ProductsApiService {
-  controller: ProductsController;
-  constructor(request: APIRequestContext) {
-    this.controller = new ProductsController(request);
+  private ordersApiService: OrdersAPIService;
+  private customersApiService: CustomersApiService;
+  private productsApiService: ProductsApiService;
+  private signInApiService: SignInApiService;
+
+  constructor(context: APIRequestContext) {
+    this.ordersApiService = new OrdersAPIService(context);
+    this.customersApiService = new CustomersApiService(context);
+    this.productsApiService = new ProductsApiService(context);
+    this.signInApiService = new SignInApiService(context);
   }
 
   @logStep('Create Product via API')
@@ -45,5 +55,15 @@ export class ProductsApiService {
     const response = await this.controller.getAll(token);
     validateResponse(response, STATUS_CODES.OK, true, null);
     return response.body;
+  }
+
+  @logStep('Populate products via API')
+  async populate(
+    count: number = 3,
+    token: string,
+  ): Promise<IProductFromResponse[]> {
+    return await Promise.all(
+      Array.from({ length: count }, async () => await this.create(token)),
+    );
   }
 }

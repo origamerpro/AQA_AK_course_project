@@ -11,12 +11,26 @@ import {
   IOrderFromResponse,
 } from 'types/orders.types';
 import { ORDER_STATUS } from 'data/orders/statuses.data';
+import { CustomersApiService } from './customers.api-service';
+import { ProductsApiService } from './product.api-service';
+import { SignInApiService } from './signIn.api-service';
+import { generateDeliveryData } from 'data/orders/generateDeliveryData.data';
+import { ICustomerFromResponse } from 'types/customer.types';
+import { IProductFromResponse } from 'types/products.types';
 
 export class OrdersAPIService {
   private controller: OrdersAPIController;
+  private ordersApiService: OrdersAPIService;
+  private customersApiService: CustomersApiService;
+  private productsApiService: ProductsApiService;
+  private signInApiService: SignInApiService;
 
   constructor(context: APIRequestContext) {
     this.controller = new OrdersAPIController(context);
+    this.ordersApiService = new OrdersAPIService(context);
+    this.customersApiService = new CustomersApiService(context);
+    this.productsApiService = new ProductsApiService(context);
+    this.signInApiService = new SignInApiService(context);
   }
 
   @logStep('Create order via API')
@@ -118,5 +132,93 @@ export class OrdersAPIService {
     const response = await this.controller.updateStatus(id, status, token);
     validateResponse(response, STATUS_CODES.OK, true, null);
     return response.body.Order;
+  }
+
+  @logStep('Create draft order via API')
+  async createDraftOrder(count: number = 1) {
+    const token = await this.signInApiService.loginAsLocalUser();
+
+    const customer: ICustomerFromResponse =
+      await this.customersApiService.createCustomer(token);
+
+    const products: IProductFromResponse[] =
+      await this.productsApiService.populate(count, token);
+    const orderData: IOrderData = {
+      customer: customer._id,
+      products: products.map((p) => p._id),
+    };
+
+    const order = await this.ordersApiService.create(orderData, token);
+    return { order, token };
+  }
+
+  @logStep('Create in process order via API')
+  async createInProcessOrder(count: number = 1) {
+    const { order: draftOrder, token } = await this.createDraftOrder(count);
+
+    const deliveryData = generateDeliveryData();
+    const orderWithDelivery = await this.ordersApiService.updateDelivery(
+      draftOrder._id,
+      deliveryData,
+      token,
+    );
+
+    const inProcessOrder = await this.ordersApiService.updateStatus(
+      orderWithDelivery._id,
+      ORDER_STATUS.IN_PROCESS,
+      token,
+    );
+
+    return { order: inProcessOrder, token };
+  }
+
+  @logStep('Create partially received order via API')
+  async createPartiallyReceivedOrder(
+    receivedProductsCount: number = 1,
+    countInOrder: number = 3,
+  ) {
+    const { order: inProcessOrder, token } =
+      await this.createInProcessOrder(countInOrder);
+
+    const receivedProductsId = inProcessOrder.products
+      .slice(0, receivedProductsCount)
+      .map((p) => p._id);
+
+    const updatedOrder = await this.ordersApiService.receiveProducts(
+      inProcessOrder._id,
+      receivedProductsId,
+      token,
+    );
+
+    return { order: updatedOrder, token };
+  }
+
+  @logStep('Create received order via API')
+  async createReceivedOrder(count: number = 3) {
+    const { order: inProcessOrder, token } =
+      await this.createInProcessOrder(count);
+
+    const allProductIds = inProcessOrder.products.map((p) => p._id);
+
+    const updatedOrder = await this.ordersApiService.receiveProducts(
+      inProcessOrder._id,
+      allProductIds,
+      token,
+    );
+
+    return { order: updatedOrder, token };
+  }
+
+  @logStep('Create canceled order via API')
+  async createCanceledOrder(count: number = 1) {
+    const { order: draftOrder, token } = await this.createDraftOrder(count);
+
+    const updatedOrder = await this.ordersApiService.updateStatus(
+      draftOrder._id,
+      ORDER_STATUS.CANCELED,
+      token,
+    );
+
+    return { order: updatedOrder, token };
   }
 }

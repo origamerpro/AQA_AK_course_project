@@ -5,9 +5,6 @@ import { STATUS_CODES } from 'data/statusCodes';
 import { IProduct, IProductFromResponse } from 'types/products.types';
 import { logStep } from 'utils/reporter.utils';
 import { validateResponse } from 'utils/validations/responseValidation';
-import { CustomersApiService } from './customers.api-service';
-import { OrdersAPIService } from './orders.api-service';
-import { SignInApiService } from './signIn.api-service';
 
 export class ProductsApiService {
   controller: ProductsController;

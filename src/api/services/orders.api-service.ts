@@ -223,7 +223,7 @@ export class OrdersAPIService {
   }
 
   @logStep('Create cancelled and reopened order via API')
-  async createOrderCancelAndReopen(
+  async createCanceledAndReopenedOrder(
     numProducts: number = 1,
   ): Promise<{ order: IOrderFromResponse; token: string }> {
     const { order: draftOrder, token } =

@@ -20,14 +20,12 @@ import { IProductFromResponse } from 'types/products.types';
 
 export class OrdersAPIService {
   private controller: OrdersAPIController;
-  private ordersApiService: OrdersAPIService;
   private customersApiService: CustomersApiService;
   private productsApiService: ProductsApiService;
   private signInApiService: SignInApiService;
 
   constructor(context: APIRequestContext) {
     this.controller = new OrdersAPIController(context);
-    this.ordersApiService = new OrdersAPIService(context);
     this.customersApiService = new CustomersApiService(context);
     this.productsApiService = new ProductsApiService(context);
     this.signInApiService = new SignInApiService(context);
@@ -154,7 +152,7 @@ export class OrdersAPIService {
       products: products.map((p) => p._id),
     };
 
-    const draftOrder = await this.ordersApiService.create(orderData, token);
+    const draftOrder = await this.create(orderData, token);
     return draftOrder;
   }
 
@@ -163,13 +161,13 @@ export class OrdersAPIService {
     const draftOrder = await this.createDraftOrder(count, token);
 
     const deliveryData = generateDeliveryData();
-    const orderWithDelivery = await this.ordersApiService.updateDelivery(
+    const orderWithDelivery = await this.updateDelivery(
       draftOrder._id,
       deliveryData,
       token,
     );
 
-    const inProcessOrder = await this.ordersApiService.updateStatus(
+    const inProcessOrder = await this.updateStatus(
       orderWithDelivery._id,
       ORDER_STATUS.IN_PROCESS,
       token,
@@ -190,7 +188,7 @@ export class OrdersAPIService {
       .slice(0, receivedProductsCount)
       .map((p) => p._id);
 
-    const updatedOrder = await this.ordersApiService.receiveProducts(
+    const updatedOrder = await this.receiveProducts(
       inProcessOrder._id,
       receivedProductsId,
       token,
@@ -205,7 +203,7 @@ export class OrdersAPIService {
 
     const allProductIds = inProcessOrder.products.map((p) => p._id);
 
-    const receivedOrder = await this.ordersApiService.receiveProducts(
+    const receivedOrder = await this.receiveProducts(
       inProcessOrder._id,
       allProductIds,
       token,
@@ -218,7 +216,7 @@ export class OrdersAPIService {
   async createCanceledOrder(count: number = 1, token: string) {
     const draftOrder = await this.createDraftOrder(count, token);
 
-    const canceledOrder = await this.ordersApiService.updateStatus(
+    const canceledOrder = await this.updateStatus(
       draftOrder._id,
       ORDER_STATUS.CANCELED,
       token,
@@ -234,13 +232,13 @@ export class OrdersAPIService {
   ): Promise<IOrderFromResponse> {
     const draftOrder = await this.createDraftOrder(numProducts, token);
 
-    const canceledOrder = await this.ordersApiService.updateStatus(
+    const canceledOrder = await this.updateStatus(
       draftOrder._id,
       ORDER_STATUS.CANCELED,
       token,
     );
 
-    const reopenedOrder = await this.ordersApiService.updateStatus(
+    const reopenedOrder = await this.updateStatus(
       canceledOrder._id,
       ORDER_STATUS.DRAFT,
       token,
@@ -255,7 +253,7 @@ export class OrdersAPIService {
 
     const deliveryData = generateDeliveryData();
 
-    const draftOrderWithDelivery = await this.ordersApiService.updateDelivery(
+    const draftOrderWithDelivery = await this.updateDelivery(
       draftOrder._id,
       deliveryData,
       token,

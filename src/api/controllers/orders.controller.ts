@@ -23,6 +23,7 @@ export class OrdersAPIController {
   @logStep('POST/ order via API')
   async create(data: IOrderData, token: string) {
     const options: IRequestOptions = {
+      baseURL: apiConfig.BASE_URL,
       url: apiConfig.ENDPOINTS.ORDERS,
       method: 'post',
       data: data,
@@ -53,6 +54,7 @@ export class OrdersAPIController {
   @logStep('GET/ order via API')
   async getByID(id: string, token: string) {
     const options: IRequestOptions = {
+      baseURL: apiConfig.BASE_URL,
       method: 'get',
       headers: {
         'content-type': 'application/json',
@@ -66,6 +68,7 @@ export class OrdersAPIController {
   @logStep('PUT/ order via API')
   async updateOrder(id: string, data: IOrderData, token: string) {
     const options: IRequestOptions = {
+      baseURL: apiConfig.BASE_URL,
       url: apiConfig.ENDPOINTS.ORDER_BY_ID(id),
       method: 'put',
       data: data,
@@ -80,6 +83,7 @@ export class OrdersAPIController {
   @logStep('DELETE/ order via API')
   async delete(id: string, token: string) {
     const options: IRequestOptions = {
+      baseURL: apiConfig.BASE_URL,
       url: apiConfig.ENDPOINTS.ORDER_BY_ID(id),
       method: 'delete',
       headers: {
@@ -93,6 +97,7 @@ export class OrdersAPIController {
   @logStep('PUT/ assign manager to order')
   async assignManager(orderId: string, managerId: string, token: string) {
     const options: IRequestOptions = {
+      baseURL: apiConfig.BASE_URL,
       url: apiConfig.ENDPOINTS.ASSIGN_MANAGER(orderId, managerId),
       method: 'put',
       headers: {
@@ -106,6 +111,7 @@ export class OrdersAPIController {
   async unassignManager(orderId: string, token: string) {
     // разные названия orderId
     const options: IRequestOptions = {
+      baseURL: apiConfig.BASE_URL,
       url: apiConfig.ENDPOINTS.UNASSIGN_MANAGER(orderId),
       method: 'put',
       headers: {
@@ -121,6 +127,7 @@ export class OrdersAPIController {
       comment: text,
     };
     const options: IRequestOptions = {
+      baseURL: apiConfig.BASE_URL,
       url: apiConfig.ENDPOINTS.ORDER_COMMENT(id),
       method: 'post',
       data: comment,
@@ -135,6 +142,7 @@ export class OrdersAPIController {
   @logStep('DELETE/ order comment via API')
   async deleteComment(order_id: string, comment_id: string, token: string) {
     const options: IRequestOptions = {
+      baseURL: apiConfig.BASE_URL,
       url: apiConfig.ENDPOINTS.ORDER_COMMENT_BY_ID(order_id, comment_id),
       method: 'delete',
       headers: {
@@ -147,6 +155,7 @@ export class OrdersAPIController {
   @logStep('POST/ order delivery via API')
   async updateDelivery(id: string, delivery: IDelivery, token: string) {
     const options: IRequestOptions = {
+      baseURL: apiConfig.BASE_URL,
       url: apiConfig.ENDPOINTS.ORDER_DELIVERY(id),
       method: 'post',
       data: delivery,
@@ -161,6 +170,7 @@ export class OrdersAPIController {
   @logStep('POST/ order receive via API')
   async receiveProducts(id: string, productIds: string[], token: string) {
     const options: IRequestOptions = {
+      baseURL: apiConfig.BASE_URL,
       url: apiConfig.ENDPOINTS.ORDER_RECEIVE(id),
       method: 'post',
       data: { products: productIds },
@@ -175,6 +185,7 @@ export class OrdersAPIController {
   @logStep('PUT/ order status via API')
   async updateStatus(id: string, status: ORDER_STATUS, token: string) {
     const options: IRequestOptions = {
+      baseURL: apiConfig.BASE_URL,
       url: apiConfig.ENDPOINTS.ORDER_STATUS(id),
       method: 'put',
       data: { status: status },

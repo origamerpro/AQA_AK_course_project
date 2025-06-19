@@ -28,7 +28,7 @@ export interface IProductsFilteredResponse extends IResponseFields {
   page: number;
   limit: number;
   search: string;
-  country: MANUFACTURERS[];
+  manufacturer: MANUFACTURERS[];
   sorting: {
     sortField: productsSortField;
     sortOrder: sortDirection;
@@ -37,7 +37,7 @@ export interface IProductsFilteredResponse extends IResponseFields {
 
 export interface IProductFilterParams {
   search?: string;
-  country?: MANUFACTURERS[];
+  manufacturer?: MANUFACTURERS[];
   sortField?: productsSortField;
   sortOrder?: sortDirection;
 }

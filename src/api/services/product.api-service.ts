@@ -2,7 +2,7 @@ import { APIRequestContext } from '@playwright/test';
 import { ProductsController } from 'api/controllers/products.controller';
 import { generateProductData } from 'data/products/generateProduct.data';
 import { STATUS_CODES } from 'data/statusCodes';
-import { IProduct } from 'types/products.types';
+import { IProduct, IProductFromResponse } from 'types/products.types';
 import { logStep } from 'utils/reporter.utils';
 import { validateResponse } from 'utils/validations/responseValidation';
 
@@ -39,10 +39,21 @@ export class ProductsApiService {
     const response = await this.controller.delete(productId, token);
     validateResponse(response, STATUS_CODES.DELETED, null, null);
   }
+
   @logStep('Get all products via API')
   async getAllProducts(token: string) {
     const response = await this.controller.getAll(token);
     validateResponse(response, STATUS_CODES.OK, true, null);
     return response.body;
+  }
+
+  @logStep('Populate products via API')
+  async populate(
+    count: number = 3,
+    token: string,
+  ): Promise<IProductFromResponse[]> {
+    return await Promise.all(
+      Array.from({ length: count }, async () => await this.create(token)),
+    );
   }
 }

@@ -1,4 +1,4 @@
-import { test, APIRequestContext } from '@playwright/test';
+import { APIRequestContext } from '@playwright/test';
 import { CustomersController } from 'api/controllers/customers.controller';
 import { generateCustomerData } from 'data/customers/generateCustomer.data';
 import { STATUS_CODES } from 'data/statusCodes';
@@ -6,7 +6,6 @@ import {
   ICustomer,
   ICustomerFilterParams,
   ICustomersAllResponse,
-  ICustomersFilteredResponse,
 } from 'types/customer.types';
 import { logStep } from 'utils/reporter.utils';
 import { validateResponse } from 'utils/validations/responseValidation';
@@ -58,5 +57,23 @@ export class CustomersApiService {
   async deleteCustomer(id: string, token: string) {
     const response = await this.controller.delete(id, token);
     validateResponse(response, STATUS_CODES.DELETED, null, null);
+  }
+
+  @logStep('Create multiple test customers via API')
+  async createTestUsers(
+    token: string,
+    count = 3,
+    customData: Partial<ICustomer> = {},
+  ) {
+    const users = [];
+    for (let i = 0; i < count; i++) {
+      const userData: ICustomer = {
+        ...generateCustomerData(), // Полностью сгенерированный объект
+        ...customData, // Перезаписываем кастомными данными
+      };
+      const user = await this.createCustomer(token, userData);
+      users.push(user);
+    }
+    return users;
   }
 }

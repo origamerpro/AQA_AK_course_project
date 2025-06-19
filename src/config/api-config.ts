@@ -9,5 +9,18 @@ export const apiConfig = {
     PRODUCT_BY_ID: (id: string) => `/api/products/${id}/`,
     LOGIN: '/api/login',
     LOGOUT: '/api/logout',
+    ORDERS: '/api/orders',
+    ORDER_BY_ID: (id: string) => `/api/orders/${id}/`,
+    ORDER_RECEIVE: (id: string) => `/api/orders/${id}/receive`,
+    ORDER_DELIVERY: (id: string) => `/api/orders/${id}/delivery`,
+    ORDER_STATUS: (id: string) => `/api/orders/${id}/status`,
+    ORDER_COMMENT: (id: string) => `/api/orders/${id}/comments`,
+    ORDER_DELETE: (id: string) => `/api/orders/${id}/`,
+    ORDER_COMMENT_BY_ID: (orderId: string, commentId: string) =>
+      `/api/orders/${orderId}/comments/${commentId}`,
+    ASSIGN_MANAGER: (orderId: string, managerId: string) =>
+      `/api/orders/${orderId}/assign-manager/${managerId}`,
+    UNASSIGN_MANAGER: (orderId: string) =>
+      `/api/orders/${orderId}/unassign-manager`,
   },
 } as const;

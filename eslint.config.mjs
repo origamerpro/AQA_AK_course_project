@@ -22,12 +22,21 @@ export default defineConfig([
       prettier: prettierPlugin,
     },
     rules: {
-      'prettier/prettier': ['error'],
+      'prettier/prettier': ['error', { singleQuote: true, semi: true }],
       quotes: ['error', 'single'],
       '@typescript-eslint/no-explicit-any': 'off',
     },
   },
   {
-    ignores: ['dist', 'node_modules', 'allure-report', 'test-results', 'allure-results', 'playwright-report', 'blob-report', 'eslint.config.mjs'],
+    ignores: [
+      'dist',
+      'node_modules',
+      'allure-report',
+      'test-results',
+      'allure-results',
+      'playwright-report',
+      'blob-report',
+      'eslint.config.mjs',
+    ],
   },
 ]);

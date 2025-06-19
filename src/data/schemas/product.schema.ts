@@ -26,6 +26,7 @@ export const productSchema = {
     },
     createdOn: {
       type: 'string',
+      format: 'date-time',
     },
     notes: {
       type: 'string',
@@ -86,7 +87,7 @@ export const productsListSchema = {
   ],
 };
 
-export const productOrderSchema = {
+export const productInOrderSchema = {
   type: 'object',
   properties: {
     _id: {
@@ -114,4 +115,13 @@ export const productOrderSchema = {
   },
   required: ['_id', 'name', 'amount', 'price', 'manufacturer', 'received'],
   additionalProperties: false,
+};
+
+export const errorResponseSchema = {
+  type: 'object',
+  properties: {
+    IsSuccess: { type: 'boolean', const: false },
+    ErrorMessage: { type: 'string' },
+  },
+  required: ['IsSuccess', 'ErrorMessage'],
 };

@@ -4,8 +4,8 @@ import { validateResponse } from 'utils/validations/responseValidation';
 import { validateSchema } from 'utils/validations/schemaValidation';
 import { TAGS } from 'data/testTags.data';
 import { oneCustomerSchema } from 'data/schemas/customer.schema';
-import { ICustomerFromResponse } from 'types/customer.types';
 import { ERROR_MESSAGES } from 'data/errorMessages';
+import { ICustomerFromResponse } from 'types/customer.types';
 
 test.describe('[API][Customer] Get Customer By ID', () => {
   let token = '';
@@ -66,7 +66,7 @@ test.describe('[API][Customer] Get Customer By ID', () => {
     );
 
     test(
-      "Get customer by ID with deleted id - wasn't found",
+      'Get customer by ID with deleted id - wasnt found',
       { tag: [TAGS.API, TAGS.CUSTOMERS, TAGS.REGRESSION] },
       async ({ customersController }) => {
         const invalidId = '684e61b31c508c5d5e53f421';

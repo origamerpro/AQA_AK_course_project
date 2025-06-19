@@ -1,6 +1,10 @@
 import { RequestApi } from 'api/apiClients/request';
 import { apiConfig } from 'config/api-config';
-import { ILoginResponseBody, IRequestOptions, IResponseFields } from 'types/api.types';
+import {
+  ILoginResponseBody,
+  IRequestOptions,
+  IResponseFields,
+} from 'types/api.types';
 import { IAPICredentials } from 'types/signIn.types';
 import { APIRequestContext } from '@playwright/test';
 import { logStep } from 'utils/reporter.utils';
@@ -34,9 +38,9 @@ export class SignInController {
       method: 'post',
       headers: {
         'content-type': 'application/json',
-        'authorization': `Bearer ${token}`,
-      }
-    }
+        authorization: `Bearer ${token}`,
+      },
+    };
     return await this.request.send<IResponseFields>(options);
   }
 }

@@ -26,6 +26,7 @@ export const productSchema = {
     },
     createdOn: {
       type: 'string',
+      format: 'date-time',
     },
     notes: {
       type: 'string',
@@ -86,7 +87,7 @@ export const productsListSchema = {
   ],
 };
 
-export const productOrderSchema = {
+export const productInOrderSchema = {
   type: 'object',
   properties: {
     _id: {

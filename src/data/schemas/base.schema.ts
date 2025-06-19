@@ -1,3 +1,5 @@
+import { ORDER_STATUS } from 'data/orders/statuses.data';
+
 export const baseSchemaPart = {
   IsSuccess: {
     type: 'boolean',
@@ -36,6 +38,17 @@ export const productsMetaSchema = {
   manufacturer: {
     type: 'array',
     items: { type: 'string' },
+  },
+};
+
+export const ordersMetaSchema = {
+  total: { type: 'number' },
+  page: { type: 'number' },
+  limit: { type: 'number' },
+  search: { type: 'string' },
+  status: {
+    type: 'array',
+    items: Object.values(ORDER_STATUS),
   },
 };
 

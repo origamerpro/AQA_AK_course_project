@@ -4,9 +4,13 @@ import {
   customersMetaSchema,
   sortingSchemaPart,
 } from 'data/schemas/base.schema';
-import { productOrderSchema } from 'data/schemas/product.schema';
-import { DELIVERY } from 'data/orders/delivery.data';
+import { productInOrderSchema } from 'data/schemas/product.schema';
 import { ORDER_STATUS } from 'data/orders/statuses.data';
+import {
+  commentSchema,
+  deliverySchema,
+  orderHistorySchema,
+} from './order.schema';
 
 export const customerSchema = {
   type: 'object',
@@ -41,6 +45,7 @@ export const customerSchema = {
     },
     createdOn: {
       type: 'string',
+      format: 'date-time',
     },
     notes: {
       type: 'string',
@@ -126,64 +131,6 @@ export const addressSchema = {
   required: ['country', 'city', 'street', 'house', 'flat'],
 };
 
-const deliverySchema = {
-  type: 'object',
-  properties: {
-    finalDate: {
-      type: 'string',
-      format: 'date',
-    },
-    condition: {
-      type: 'string',
-      enum: Object.values(DELIVERY),
-    },
-    address: addressSchema,
-  },
-  required: ['finalDate', 'condition', 'address'],
-};
-
-const commentSchema = {
-  type: 'object',
-  properties: {
-    _id: { type: 'string' },
-    text: { type: 'string' },
-    createdOn: {
-      type: 'string',
-      format: 'date-time',
-    },
-  },
-  required: ['_id', 'text', 'createdOn'],
-};
-
-const historySchema = {
-  type: 'object',
-  properties: {
-    status: {
-      type: 'string',
-      enum: Object.values(ORDER_STATUS),
-    },
-    customer: { type: 'string' },
-    products: {
-      type: 'array',
-      items: productOrderSchema,
-    },
-    total_price: { type: 'number' },
-    action: { type: 'string' },
-    changedOn: {
-      type: 'string',
-      format: 'date-time',
-    },
-  },
-  required: [
-    'status',
-    'customer',
-    'products',
-    'total_price',
-    'action',
-    'changedOn',
-  ],
-};
-
 export const customerAssociatedOrdersSchema = {
   type: 'object',
   properties: {
@@ -195,7 +142,7 @@ export const customerAssociatedOrdersSchema = {
     customer: customerSchema,
     products: {
       type: 'array',
-      items: productOrderSchema,
+      items: productInOrderSchema,
     },
     total_price: { type: 'number' },
     createdOn: {
@@ -211,7 +158,7 @@ export const customerAssociatedOrdersSchema = {
     },
     history: {
       type: 'array',
-      items: historySchema,
+      items: orderHistorySchema,
     },
   },
   required: [

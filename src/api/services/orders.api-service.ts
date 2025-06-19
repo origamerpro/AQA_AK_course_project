@@ -1,199 +1,263 @@
+import { logStep } from 'utils/reporter.utils';
+import { validateResponse } from 'utils/validations/responseValidation';
+import { STATUS_CODES } from 'data/statusCodes';
+import { OrdersAPIController } from '../controllers/orders.controller';
+import { APIRequestContext } from '@playwright/test';
 import {
   IDelivery,
   IOrderData,
-  IOrderFilteredResponse,
   IOrderRequestParams,
-  IOrderResponse,
+  IOrderFilteredResponse,
+  IOrderFromResponse,
 } from 'types/orders.types';
-import { logStep } from 'utils/reporter.utils';
-import { apiConfig } from 'config/api-config';
-import { IRequestOptions } from 'types/api.types';
-import { convertRequestParams } from 'utils/requestParams.utils';
-import { RequestApi } from 'api/apiClients/request';
-import { APIRequestContext } from '@playwright/test';
 import { ORDER_STATUS } from 'data/orders/statuses.data';
+import { CustomersApiService } from './customers.api-service';
+import { ProductsApiService } from './product.api-service';
+import { SignInApiService } from './signIn.api-service';
+import { generateDeliveryData } from 'data/orders/generateDeliveryData.data';
+import { ICustomerFromResponse } from 'types/customer.types';
+import { IProductFromResponse } from 'types/products.types';
 
-export class OrdersAPIController {
-  private request: RequestApi;
+export class OrdersAPIService {
+  private controller: OrdersAPIController;
+  private customersApiService: CustomersApiService;
+  private productsApiService: ProductsApiService;
+  private signInApiService: SignInApiService;
 
   constructor(context: APIRequestContext) {
-    this.request = new RequestApi(context);
+    this.controller = new OrdersAPIController(context);
+    this.customersApiService = new CustomersApiService(context);
+    this.productsApiService = new ProductsApiService(context);
+    this.signInApiService = new SignInApiService(context);
   }
 
-  @logStep('POST/ order via API')
-  async create(data: IOrderData, token: string) {
-    const options: IRequestOptions = {
-      baseURL: apiConfig.BASE_URL,
-      url: apiConfig.ENDPOINTS.ORDERS,
-      method: 'post',
-      data: data,
-      headers: {
-        'content-type': 'application/json',
-        Authorization: token,
-      },
-    };
-    return await this.request.send<IOrderResponse>(options);
+  @logStep('Create order via API')
+  async create(data: IOrderData, token: string): Promise<IOrderFromResponse> {
+    const response = await this.controller.create(data, token);
+    validateResponse(response, STATUS_CODES.CREATED, true, null);
+    return response.body.Order;
   }
 
-  @logStep('GET / filtered and sorted list of orders via API')
-  async getFilteredOrders(token: string, params?: IOrderRequestParams) {
-    const options: IRequestOptions = {
-      baseURL: apiConfig.BASE_URL,
-      url:
-        apiConfig.ENDPOINTS.ORDERS +
-        (params ? convertRequestParams(params) : ''),
-      method: 'get',
-      headers: {
-        'content-type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    return await this.request.send<IOrderFilteredResponse>(options);
+  @logStep('Get filtered and sorted list of orders via API')
+  async getFilteredOrders(
+    token: string,
+    params?: IOrderRequestParams,
+  ): Promise<IOrderFilteredResponse> {
+    const response = await this.controller.getFilteredOrders(token, params);
+    validateResponse(response, STATUS_CODES.OK, true, null);
+    return response.body;
   }
 
-  @logStep('GET/ order via API')
-  async getByID(id: string, token: string) {
-    const options: IRequestOptions = {
-      baseURL: apiConfig.BASE_URL,
-      method: 'get',
-      headers: {
-        'content-type': 'application/json',
-        Authorization: token,
-      },
-      url: apiConfig.ENDPOINTS.ORDER_BY_ID(id),
-    };
-    return await this.request.send<IOrderResponse>(options);
+  @logStep('Get order by ID via API')
+  async getOrderByID(id: string, token: string) {
+    const response = await this.controller.getByID(id, token);
+    validateResponse(response, STATUS_CODES.OK, true, null);
+    return response.body.Order;
   }
 
-  @logStep('PUT/ order via API')
-  async updateOrder(id: string, data: IOrderData, token: string) {
-    const options: IRequestOptions = {
-      baseURL: apiConfig.BASE_URL,
-      url: apiConfig.ENDPOINTS.ORDER_BY_ID(id),
-      method: 'put',
-      data: data,
-      headers: {
-        'content-type': 'application/json',
-        Authorization: token,
-      },
-    };
-    return await this.request.send<IOrderResponse>(options);
+  @logStep('Update order via API')
+  async updateOrder(
+    id: string,
+    data: IOrderData,
+    token: string,
+  ): Promise<IOrderFromResponse> {
+    const response = await this.controller.updateOrder(id, data, token);
+    validateResponse(response, STATUS_CODES.OK, true, null);
+    return response.body.Order;
   }
 
-  @logStep('DELETE/ order via API')
-  async delete(id: string, token: string) {
-    const options: IRequestOptions = {
-      baseURL: apiConfig.BASE_URL,
-      url: apiConfig.ENDPOINTS.ORDER_BY_ID(id),
-      method: 'delete',
-      headers: {
-        Authorization: token,
-      },
-    };
-
-    return await this.request.send<null>(options);
+  @logStep('Delete order via API')
+  async deleteOrder(id: string, token: string) {
+    const response = await this.controller.delete(id, token);
+    validateResponse(response, STATUS_CODES.DELETED, null, null);
   }
 
-  @logStep('PUT/ assign manager to order')
+  @logStep('Assign manager to order via API')
   async assignManager(orderId: string, managerId: string, token: string) {
-    const options: IRequestOptions = {
-      baseURL: apiConfig.BASE_URL,
-      url: apiConfig.ENDPOINTS.ASSIGN_MANAGER(orderId, managerId),
-      method: 'put',
-      headers: {
-        Authorization: token,
-      },
-    };
-    return await this.request.send<IOrderResponse>(options);
+    const response = await this.controller.assignManager(
+      orderId,
+      managerId,
+      token,
+    );
+    validateResponse(response, STATUS_CODES.OK, true, null);
+    return response.body.Order;
   }
 
-  @logStep('PUT/ unassign manager from order')
+  @logStep('Unassign manager from order via API')
   async unassignManager(orderId: string, token: string) {
-    // разные названия orderId
-    const options: IRequestOptions = {
-      baseURL: apiConfig.BASE_URL,
-      url: apiConfig.ENDPOINTS.UNASSIGN_MANAGER(orderId),
-      method: 'put',
-      headers: {
-        Authorization: token,
-      },
-    };
-    return await this.request.send<IOrderResponse>(options);
+    const response = await this.controller.unassignManager(orderId, token);
+    validateResponse(response, STATUS_CODES.OK, true, null);
+    return response.body.Order;
   }
 
-  @logStep('POST/ order comment via API')
+  @logStep('Add order comment via API')
   async addComment(id: string, text: string, token: string) {
-    const comment = {
-      comment: text,
-    };
-    const options: IRequestOptions = {
-      baseURL: apiConfig.BASE_URL,
-      url: apiConfig.ENDPOINTS.ORDER_COMMENT(id),
-      method: 'post',
-      data: comment,
-      headers: {
-        'content-type': 'application/json',
-        Authorization: token,
-      },
-    };
-    return await this.request.send<IOrderResponse>(options);
+    const response = await this.controller.addComment(id, text, token);
+    validateResponse(response, STATUS_CODES.OK, true, null);
+    return response.body.Order;
   }
 
-  @logStep('DELETE/ order comment via API')
+  @logStep('Delete order comment via API')
   async deleteComment(order_id: string, comment_id: string, token: string) {
-    const options: IRequestOptions = {
-      baseURL: apiConfig.BASE_URL,
-      url: apiConfig.ENDPOINTS.ORDER_COMMENT_BY_ID(order_id, comment_id),
-      method: 'delete',
-      headers: {
-        Authorization: token,
-      },
-    };
-    return await this.request.send<IOrderResponse>(options);
+    const response = await this.controller.deleteComment(
+      order_id,
+      comment_id,
+      token,
+    );
+    validateResponse(response, STATUS_CODES.OK, null, null);
   }
 
-  @logStep('POST/ order delivery via API')
+  @logStep('Update order delivery via API')
   async updateDelivery(id: string, delivery: IDelivery, token: string) {
-    const options: IRequestOptions = {
-      baseURL: apiConfig.BASE_URL,
-      url: apiConfig.ENDPOINTS.ORDER_DELIVERY(id),
-      method: 'post',
-      data: delivery,
-      headers: {
-        'content-type': 'application/json',
-        Authorization: token,
-      },
-    };
-    return await this.request.send<IOrderResponse>(options);
+    const response = await this.controller.updateDelivery(id, delivery, token);
+    validateResponse(response, STATUS_CODES.OK, true, null);
+    return response.body.Order;
   }
 
-  @logStep('POST/ order receive via API')
+  @logStep('Mark products as received in an order via API')
   async receiveProducts(id: string, productIds: string[], token: string) {
-    const options: IRequestOptions = {
-      baseURL: apiConfig.BASE_URL,
-      url: apiConfig.ENDPOINTS.ORDER_RECEIVE(id),
-      method: 'post',
-      data: { products: productIds },
-      headers: {
-        'content-type': 'application/json',
-        Authorization: token,
-      },
-    };
-    return await this.request.send<IOrderResponse>(options);
+    const response = await this.controller.receiveProducts(
+      id,
+      productIds,
+      token,
+    );
+    validateResponse(response, STATUS_CODES.OK, true, null);
+    return response.body.Order;
   }
 
-  @logStep('PUT/ order status via API')
-  async updateStatus(id: string, status: ORDER_STATUS, token: string) {
-    const options: IRequestOptions = {
-      baseURL: apiConfig.BASE_URL,
-      url: apiConfig.ENDPOINTS.ORDER_STATUS(id),
-      method: 'put',
-      data: { status: status },
-      headers: {
-        'content-type': 'application/json',
-        Authorization: token,
-      },
+  @logStep('Update order status via API')
+  async updateStatus(
+    id: string,
+    status:
+      | ORDER_STATUS.DRAFT
+      | ORDER_STATUS.CANCELED
+      | ORDER_STATUS.IN_PROCESS,
+    token: string,
+  ) {
+    const response = await this.controller.updateStatus(id, status, token);
+    validateResponse(response, STATUS_CODES.OK, true, null);
+    return response.body.Order;
+  }
+
+  @logStep('Create draft order via API')
+  async createDraftOrder(count: number = 1, token: string) {
+    const customer: ICustomerFromResponse =
+      await this.customersApiService.createCustomer(token);
+
+    const products: IProductFromResponse[] =
+      await this.productsApiService.populate(count, token);
+
+    const orderData: IOrderData = {
+      customer: customer._id,
+      products: products.map((p) => p._id),
     };
-    return await this.request.send<IOrderResponse>(options);
+
+    const draftOrder = await this.create(orderData, token);
+    return draftOrder;
+  }
+
+  @logStep('Create in process order via API')
+  async createInProcessOrder(count: number = 1, token: string) {
+    const draftOrder = await this.createDraftOrder(count, token);
+
+    const deliveryData = generateDeliveryData();
+    const orderWithDelivery = await this.updateDelivery(
+      draftOrder._id,
+      deliveryData,
+      token,
+    );
+
+    const inProcessOrder = await this.updateStatus(
+      orderWithDelivery._id,
+      ORDER_STATUS.IN_PROCESS,
+      token,
+    );
+
+    return inProcessOrder;
+  }
+
+  @logStep('Create partially received order via API')
+  async createPartiallyReceivedOrder(
+    receivedProductsCount: number = 1,
+    countInOrder: number = 3,
+    token: string,
+  ) {
+    const inProcessOrder = await this.createInProcessOrder(countInOrder, token);
+
+    const receivedProductsId = inProcessOrder.products
+      .slice(0, receivedProductsCount)
+      .map((p) => p._id);
+
+    const updatedOrder = await this.receiveProducts(
+      inProcessOrder._id,
+      receivedProductsId,
+      token,
+    );
+
+    return { order: updatedOrder, token };
+  }
+
+  @logStep('Create received order via API')
+  async createReceivedOrder(count: number = 3, token: string) {
+    const inProcessOrder = await this.createInProcessOrder(count, token);
+
+    const allProductIds = inProcessOrder.products.map((p) => p._id);
+
+    const receivedOrder = await this.receiveProducts(
+      inProcessOrder._id,
+      allProductIds,
+      token,
+    );
+
+    return receivedOrder;
+  }
+
+  @logStep('Create canceled order via API')
+  async createCanceledOrder(count: number = 1, token: string) {
+    const draftOrder = await this.createDraftOrder(count, token);
+
+    const canceledOrder = await this.updateStatus(
+      draftOrder._id,
+      ORDER_STATUS.CANCELED,
+      token,
+    );
+
+    return canceledOrder;
+  }
+
+  @logStep('Create cancelled and reopened order via API')
+  async createCanceledAndReopenedOrder(
+    numProducts: number = 1,
+    token: string,
+  ): Promise<IOrderFromResponse> {
+    const draftOrder = await this.createDraftOrder(numProducts, token);
+
+    const canceledOrder = await this.updateStatus(
+      draftOrder._id,
+      ORDER_STATUS.CANCELED,
+      token,
+    );
+
+    const reopenedOrder = await this.updateStatus(
+      canceledOrder._id,
+      ORDER_STATUS.DRAFT,
+      token,
+    );
+
+    return reopenedOrder;
+  }
+
+  @logStep('Create draft order with delivery via API')
+  async createDraftOrderWithDelivery(count: number = 1, token: string) {
+    const draftOrder = await this.createDraftOrder(count, token);
+
+    const deliveryData = generateDeliveryData();
+
+    const draftOrderWithDelivery = await this.updateDelivery(
+      draftOrder._id,
+      deliveryData,
+      token,
+    );
+    return draftOrderWithDelivery;
   }
 }

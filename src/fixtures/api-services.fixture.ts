@@ -3,12 +3,14 @@ import { SignInApiService } from 'api/services/signIn.api-service';
 import { ProductsApiService } from 'api/services/product.api-service';
 import { CustomersApiService } from 'api/services/customers.api-service';
 import { OrdersAPIService } from 'api/services/orders.api-service';
+import { DataDisposalUtils } from 'utils/dataDisposal.utils';
 
 interface IApiServices {
   customersApiService: CustomersApiService;
   signInApiService: SignInApiService;
   productsApiService: ProductsApiService;
   ordersApiService: OrdersAPIService;
+  dataDisposalUtils: DataDisposalUtils;
 }
 
 export const test = base.extend<IApiServices>({
@@ -25,6 +27,10 @@ export const test = base.extend<IApiServices>({
 
   ordersApiService: async ({ request }, use) => {
     await use(new OrdersAPIService(request));
+  },
+
+  dataDisposalUtils: async ({ request }, use) => {
+    await use(new DataDisposalUtils(request));
   },
 });
 

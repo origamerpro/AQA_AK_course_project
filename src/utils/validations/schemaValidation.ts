@@ -12,7 +12,7 @@ export function validateSchema(expectedSchema: object, body: object) {
 
     if (!isValid) {
       console.log('Data is not valid according to the schema.');
-      console.log(validate.errors);
+      console.log(`Errors: ${JSON.stringify(validate.errors, null, 2)}`);
     }
 
     expect

@@ -4,6 +4,8 @@ export const apiConfig = {
     CUSTOMERS: '/api/customers',
     ALL_CUSTOMERS: '/api/customers/all',
     CUSTOMER_BY_ID: (id: string) => `/api/customers/${id}/`,
+    // config/api-config.ts
+    CUSTOMER_ORDERS: (id: string) => `/api/customers/${id}/orders`,
     PRODUCTS: '/api/products',
     ALL_PRODUCTS: '/api/products/all',
     PRODUCT_BY_ID: (id: string) => `/api/products/${id}/`,

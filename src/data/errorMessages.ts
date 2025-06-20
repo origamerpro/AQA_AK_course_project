@@ -3,4 +3,5 @@ export const ERROR_MESSAGES = {
   NOT_AUTHORIZED: 'Not authorized',
   INVALID_ACCESS_TOKEN: 'Invalid access token',
   CUSTOMER_NOT_FOUND: (id: string) => `Customer with id '${id}' wasn't found`,
+  CUSTOMER_ID_FOR_ORDERS_NOT_FOUND: (id: string) => `Not found customer with ID: ${id}`,
 };

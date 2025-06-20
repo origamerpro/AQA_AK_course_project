@@ -15,6 +15,7 @@ import {
 } from 'types/customer.types';
 import { logStep } from 'utils/reporter.utils';
 import { convertRequestParams } from 'utils/requestParams.utils';
+import { IOrderResponse } from 'types/orders.types';
 
 export class CustomersController {
   private request: RequestApi;
@@ -147,5 +148,19 @@ export class CustomersController {
       },
     };
     return await this.request.send<null>(options);
+  }
+
+  @logStep('GET /customers/{customerId}/orders via API')
+  async getCustomerOrdersById(customerId: string, token: string) {
+    const options: IRequestOptions = {
+      baseURL: apiConfig.BASE_URL,
+      url: apiConfig.ENDPOINTS.CUSTOMER_ORDERS(customerId),
+      method: 'get',
+      headers: {
+        'content-type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    return await this.request.send<IOrderResponse>(options);
   }
 }

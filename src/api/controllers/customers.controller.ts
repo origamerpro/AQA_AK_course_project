@@ -15,7 +15,7 @@ import {
 } from 'types/customer.types';
 import { logStep } from 'utils/reporter.utils';
 import { convertRequestParams } from 'utils/requestParams.utils';
-import { IOrderResponse } from 'types/orders.types';
+import { IOrdersResponse } from 'types/orders.types';
 
 export class CustomersController {
   private request: RequestApi;
@@ -161,6 +161,6 @@ export class CustomersController {
         Authorization: `Bearer ${token}`,
       },
     };
-    return await this.request.send<IOrderResponse>(options);
+    return await this.request.send<IOrdersResponse>(options);
   }
 }

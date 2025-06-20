@@ -192,7 +192,10 @@ export const customerAssociatedOrdersSchema = {
       type: 'string',
       enum: Object.values(ORDER_STATUS),
     },
-    customer: customerSchema,
+    customer: {
+      type: 'string',
+    },
+    customerSchema,
     products: {
       type: 'array',
       items: productOrderSchema,

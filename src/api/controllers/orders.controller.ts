@@ -29,7 +29,7 @@ export class OrdersAPIController {
       data: data,
       headers: {
         'content-type': 'application/json',
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
       },
     };
     return await this.request.send<IOrderResponse>(options);
@@ -58,7 +58,7 @@ export class OrdersAPIController {
       method: 'get',
       headers: {
         'content-type': 'application/json',
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
       },
       url: apiConfig.ENDPOINTS.ORDER_BY_ID(id),
     };
@@ -74,7 +74,7 @@ export class OrdersAPIController {
       data: data,
       headers: {
         'content-type': 'application/json',
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
       },
     };
     return await this.request.send<IOrderResponse>(options);
@@ -87,7 +87,7 @@ export class OrdersAPIController {
       url: apiConfig.ENDPOINTS.ORDER_BY_ID(id),
       method: 'delete',
       headers: {
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
       },
     };
 
@@ -101,7 +101,7 @@ export class OrdersAPIController {
       url: apiConfig.ENDPOINTS.ASSIGN_MANAGER(orderId, managerId),
       method: 'put',
       headers: {
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
       },
     };
     return await this.request.send<IOrderResponse>(options);
@@ -115,7 +115,7 @@ export class OrdersAPIController {
       url: apiConfig.ENDPOINTS.UNASSIGN_MANAGER(orderId),
       method: 'put',
       headers: {
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
       },
     };
     return await this.request.send<IOrderResponse>(options);
@@ -133,7 +133,7 @@ export class OrdersAPIController {
       data: comment,
       headers: {
         'content-type': 'application/json',
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
       },
     };
     return await this.request.send<IOrderResponse>(options);
@@ -146,7 +146,7 @@ export class OrdersAPIController {
       url: apiConfig.ENDPOINTS.ORDER_COMMENT_BY_ID(order_id, comment_id),
       method: 'delete',
       headers: {
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
       },
     };
     return await this.request.send<IOrderResponse>(options);
@@ -161,7 +161,7 @@ export class OrdersAPIController {
       data: delivery,
       headers: {
         'content-type': 'application/json',
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
       },
     };
     return await this.request.send<IOrderResponse>(options);
@@ -176,7 +176,7 @@ export class OrdersAPIController {
       data: { products: productIds },
       headers: {
         'content-type': 'application/json',
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
       },
     };
     return await this.request.send<IOrderResponse>(options);
@@ -191,7 +191,7 @@ export class OrdersAPIController {
       data: { status: status },
       headers: {
         'content-type': 'application/json',
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
       },
     };
     return await this.request.send<IOrderResponse>(options);

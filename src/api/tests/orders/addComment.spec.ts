@@ -24,9 +24,9 @@ test.describe('[API] [Orders] Add a comment', () => {
   });
 
   test.afterEach(async ({ dataDisposalUtils }) => {
-    await dataDisposalUtils.clearOrders(createdOrderIds, token);
-    await dataDisposalUtils.clearProducts(createdProductIds, token);
-    await dataDisposalUtils.clearCustomers(createdCustomerIds, token);
+    await dataDisposalUtils.clearOrders(createdOrderIds);
+    await dataDisposalUtils.clearProducts(createdProductIds);
+    await dataDisposalUtils.clearCustomers(createdCustomerIds);
     createdOrderIds.length = 0;
     createdCustomerIds.length = 0;
     createdProductIds.length = 0;

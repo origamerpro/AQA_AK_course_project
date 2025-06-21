@@ -194,7 +194,7 @@ export class OrdersAPIService {
       token,
     );
 
-    return { order: updatedOrder, token };
+    return updatedOrder;
   }
 
   @logStep('Create received order via API')

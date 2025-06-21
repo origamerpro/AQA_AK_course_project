@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { APIRequestContext } from '@playwright/test';
 import { CustomersApiService } from 'api/services/customers.api-service';
 import { ProductsApiService } from 'api/services/product.api-service';
@@ -31,7 +30,8 @@ export class DataDisposalUtils {
     return token ?? (await this.prepareToken());
   }
 
-  async clearOrders(orderIds: string[]) {
+  async clearOrders(orderIds: string[] | string) {
+    orderIds = Array.isArray(orderIds) ? orderIds : [orderIds];
     if (!orderIds.length) return;
     const authToken = await this.getToken();
 
@@ -45,6 +45,7 @@ export class DataDisposalUtils {
   }
 
   async clearProducts(productsIds: string[]) {
+    productsIds = Array.isArray(productsIds) ? productsIds : [productsIds];
     if (!productsIds.length) return;
     const authToken = await this.getToken();
 
@@ -58,6 +59,7 @@ export class DataDisposalUtils {
   }
 
   async clearCustomers(customerIds: string[]) {
+    customerIds = Array.isArray(customerIds) ? customerIds : [customerIds];
     if (!customerIds.length) return;
     const authToken = await this.getToken();
 
@@ -68,5 +70,15 @@ export class DataDisposalUtils {
         console.error(` The product ${customerId} was not deleted}`, error);
       }
     }
+  }
+
+  async tearDown(
+    orderIds: string[],
+    productsIds: string[],
+    customersIds: string[],
+  ) {
+    await this.clearOrders(orderIds);
+    await this.clearProducts(productsIds);
+    await this.clearCustomers(customersIds);
   }
 }

@@ -23,7 +23,7 @@ export default defineConfig([
     },
     rules: {
       'prettier/prettier': ['error', { singleQuote: true, semi: true }],
-      quotes: ['error', 'single'],
+      quotes: ['error', 'single', { allowTemplateLiterals: true }],
       '@typescript-eslint/no-explicit-any': 'off',
     },
   },

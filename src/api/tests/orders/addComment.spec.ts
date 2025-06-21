@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { expect, test } from 'fixtures/api-services.fixture';
 import { TAGS } from 'data/testTags.data';
 import { validateResponse } from 'utils/validations/responseValidation';

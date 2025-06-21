@@ -7,6 +7,7 @@ export function generateDeliveryData(params?: Partial<IDelivery>): IDelivery {
   return {
     finalDate: faker.date.future().toISOString().split('T')[0],
     condition: faker.helpers.arrayElement(Object.values(DELIVERY)),
+    // condition: DELIVERY.PICKUP,
     address: {
       country: faker.helpers.arrayElement(Object.values(COUNTRIES)),
       city: faker.location.city(),

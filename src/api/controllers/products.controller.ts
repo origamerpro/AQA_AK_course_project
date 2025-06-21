@@ -103,7 +103,7 @@ export class ProductsController {
         Authorization: `Bearer ${token}`,
       },
     };
-    console.log(options);
+
     return await this.request.send<null>(options);
   }
 }

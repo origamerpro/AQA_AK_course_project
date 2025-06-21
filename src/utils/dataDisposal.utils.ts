@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { APIRequestContext } from '@playwright/test';
 import { CustomersApiService } from 'api/services/customers.api-service';
 import { ProductsApiService } from 'api/services/product.api-service';
@@ -14,14 +15,16 @@ export class DataDisposalUtils {
     this.customersApiService = new CustomersApiService(context);
   }
 
-  async clearOrders(orderId: string, token: string) {
-    if (!orderId) {
+  async clearOrders(orderIds: string[], token: string) {
+    if (!orderIds || orderIds.length === 0) {
       return;
     }
-    try {
-      await this.ordersApiService.deleteOrder(orderId, token);
-    } catch (error) {
-      console.error(` The order ${orderId} was not deleted}`, error);
+    for (const orderId of orderIds) {
+      try {
+        await this.ordersApiService.deleteOrder(orderId, token);
+      } catch (error) {
+        console.error(` The product ${orderId} was not deleted}`, error);
+      }
     }
   }
 
@@ -38,14 +41,16 @@ export class DataDisposalUtils {
     }
   }
 
-  async clearCustomers(customerId: string, token: string) {
-    if (!customerId) {
+  async clearCustomers(customerIds: string[], token: string) {
+    if (!customerIds || customerIds.length === 0) {
       return;
     }
-    try {
-      await this.customersApiService.deleteCustomer(customerId, token);
-    } catch (error) {
-      console.error(` The customer ${customerId} was not deleted}`, error);
+    for (const customerId of customerIds) {
+      try {
+        await this.customersApiService.deleteCustomer(customerId, token);
+      } catch (error) {
+        console.error(` The product ${customerId} was not deleted}`, error);
+      }
     }
   }
 }

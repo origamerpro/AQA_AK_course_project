@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { expect, test } from 'fixtures/api-services.fixture';
 import { TAGS } from 'data/testTags.data';
 import { validateResponse } from 'utils/validations/responseValidation';
@@ -14,25 +15,24 @@ import { generateUniqueId } from 'utils/generateUniqueID.utils';
 
 test.describe('[API] [Orders] Add a comment', () => {
   let token = '';
+  const createdOrderIds: string[] = [];
+  const createdCustomerIds: string[] = [];
+  const createdProductIds: string[] = [];
 
   test.beforeEach(async ({ signInApiService }) => {
     token = await signInApiService.loginAsLocalUser();
   });
 
+  test.afterEach(async ({ dataDisposalUtils }) => {
+    await dataDisposalUtils.clearOrders(createdOrderIds, token);
+    await dataDisposalUtils.clearProducts(createdProductIds, token);
+    await dataDisposalUtils.clearCustomers(createdCustomerIds, token);
+    createdOrderIds.length = 0;
+    createdCustomerIds.length = 0;
+    createdProductIds.length = 0;
+  });
+
   test.describe('Positive', () => {
-    let createdOrderId: string = '';
-    let createdCustomerId: string = '';
-    const createdProductIds: string[] = [];
-
-    test.afterEach(async ({ dataDisposalUtils }) => {
-      await dataDisposalUtils.clearOrders(createdOrderId, token);
-      await dataDisposalUtils.clearProducts(createdProductIds, token);
-      await dataDisposalUtils.clearCustomers(createdCustomerId, token);
-      createdOrderId = '';
-      createdCustomerId = '';
-      createdProductIds.length = 0;
-    });
-
     positiveTestCasesForAddComment.forEach(
       ({ name, comment, expectedStatusCode, isSuccess, errorMessage }) => {
         test(
@@ -44,8 +44,8 @@ test.describe('[API] [Orders] Add a comment', () => {
               token,
             );
 
-            createdOrderId = draftOrder._id;
-            createdCustomerId = draftOrder.customer._id;
+            createdOrderIds.push(draftOrder._id);
+            createdCustomerIds.push(draftOrder.customer._id);
             draftOrder.products.map((p) => createdProductIds.push(p._id));
 
             const response = await ordersController.addComment(
@@ -74,8 +74,8 @@ test.describe('[API] [Orders] Add a comment', () => {
       async ({ ordersController, ordersApiService }) => {
         const draftOrder = await ordersApiService.createDraftOrder(1, token);
 
-        createdOrderId = draftOrder._id;
-        createdCustomerId = draftOrder.customer._id;
+        createdOrderIds.push(draftOrder._id);
+        createdCustomerIds.push(draftOrder.customer._id);
         draftOrder.products.map((p) => createdProductIds.push(p._id));
 
         const comment1 = generateCommentData();
@@ -112,6 +112,10 @@ test.describe('[API] [Orders] Add a comment', () => {
               token,
             );
 
+            createdOrderIds.push(draftOrder._id);
+            createdCustomerIds.push(draftOrder.customer._id);
+            draftOrder.products.map((p) => createdProductIds.push(p._id));
+
             const response = await ordersController.addComment(
               draftOrder._id,
               comment,
@@ -146,6 +150,10 @@ test.describe('[API] [Orders] Add a comment', () => {
               1,
               token,
             );
+
+            createdOrderIds.push(draftOrder._id);
+            createdCustomerIds.push(draftOrder.customer._id);
+            draftOrder.products.map((p) => createdProductIds.push(p._id));
 
             const response = await ordersController.addComment(
               draftOrder._id,

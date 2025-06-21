@@ -19,15 +19,17 @@ export class RequestApi {
           options.baseURL + options.url,
           _.omit(options, ['baseURL', 'url']),
         );
-        if (this.response.status() >= 500)
-          throw new Error(
-            'Request failed with status ' + this.response.status(),
-          );
+        // if (this.response.status() >= 500)
+        //   throw new Error(
+        //     'Request failed with status ' + this.response.status(),
+        //   );
         const result = await this.transformResponse();
         this.attachResponse(options, result);
         return result;
       } catch (err) {
-        console.log((err as Error).message);
+        console.log(
+          `Request failed with status ${JSON.stringify(err as Error, null, 2)}`,
+        );
         throw err;
       }
     });

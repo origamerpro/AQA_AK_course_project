@@ -32,6 +32,8 @@ export class DataDisposalUtils {
 
   async clearOrders(orderIds: string[] | string) {
     orderIds = Array.isArray(orderIds) ? orderIds : [orderIds];
+    orderIds = orderIds.filter((id) => id.trim() !== '');
+
     if (!orderIds.length) return;
     const authToken = await this.getToken();
 
@@ -44,8 +46,9 @@ export class DataDisposalUtils {
     }
   }
 
-  async clearProducts(productsIds: string[]) {
+  async clearProducts(productsIds: string[] | string) {
     productsIds = Array.isArray(productsIds) ? productsIds : [productsIds];
+    productsIds = productsIds.filter((id) => id.trim() !== '');
     if (!productsIds.length) return;
     const authToken = await this.getToken();
 
@@ -58,8 +61,9 @@ export class DataDisposalUtils {
     }
   }
 
-  async clearCustomers(customerIds: string[]) {
+  async clearCustomers(customerIds: string[] | string) {
     customerIds = Array.isArray(customerIds) ? customerIds : [customerIds];
+    customerIds = customerIds.filter((id) => id.trim() !== '');
     if (!customerIds.length) return;
     const authToken = await this.getToken();
 

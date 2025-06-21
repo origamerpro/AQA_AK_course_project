@@ -2,7 +2,7 @@ import { logStep } from 'utils/reporter.utils';
 import { validateResponse } from 'utils/validations/responseValidation';
 import { STATUS_CODES } from 'data/statusCodes';
 import { OrdersAPIController } from '../controllers/orders.controller';
-import { APIRequestContext } from '@playwright/test';
+import { APIRequestContext, expect } from '@playwright/test';
 import {
   IDelivery,
   IOrderData,
@@ -153,6 +153,7 @@ export class OrdersAPIService {
     };
 
     const draftOrder = await this.create(orderData, token);
+    await expect(draftOrder.status).toEqual(ORDER_STATUS.DRAFT);
     return draftOrder;
   }
 
@@ -173,6 +174,8 @@ export class OrdersAPIService {
       token,
     );
 
+    await expect(inProcessOrder.status).toEqual(ORDER_STATUS.IN_PROCESS);
+
     return inProcessOrder;
   }
 
@@ -188,13 +191,17 @@ export class OrdersAPIService {
       .slice(0, receivedProductsCount)
       .map((p) => p._id);
 
-    const updatedOrder = await this.receiveProducts(
+    const partiallyReceivedOrder = await this.receiveProducts(
       inProcessOrder._id,
       receivedProductsId,
       token,
     );
 
-    return updatedOrder;
+    await expect(partiallyReceivedOrder.status).toEqual(
+      ORDER_STATUS.PARTIALLY_RECEIVED,
+    );
+
+    return partiallyReceivedOrder;
   }
 
   @logStep('Create received order via API')
@@ -209,6 +216,8 @@ export class OrdersAPIService {
       token,
     );
 
+    await expect(receivedOrder.status).toEqual(ORDER_STATUS.RECEIVED);
+
     return receivedOrder;
   }
 
@@ -221,6 +230,8 @@ export class OrdersAPIService {
       ORDER_STATUS.CANCELED,
       token,
     );
+
+    await expect(canceledOrder.status).toEqual(ORDER_STATUS.CANCELED);
 
     return canceledOrder;
   }
@@ -244,6 +255,8 @@ export class OrdersAPIService {
       token,
     );
 
+    await expect(reopenedOrder.status).toEqual(ORDER_STATUS.DRAFT);
+
     return reopenedOrder;
   }
 
@@ -258,6 +271,9 @@ export class OrdersAPIService {
       deliveryData,
       token,
     );
+
+    await expect(draftOrderWithDelivery.status).toEqual(ORDER_STATUS.DRAFT);
+
     return draftOrderWithDelivery;
   }
 }

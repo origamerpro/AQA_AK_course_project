@@ -23,7 +23,7 @@ export const deliverySchema = {
   properties: {
     finalDate: {
       type: 'string',
-      format: 'date',
+      format: 'date-time',
     },
     condition: {
       type: 'string',

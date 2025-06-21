@@ -1,6 +1,7 @@
 import { mergeTests } from '@playwright/test';
 import { test as base } from './index.fixture';
-import { extractIds, extractTestData } from '../utils/helper';
+import { extractTestData } from '../utils/helper';
+import { IOrderFromResponse } from '../types/orders.types';
 
 export interface ICreateOrderData {
   id: string;
@@ -16,22 +17,21 @@ export const orderInProcessStatus = base.extend<ICustomOrder>({
     { signInApiService, ordersApiService, dataDisposalUtils },
     use,
   ) => {
-    let order: any;
-    let orderDetails: any;
+    let order: IOrderFromResponse;
+    let id: string = '',
+      productsIds: string[] = [],
+      customerId: string = '';
 
     const orderDataFactory = async (count: number = 1) => {
       const token = await signInApiService.loginAsLocalUser();
       order = await ordersApiService.createInProcessOrder(count, token);
 
-      return extractTestData(order);
+      ({ id, productsIds, customerId } = extractTestData(order));
+      return { id, productsIds, customerId };
     };
     await use(orderDataFactory);
 
-    await dataDisposalUtils.tearDown(
-      ...[order?._id ? [order._id] : []],
-      extractIds(orderDetails?.products),
-      ...[orderDetails.customer?._id ? [orderDetails.customer._id] : []],
-    );
+    await dataDisposalUtils.tearDown([id], productsIds, [customerId]);
   },
 });
 
@@ -40,22 +40,21 @@ export const orderDraftStatus = base.extend<ICustomOrder>({
     { signInApiService, ordersApiService, dataDisposalUtils },
     use,
   ) => {
-    let order: any;
-    let orderDetails: any;
+    let order: IOrderFromResponse;
+    let id: string = '',
+      productsIds: string[] = [],
+      customerId: string = '';
 
     const orderDataFactory = async (count: number = 1) => {
       const token = await signInApiService.loginAsLocalUser();
       order = await ordersApiService.createDraftOrder(count, token);
 
-      return extractTestData(order);
+      ({ id, productsIds, customerId } = extractTestData(order));
+      return { id, productsIds, customerId };
     };
     await use(orderDataFactory);
 
-    await dataDisposalUtils.tearDown(
-      ...[order?._id ? [order._id] : []],
-      extractIds(orderDetails?.products),
-      ...[orderDetails.customer?._id ? [orderDetails.customer._id] : []],
-    );
+    await dataDisposalUtils.tearDown([id], productsIds, [customerId]);
   },
 });
 
@@ -64,22 +63,21 @@ export const orderCanceledStatus = base.extend<ICustomOrder>({
     { signInApiService, ordersApiService, dataDisposalUtils },
     use,
   ) => {
-    let order: any;
-    let orderDetails: any;
+    let order: IOrderFromResponse;
+    let id: string = '',
+      productsIds: string[] = [],
+      customerId: string = '';
 
     const orderDataFactory = async (count: number = 1) => {
       const token = await signInApiService.loginAsLocalUser();
       order = await ordersApiService.createCanceledOrder(count, token);
 
-      return extractTestData(order);
+      ({ id, productsIds, customerId } = extractTestData(order));
+      return { id, productsIds, customerId };
     };
     await use(orderDataFactory);
 
-    await dataDisposalUtils.tearDown(
-      ...[order?._id ? [order._id] : []],
-      extractIds(orderDetails?.products),
-      ...[orderDetails.customer?._id ? [orderDetails.customer._id] : []],
-    );
+    await dataDisposalUtils.tearDown([id], productsIds, [customerId]);
   },
 });
 
@@ -88,8 +86,10 @@ export const orderPartiallyReceivedStatus = base.extend<ICustomOrder>({
     { signInApiService, ordersApiService, dataDisposalUtils },
     use,
   ) => {
-    let order: any;
-    let orderDetails: any;
+    let order: IOrderFromResponse;
+    let id: string = '',
+      productsIds: string[] = [],
+      customerId: string = '';
 
     const orderDataFactory = async (count: number = 2, receivedCount = 1) => {
       const productCount = Math.max(count, 2);
@@ -101,15 +101,12 @@ export const orderPartiallyReceivedStatus = base.extend<ICustomOrder>({
         token,
       );
 
-      return extractTestData(order);
+      ({ id, productsIds, customerId } = extractTestData(order));
+      return { id, productsIds, customerId };
     };
     await use(orderDataFactory);
 
-    await dataDisposalUtils.tearDown(
-      ...[order?._id ? [order._id] : []],
-      extractIds(orderDetails?.products),
-      ...[orderDetails.customer?._id ? [orderDetails.customer._id] : []],
-    );
+    await dataDisposalUtils.tearDown([id], productsIds, [customerId]);
   },
 });
 
@@ -118,23 +115,22 @@ export const orderReceivedStatus = base.extend<ICustomOrder>({
     { signInApiService, ordersApiService, dataDisposalUtils },
     use,
   ) => {
-    let order: any;
-    let orderDetails: any;
+    let order: IOrderFromResponse;
+    let id: string = '',
+      productsIds: string[] = [],
+      customerId: string = '';
 
     const orderDataFactory = async (count: number = 1) => {
       const token = await signInApiService.loginAsLocalUser();
 
       order = await ordersApiService.createReceivedOrder(count, token);
 
-      return extractTestData(order);
+      ({ id, productsIds, customerId } = extractTestData(order));
+      return { id, productsIds, customerId };
     };
     await use(orderDataFactory);
 
-    await dataDisposalUtils.tearDown(
-      ...[order?._id ? [order._id] : []],
-      extractIds(orderDetails?.products),
-      ...[orderDetails.customer?._id ? [orderDetails.customer._id] : []],
-    );
+    await dataDisposalUtils.tearDown([id], productsIds, [customerId]);
   },
 });
 

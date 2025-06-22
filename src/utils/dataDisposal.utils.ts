@@ -31,7 +31,7 @@ export class DataDisposalUtils {
   }
 
   async clearOrders(orderIds: string[] | string) {
-    orderIds = Array.isArray(orderIds) ? orderIds : [orderIds];
+    orderIds = await this.normalizeIds(orderIds);
     if (!orderIds.length) return;
     const authToken = await this.getToken();
 
@@ -44,9 +44,10 @@ export class DataDisposalUtils {
     }
   }
 
-  async clearProducts(productsIds: string[]) {
-    productsIds = Array.isArray(productsIds) ? productsIds : [productsIds];
+  async clearProducts(productsIds: string[] | string) {
+    productsIds = await this.normalizeIds(productsIds);
     if (!productsIds.length) return;
+    console.log(` Deleting ${productsIds} productsIds`);
     const authToken = await this.getToken();
 
     for (const productId of productsIds) {
@@ -58,8 +59,8 @@ export class DataDisposalUtils {
     }
   }
 
-  async clearCustomers(customerIds: string[]) {
-    customerIds = Array.isArray(customerIds) ? customerIds : [customerIds];
+  async clearCustomers(customerIds: string[] | string) {
+    customerIds = await this.normalizeIds(customerIds);
     if (!customerIds.length) return;
     const authToken = await this.getToken();
 
@@ -80,5 +81,9 @@ export class DataDisposalUtils {
     await this.clearOrders(orderIds);
     await this.clearProducts(productsIds);
     await this.clearCustomers(customersIds);
+  }
+
+  async normalizeIds(input: string | string[]): Promise<string[]> {
+    return (Array.isArray(input) ? input : [input]).filter((id) => id.trim());
   }
 }

@@ -162,7 +162,7 @@ export const negativeTestCasesForDelivery = [
     errorMessage: 'Incorrect Delivery',
   },
   {
-    name: 'flat = 1000',
+    name: 'flat = 10000',
     data: generateDeliveryData({ address: { flat: 10000 } }),
     expectedStatusCode: STATUS_CODES.BAD_REQUEST,
     isSuccess: false,

@@ -6,7 +6,7 @@ export const ERROR_MESSAGES = {
   CUSTOMER_ID_FOR_ORDERS_NOT_FOUND: (id: string) =>
     `Not found customer with ID: ${id}`,
   INVALID_ORDER_STATUS: 'Invalid order status',
-  //После исправления бага с id, убрать ошибку ORDER_NOT_FOUND_WITH_ID, оставить только ORDER_NOT_FOUND с передаваемым id
+  //TODO: После исправления бага с id, убрать ошибку ORDER_NOT_FOUND_WITH_ID, оставить только ORDER_NOT_FOUND с передаваемым id
   ORDER_NOT_FOUND: `Order with id 'undefined' wasn't found`,
   PRODUCT_IS_NOT_REQUESTED_IN_ORDER: (id: string) =>
     `Product with Id '${id}' is not requested`,

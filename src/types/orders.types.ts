@@ -77,16 +77,18 @@ export interface IProductFromOrder extends IProduct {
   received: boolean;
 }
 
+export interface IAddress {
+  country: COUNTRIES;
+  city: string;
+  street: string;
+  house: number;
+  flat: number;
+}
+
 export interface IDelivery {
   finalDate: string;
   condition: DELIVERY;
-  address: {
-    country: COUNTRIES;
-    city: string;
-    street: string;
-    house: number;
-    flat: number;
-  };
+  address: IAddress;
 }
 
 export interface IHistory {

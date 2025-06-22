@@ -21,10 +21,7 @@ export const commentSchema = {
 export const deliverySchema = {
   type: 'object',
   properties: {
-    finalDate: {
-      type: 'string',
-      format: 'date-time',
-    },
+    finalDate: { type: 'string', format: 'date-time' },
     condition: {
       type: 'string',
       enum: Object.values(DELIVERY),

@@ -31,9 +31,7 @@ export class DataDisposalUtils {
   }
 
   async clearOrders(orderIds: string[] | string) {
-    orderIds = Array.isArray(orderIds) ? orderIds : [orderIds];
-    orderIds = orderIds.filter((id) => id.trim() !== '');
-
+    orderIds = await this.normalizeIds(orderIds);
     if (!orderIds.length) return;
     const authToken = await this.getToken();
 
@@ -47,9 +45,9 @@ export class DataDisposalUtils {
   }
 
   async clearProducts(productsIds: string[] | string) {
-    productsIds = Array.isArray(productsIds) ? productsIds : [productsIds];
-    productsIds = productsIds.filter((id) => id.trim() !== '');
+    productsIds = await this.normalizeIds(productsIds);
     if (!productsIds.length) return;
+    console.log(` Deleting ${productsIds} productsIds`);
     const authToken = await this.getToken();
 
     for (const productId of productsIds) {
@@ -62,8 +60,7 @@ export class DataDisposalUtils {
   }
 
   async clearCustomers(customerIds: string[] | string) {
-    customerIds = Array.isArray(customerIds) ? customerIds : [customerIds];
-    customerIds = customerIds.filter((id) => id.trim() !== '');
+    customerIds = await this.normalizeIds(customerIds);
     if (!customerIds.length) return;
     const authToken = await this.getToken();
 
@@ -84,5 +81,9 @@ export class DataDisposalUtils {
     await this.clearOrders(orderIds);
     await this.clearProducts(productsIds);
     await this.clearCustomers(customersIds);
+  }
+
+  async normalizeIds(input: string | string[]): Promise<string[]> {
+    return (Array.isArray(input) ? input : [input]).filter((id) => id.trim());
   }
 }

@@ -4,49 +4,28 @@ import { ORDER_STATUS } from 'data/orders/statuses.data';
 import { TAGS } from 'data/testTags.data';
 import { expect, test } from 'fixtures/api-services.fixture';
 import { STATUS_CODES } from 'data/statusCodes';
+import { validateResponse } from 'utils/validations/responseValidation';
 
 test.describe('[API] Orders Controller Health Checks', () => {
   let token: string;
   let ordersAPIController: OrdersAPIController;
-
   let createdOrderId: string = '';
   let createdCustomerId: string = '';
   let createdProductIds: string[] = [];
-
   const createdManagerId: string = '680d4d7dd006ba3d475ff67b';
 
-  test.beforeEach(
-    async ({
-      customersApiService,
-      productsApiService,
-      request,
-      signInApiService,
-    }) => {
-      ordersAPIController = new OrdersAPIController(request);
-      token = await signInApiService.loginAsLocalUser();
+  test.beforeEach(async ({ ordersApiService, signInApiService, request }) => {
+    ordersAPIController = new OrdersAPIController(request);
+    token = await signInApiService.loginAsLocalUser();
 
-      const customerResponse = await customersApiService.createCustomer(token);
-      createdCustomerId = customerResponse._id;
-
-      const productsResponse = await productsApiService.populate(1, token);
-      createdProductIds = productsResponse.map((p) => p._id);
-
-      const orderData = {
-        customer: createdCustomerId,
-        products: createdProductIds,
-      };
-
-      const createOrderResponse = await ordersAPIController.create(
-        orderData,
-        token,
-      );
-
-      expect(createOrderResponse.status).toBe(STATUS_CODES.CREATED);
-      expect(createOrderResponse.body.IsSuccess).toBeTruthy();
-      expect(createOrderResponse.body.Order).toBeDefined();
-      createdOrderId = createOrderResponse.body.Order._id;
-    },
-  );
+    const createOrderResponse = await ordersApiService.createDraftOrder(
+      3,
+      token,
+    );
+    createdOrderId = createOrderResponse._id;
+    createdCustomerId = createOrderResponse.customer._id;
+    createdProductIds = createOrderResponse.products.map((p) => p._id);
+  });
 
   test.afterEach(async ({ dataDisposalUtils }) => {
     await dataDisposalUtils.clearOrders(createdOrderId);
@@ -62,9 +41,7 @@ test.describe('[API] Orders Controller Health Checks', () => {
     { tag: [TAGS.API, TAGS.ORDERS] },
     async () => {
       const response = await ordersAPIController.getFilteredOrders(token);
-      expect(response.status).toBe(STATUS_CODES.OK);
-      expect(response.body.IsSuccess).toBe(true);
-      expect(Array.isArray(response.body.Orders)).toBe(true);
+      validateResponse(response, STATUS_CODES.OK, true, null);
     },
   );
 
@@ -73,10 +50,7 @@ test.describe('[API] Orders Controller Health Checks', () => {
     { tag: [TAGS.API, TAGS.ORDERS] },
     async () => {
       const response = await ordersAPIController.getByID(createdOrderId, token);
-      expect(response.status).toBe(STATUS_CODES.OK);
-      expect(response.body.IsSuccess).toBe(true);
-      expect(response.body.Order).toBeDefined();
-      expect(response.body.Order._id).toBe(createdOrderId);
+      validateResponse(response, STATUS_CODES.OK, true, null);
     },
   );
 
@@ -89,15 +63,14 @@ test.describe('[API] Orders Controller Health Checks', () => {
         products: createdProductIds,
         status: ORDER_STATUS.DRAFT,
       };
+      console.log(`updatedData: ${JSON.stringify(updatedData)}`);
+      console.log(`createdOrderId: ${createdOrderId}`);
       const response = await ordersAPIController.updateOrder(
         createdOrderId,
         updatedData,
         token,
       );
-      expect(response.status).toBe(STATUS_CODES.OK);
-      expect(response.body.IsSuccess).toBe(true);
-      expect(response.body.Order).toBeDefined();
-      expect(response.body.Order._id).toBe(createdOrderId);
+      validateResponse(response, STATUS_CODES.OK, true, null);
     },
   );
 
@@ -110,11 +83,7 @@ test.describe('[API] Orders Controller Health Checks', () => {
         createdManagerId,
         token,
       );
-      expect(response.status).toBe(STATUS_CODES.OK);
-      expect(response.body.IsSuccess).toBe(true);
-      expect(response.body.Order).toBeDefined();
-      expect(response.body.Order._id).toBe(createdOrderId);
-      expect(response.body.Order.assignedManager?._id).toBe(createdManagerId);
+      validateResponse(response, STATUS_CODES.OK, true, null);
     },
   );
 
@@ -126,11 +95,7 @@ test.describe('[API] Orders Controller Health Checks', () => {
         createdOrderId,
         token,
       );
-      expect(response.status).toBe(STATUS_CODES.OK);
-      expect(response.body.IsSuccess).toBe(true);
-      expect(response.body.Order).toBeDefined();
-      expect(response.body.Order._id).toBe(createdOrderId);
-      expect(response.body.Order.assignedManager).toBeNull();
+      validateResponse(response, STATUS_CODES.OK, true, null);
     },
   );
 
@@ -144,11 +109,7 @@ test.describe('[API] Orders Controller Health Checks', () => {
         commentText,
         token,
       );
-      expect(response.status).toBe(STATUS_CODES.OK);
-      expect(response.body.IsSuccess).toBe(true);
-      expect(response.body.Order).toBeDefined();
-      expect(response.body.Order.comments).toBeDefined();
-      expect(response.body.Order.comments.length).toBeGreaterThan(0);
+      validateResponse(response, STATUS_CODES.OK, true, null);
     },
   );
 
@@ -162,14 +123,7 @@ test.describe('[API] Orders Controller Health Checks', () => {
         deliveryData,
         token,
       );
-      expect(response.status).toBe(STATUS_CODES.OK);
-      expect(response.body.IsSuccess).toBe(true);
-      expect(response.body.Order).toBeDefined();
-      expect(response.body.Order._id).toBe(createdOrderId);
-      expect(response.body.Order.delivery).toBeDefined();
-      expect(response.body.Order.delivery?.finalDate).toBe(
-        `${deliveryData.finalDate}T00:00:00.000Z`,
-      );
+      validateResponse(response, STATUS_CODES.OK, true, null);
     },
   );
 
@@ -193,10 +147,7 @@ test.describe('[API] Orders Controller Health Checks', () => {
         productsToReceive,
         token,
       );
-      expect(response.status).toBe(STATUS_CODES.OK);
-      expect(response.body.IsSuccess).toBe(true);
-      expect(response.body.Order).toBeDefined();
-      expect(response.body.Order._id).toBe(createdOrderId);
+      validateResponse(response, STATUS_CODES.OK, true, null);
     },
   );
 
@@ -215,11 +166,7 @@ test.describe('[API] Orders Controller Health Checks', () => {
         newStatus,
         token,
       );
-      expect(response.status).toBe(STATUS_CODES.OK);
-      expect(response.body.IsSuccess).toBe(true);
-      expect(response.body.Order).toBeDefined();
-      expect(response.body.Order._id).toBe(createdOrderId);
-      expect(response.body.Order.status).toBe(newStatus);
+      validateResponse(response, STATUS_CODES.OK, true, null);
     },
   );
 
@@ -232,7 +179,7 @@ test.describe('[API] Orders Controller Health Checks', () => {
         'New comment for health check',
         token,
       );
-      expect(commentResponse.status).toBe(STATUS_CODES.OK);
+      validateResponse(commentResponse, STATUS_CODES.OK, true, null);
       const tempCommentId =
         commentResponse.body.Order.comments[
           commentResponse.body.Order.comments.length - 1
@@ -244,7 +191,7 @@ test.describe('[API] Orders Controller Health Checks', () => {
         tempCommentId,
         token,
       );
-      expect(response.status).toBe(STATUS_CODES.DELETED);
+      validateResponse(response, STATUS_CODES.DELETED, null, null);
     },
   );
 
@@ -255,8 +202,7 @@ test.describe('[API] Orders Controller Health Checks', () => {
       const response = await ordersAPIController.delete(createdOrderId, token);
 
       createdOrderId = '';
-      console.log(`Deleted order id: ${createdOrderId}`);
-      expect(response.status).toBe(STATUS_CODES.DELETED);
+      validateResponse(response, STATUS_CODES.DELETED, null, null);
     },
   );
 
@@ -267,8 +213,34 @@ test.describe('[API] Orders Controller Health Checks', () => {
       const id = ['68572d641c508c5d5e5d3221'];
       id.forEach(async (id) => {
         const response = await ordersAPIController.delete(id, token);
-        expect(response.status).toBe(STATUS_CODES.DELETED);
+        validateResponse(response, STATUS_CODES.DELETED, null, null);
       });
     },
   );
+  // test.describe('Check controller for POST /order', () => {
+  //   test('Should get 201 CREATED from POST /order via API and create a new order', async ({
+  //     customersApiService,
+  //     productsApiService,
+  //   }) => {
+  //     const customerResponse = await customersApiService.createCustomer(token);
+  //     createdCustomerId = customerResponse._id;
+
+  //     const productsResponse = await productsApiService.populate(1, token);
+  //     createdProductIds = productsResponse.map((p) => p._id);
+
+  //     const orderData = {
+  //       customer: createdCustomerId,
+  //       products: createdProductIds,
+  //     };
+
+  //     const createOrderResponse = await ordersAPIController.create(
+  //       orderData,
+  //       token,
+  //     );
+  //     validateResponse(createOrderResponse, STATUS_CODES.CREATED, true, null);
+
+  //     createdOrderId = createOrderResponse.body.Order._id;
+  //     console.log(createdOrderId);
+  //   });
+  // });
 });

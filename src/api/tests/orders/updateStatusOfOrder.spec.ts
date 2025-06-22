@@ -6,7 +6,7 @@ import { validateSchema } from 'utils/validations/schemaValidation';
 import { validateResponse } from 'utils/validations/responseValidation';
 import { ORDER_STATUS } from 'data/orders/statuses.data';
 import { ERROR_MESSAGES } from 'data/errorMessages';
-import { ORDER_HISTORY_ACTIONS } from '../../../data/orders/history.data';
+import { ORDER_HISTORY_ACTIONS } from 'data/orders/history.data';
 import {
   orderCanceledStatus,
   orderDraftStatus,
@@ -14,8 +14,8 @@ import {
   orderInProcessStatus,
   orderPartiallyReceivedStatus,
   orderReceivedStatus,
-} from '../../../fixtures/ordersCustom.fixture';
-import { generateUniqueId } from '../../../utils/generateUniqueID.utils';
+} from 'fixtures/ordersCustom.fixture';
+import { generateUniqueId } from 'utils/generateUniqueID.utils';
 
 orderDraftStatus.describe('[API][Orders] Draft - Canceled', () => {
   let token = '';
@@ -40,13 +40,19 @@ orderDraftStatus.describe('[API][Orders] Draft - Canceled', () => {
         const updatedOrder = response.body.Order;
         validateSchema(orderSchema, updatedOrder);
 
-        expect(updatedOrder._id).toBe(orderId);
+        expect(
+          updatedOrder._id,
+          'Order ID should remain the same after status update',
+        ).toBe(orderId);
 
         // Check order history
         const processStartedEntry = updatedOrder.history.find(
           (entry) => entry.action === ORDER_HISTORY_ACTIONS.CANCELED,
         );
-        expect(processStartedEntry).toBeTruthy();
+        expect(
+          processStartedEntry,
+          'History should contain cancellation entry',
+        ).toBeTruthy();
       },
     );
   });
@@ -77,13 +83,19 @@ orderDraftWithDeliveryStatus.describe(
           const updatedOrder = response.body.Order;
           validateSchema(orderSchema, updatedOrder);
 
-          expect(updatedOrder._id).toBe(orderId);
+          expect(
+            updatedOrder._id,
+            'Order ID should not change during status update',
+          ).toBe(orderId);
 
           // Check order history
           const processStartedEntry = updatedOrder.history.find(
             (entry) => entry.action === ORDER_HISTORY_ACTIONS.PROCESSED,
           );
-          expect(processStartedEntry).toBeTruthy();
+          expect(
+            processStartedEntry,
+            'History should contain process started entry',
+          ).toBeTruthy();
         },
       );
 
@@ -102,13 +114,18 @@ orderDraftWithDeliveryStatus.describe(
           const updatedOrder = response.body.Order;
           validateSchema(orderSchema, updatedOrder);
 
-          expect(updatedOrder._id).toBe(orderId);
+          expect(updatedOrder._id, 'Order ID should remain unchanged').toBe(
+            orderId,
+          );
 
           // Check order history
           const processStartedEntry = updatedOrder.history.find(
             (entry) => entry.action === ORDER_HISTORY_ACTIONS.CANCELED,
           );
-          expect(processStartedEntry).toBeTruthy();
+          expect(
+            processStartedEntry,
+            'History should contain cancellation record',
+          ).toBeTruthy();
         },
       );
     });
@@ -140,13 +157,19 @@ orderCanceledStatus.describe(
           const updatedOrder = response.body.Order;
           validateSchema(orderSchema, updatedOrder);
 
-          expect(updatedOrder._id).toBe(orderId);
+          expect(
+            updatedOrder._id,
+            'Order ID must stay the same after reopening',
+          ).toBe(orderId);
 
           // Check order history
           const processStartedEntry = updatedOrder.history.find(
             (entry) => entry.action === ORDER_HISTORY_ACTIONS.REOPENED,
           );
-          expect(processStartedEntry).toBeTruthy();
+          expect(
+            processStartedEntry,
+            'History should contain reopening entry',
+          ).toBeTruthy();
         },
       );
     });
@@ -200,13 +223,18 @@ orderInProcessStatus.describe(
           const updatedOrder = response.body.Order;
           validateSchema(orderSchema, updatedOrder);
 
-          expect(updatedOrder._id).toBe(orderId);
+          expect(updatedOrder._id, 'Order ID must remain constant').toBe(
+            orderId,
+          );
 
           // Check order history
           const processStartedEntry = updatedOrder.history.find(
             (entry) => entry.action === ORDER_HISTORY_ACTIONS.PROCESSED,
           );
-          expect(processStartedEntry).toBeTruthy();
+          expect(
+            processStartedEntry,
+            'Process started should be recorded in history',
+          ).toBeTruthy();
         },
       );
 
@@ -225,13 +253,16 @@ orderInProcessStatus.describe(
           const updatedOrder = response.body.Order;
           validateSchema(orderSchema, updatedOrder);
 
-          expect(updatedOrder._id).toBe(orderId);
+          expect(updatedOrder._id, 'Order ID should not change').toBe(orderId);
 
           // Check order history
           const processStartedEntry = updatedOrder.history.find(
             (entry) => entry.action === ORDER_HISTORY_ACTIONS.CANCELED,
           );
-          expect(processStartedEntry).toBeTruthy();
+          expect(
+            processStartedEntry,
+            'Cancellation should be recorded in history',
+          ).toBeTruthy();
         },
       );
     });
@@ -300,9 +331,7 @@ orderInProcessStatus.describe(
       orderInProcessStatus(
         'Should return error when order does not exist - 404 Bad Request',
         { tag: [TAGS.API, TAGS.ORDERS] },
-        async ({ orderData, ordersController, ordersApiService }) => {
-          const { id: orderId } = await orderData();
-
+        async ({ ordersController }) => {
           const nonExistentOrder = generateUniqueId();
           const response = await ordersController.updateStatus(
             nonExistentOrder,
@@ -323,7 +352,7 @@ orderInProcessStatus.describe(
         'Should return 401 when using invalid token',
         { tag: [TAGS.API, TAGS.ORDERS, TAGS.REGRESSION] },
         async ({ orderData, ordersController }) => {
-          const { id: orderId, productsIds } = await orderData();
+          const { id: orderId } = await orderData();
 
           const response = await ordersController.updateStatus(
             orderId,
@@ -344,7 +373,7 @@ orderInProcessStatus.describe(
         'Should return 401 when using empty token',
         { tag: [TAGS.API, TAGS.ORDERS, TAGS.REGRESSION] },
         async ({ orderData, ordersController }) => {
-          const { id: orderId, productsIds } = await orderData();
+          const { id: orderId } = await orderData();
 
           const response = await ordersController.updateStatus(
             orderId,

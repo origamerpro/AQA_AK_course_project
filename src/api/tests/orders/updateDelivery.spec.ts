@@ -1,3 +1,4 @@
+import { expect } from 'fixtures/api-services.fixture';
 import { generateDeliveryData } from 'data/orders/generateDeliveryData.data';
 import {
   negativeTestCasesForDelivery,
@@ -7,47 +8,29 @@ import {
 import { deliverySchema } from 'data/schemas/order.schema';
 import { STATUS_CODES } from 'data/statusCodes';
 import { TAGS } from 'data/testTags.data';
-import { test } from 'fixtures/api-services.fixture';
-import { IOrderFromResponse } from 'types/orders.types';
+import { orderDraftStatus } from 'fixtures/ordersCustom.fixture';
 import { generateUniqueId } from 'utils/generateUniqueID.utils';
 import { validateResponse } from 'utils/validations/responseValidation';
 import { validateSchema } from 'utils/validations/schemaValidation';
 
-test.describe('[API] [Orders] Update delivery', () => {
+orderDraftStatus.describe('[API] [Orders] Update delivery', () => {
   let token = '';
-  const createdOrderIds: string[] = [];
-  const createdCustomerIds: string[] = [];
-  const createdProductIds: string[] = [];
 
-  let draftOrder: IOrderFromResponse | null = null;
-
-  test.beforeEach(async ({ signInApiService, ordersApiService }) => {
+  orderDraftStatus.beforeEach(async ({ signInApiService }) => {
     token = await signInApiService.loginAsLocalUser();
-    draftOrder = await ordersApiService.createDraftOrder(1, token);
-
-    createdOrderIds.push(draftOrder._id);
-    createdCustomerIds.push(draftOrder.customer._id);
-    draftOrder.products.forEach((p) => createdProductIds.push(p._id));
   });
 
-  test.afterEach(async ({ dataDisposalUtils }) => {
-    await dataDisposalUtils.clearOrders(createdOrderIds);
-    await dataDisposalUtils.clearProducts(createdProductIds);
-    await dataDisposalUtils.clearCustomers(createdCustomerIds);
-    createdOrderIds.length = 0;
-    createdCustomerIds.length = 0;
-    createdProductIds.length = 0;
-  });
-
-  test.describe('Positive', () => {
+  orderDraftStatus.describe('Positive', () => {
     positiveTestCasesForDelivery.forEach(
       ({ name, data, expectedStatusCode, isSuccess, errorMessage }) => {
-        test(
+        orderDraftStatus(
           `Should update delivery: ${name}`,
           { tag: [TAGS.API, TAGS.ORDERS, TAGS.SMOKE, TAGS.REGRESSION] },
-          async ({ ordersController }) => {
+          async ({ ordersController, orderData }) => {
+            const { id: orderId } = await orderData();
+
             const response = await ordersController.updateDelivery(
-              draftOrder!._id,
+              orderId,
               data,
               token,
             );
@@ -58,25 +41,37 @@ test.describe('[API] [Orders] Update delivery', () => {
               isSuccess,
               errorMessage,
             );
+
             await validateSchema(deliverySchema, response.body.Order.delivery!);
+
+            const expectedDelivery = {
+              ...data,
+              finalDate: new Date(data.finalDate).toISOString(),
+            };
+            expect(response.body.Order.delivery).toMatchObject(
+              expectedDelivery as unknown as Record<string, unknown>,
+            );
           },
         );
       },
     );
   });
 
-  test.describe('Negative', () => {
+  orderDraftStatus.describe('Negative', () => {
     negativeTestCasesForDelivery.forEach(
       ({ name, data, expectedStatusCode, isSuccess, errorMessage }) => {
-        test(
+        orderDraftStatus(
           `Should NOT update delivery: ${name}`,
           { tag: [TAGS.API, TAGS.ORDERS, TAGS.REGRESSION] },
-          async ({ ordersController }) => {
+          async ({ ordersController, orderData }) => {
+            const { id: orderId } = await orderData();
+
             const response = await ordersController.updateDelivery(
-              draftOrder!._id,
+              orderId,
               data,
               token,
             );
+
             validateResponse(
               response,
               expectedStatusCode,
@@ -97,15 +92,18 @@ test.describe('[API] [Orders] Update delivery', () => {
         isSuccess,
         errorMessage,
       }) => {
-        test(
+        orderDraftStatus(
           `Should NOT update delivery: ${name}`,
           { tag: [TAGS.API, TAGS.ORDERS, TAGS.REGRESSION] },
-          async ({ ordersController }) => {
+          async ({ ordersController, orderData }) => {
+            const { id: orderId } = await orderData();
+
             const response = await ordersController.updateDelivery(
-              draftOrder!._id,
+              orderId,
               data,
               invalidToken,
             );
+
             validateResponse(
               response,
               expectedStatusCode,
@@ -117,7 +115,7 @@ test.describe('[API] [Orders] Update delivery', () => {
       },
     );
 
-    test(
+    orderDraftStatus(
       'Should NOT update delivery: For non-existent order check',
       { tag: [TAGS.API, TAGS.ORDERS, TAGS.REGRESSION] },
       async ({ ordersController }) => {

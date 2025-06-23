@@ -58,6 +58,29 @@ export const orderDraftStatus = base.extend<ICustomOrder>({
   },
 });
 
+export const orderDraftWithDeliveryStatus = base.extend<ICustomOrder>({
+  orderData: async (
+    { signInApiService, ordersApiService, dataDisposalUtils },
+    use,
+  ) => {
+    let order: IOrderFromResponse;
+    let id: string = '',
+      productsIds: string[] = [],
+      customerId: string = '';
+
+    const orderDataFactory = async (count: number = 1) => {
+      const token = await signInApiService.loginAsLocalUser();
+      order = await ordersApiService.createDraftOrderWithDelivery(count, token);
+
+      ({ id, productsIds, customerId } = extractTestData(order));
+      return { id, productsIds, customerId };
+    };
+    await use(orderDataFactory);
+
+    await dataDisposalUtils.tearDown([id], productsIds, [customerId]);
+  },
+});
+
 export const orderCanceledStatus = base.extend<ICustomOrder>({
   orderData: async (
     { signInApiService, ordersApiService, dataDisposalUtils },

@@ -13,4 +13,5 @@ export const ERROR_MESSAGES = {
   CANT_REOPEN_ORDER: `Can't reopen not canceled order`,
   ORDER_NOT_FOUND_WITH_ID: (id: string) => `Order with id '${id}' wasn't found`,
   MANAGER_NOT_FOUND: (id: string) => `Manager with id '${id}' wasn't found`,
+  COMMENT_NOT_FOUND: `Comment was not found`,
 };

@@ -1,6 +1,6 @@
-import { Page, test } from '@playwright/test';
+import { test } from '@playwright/test';
 import { IResponse } from 'types/api.types';
-import { PageHolder } from './page-holder.page';
+import { PageHolder } from './pageHolder.page';
 
 export abstract class BasePage extends PageHolder {
   async interceptRequest<T extends unknown[]>(

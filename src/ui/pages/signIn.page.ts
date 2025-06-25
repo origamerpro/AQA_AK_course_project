@@ -1,8 +1,8 @@
 import { ICredentials } from 'types/signIn.types';
-import { SalesPortalPage } from './salesPortal.page';
 import { logStep } from 'utils/reporter.utils';
+import { PageHolder } from './pageHolder.page';
 
-export class SignInPage extends SalesPortalPage {
+export class SignInPage extends PageHolder {
   readonly emailInput = this.page.locator('#emailinput');
   readonly passwordInput = this.page.locator('#passwordinput');
   readonly loginButton = this.page.getByRole('button', { name: 'Login' });

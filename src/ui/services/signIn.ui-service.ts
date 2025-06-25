@@ -1,11 +1,11 @@
 import { Page } from '@playwright/test';
 import { USER_LOGIN, USER_PASSWORD } from 'config/environment';
 import { HomePage } from 'ui/pages/home.page';
-import { PageHolder } from 'ui/pages/pageHolder.page';
 import { SignInPage } from 'ui/pages/signIn.page';
 import { logStep } from 'utils/reporter.utils';
+import { BaseUIService } from './base.ui-service';
 
-export class SignInUIService extends PageHolder {
+export class SignInUIService extends BaseUIService {
   private signInPage: SignInPage;
   private homePage: HomePage;
   constructor(page: Page) {

@@ -6,9 +6,9 @@ export class HomePage extends SalesPortalPage {
   title = this.page.getByRole('heading', {
     name: 'Welcome to Sales Management Portal',
   });
-  customersButton = this.page.getByRole('link', { name: 'Customer' });
-  productsButton = this.page.getByRole('link', { name: 'Products' });
-  ordersButton = this.page.getByRole('link', { name: 'Orders' });
+  customersButton = this.page.getByRole('link', { name: 'View Customers' });
+  productsButton = this.page.getByRole('link', { name: 'View Products' });
+  ordersButton = this.page.getByRole('link', { name: 'View Orders' });
 
   uniqueElement = this.title;
 

@@ -1,7 +1,7 @@
-import { PageHolder } from 'ui/pages/pageHolder.page';
+import { SalesPortalPage } from 'ui/pages/salesPortal.page';
 import { logStep } from 'utils/reporter.utils';
 
-export class OrderDetailsPanelComponent extends PageHolder {
+export class OrderDetailsPanelComponent extends SalesPortalPage {
   readonly backToOrdersLink = this.page.getByRole('link', { name: 'Orders' });
   readonly title = this.page.getByRole('heading', {
     name: 'Order Details',

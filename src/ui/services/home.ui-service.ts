@@ -1,10 +1,10 @@
 import { Page, test } from '@playwright/test';
 import { ModuleName } from 'types/home.types';
 import { HomePage } from 'ui/pages/home.page';
-import { PageHolder } from 'ui/pages/pageHolder.page';
 import { logStep } from 'utils/reporter.utils';
+import { BaseUIService } from './base.ui-service';
 
-export class HomeUIService extends PageHolder {
+export class HomeUIService extends BaseUIService {
   readonly homePage: HomePage;
   constructor(page: Page) {
     super(page);

@@ -21,4 +21,12 @@ test.describe('[UI] [Sales Portal]', () => {
       console.log(`Second token: ${token}`);
     },
   );
+  test(
+    'Should open Order module',
+    { tag: [TAGS.SMOKE] },
+    async ({ homeUIService }) => {
+      await homeUIService.openAsLoggedInUser();
+      await homeUIService.openModule('Orders');
+    },
+  );
 });

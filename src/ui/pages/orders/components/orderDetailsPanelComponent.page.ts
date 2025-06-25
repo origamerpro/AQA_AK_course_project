@@ -9,7 +9,6 @@ export class OrderDetailsPanelComponent extends SalesPortalPage {
   readonly orderNumberValue = this.page.locator(
     'span:has-text("Order number:") + span',
   );
-
   readonly assignManagerButton = this.page.getByRole('button', {
     name: 'Click to select manager',
   });

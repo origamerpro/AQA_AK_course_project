@@ -1,13 +1,15 @@
 import { Page } from '@playwright/test';
 import { USER_LOGIN, USER_PASSWORD } from 'config/environment';
 import { HomePage } from 'ui/pages/home.page';
+import { PageHolder } from 'ui/pages/pageHolder.page';
 import { SignInPage } from 'ui/pages/signIn.page';
 import { logStep } from 'utils/reporter.utils';
 
-export class SignInUIService {
+export class SignInUIService extends PageHolder {
   private signInPage: SignInPage;
   private homePage: HomePage;
-  constructor(private page: Page) {
+  constructor(page: Page) {
+    super(page);
     this.signInPage = new SignInPage(page);
     this.homePage = new HomePage(page);
   }

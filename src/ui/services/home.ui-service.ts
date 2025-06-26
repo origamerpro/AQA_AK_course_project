@@ -1,15 +1,11 @@
-import { Page, test } from '@playwright/test';
+import { test } from '@playwright/test';
 import { ModuleName } from 'types/home.types';
 import { HomePage } from 'ui/pages/home.page';
 import { logStep } from 'utils/reporter.utils';
 import { BaseUIService } from './base.ui-service';
 
 export class HomeUIService extends BaseUIService {
-  readonly homePage: HomePage;
-  constructor(page: Page) {
-    super(page);
-    this.homePage = new HomePage(page);
-  }
+  readonly homePage = new HomePage(this.page);
 
   async openModule(moduleName: ModuleName) {
     return await test.step(`Open ${moduleName} module on Home Page`, async () => {

@@ -1,12 +1,8 @@
-import { expect, Locator, Page } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { SalesPortalPage } from 'ui/pages/salesPortal.page';
 import { logStep } from 'utils/reporter.utils';
 
 export abstract class BaseModal extends SalesPortalPage {
-  constructor(page: Page) {
-    super(page);
-  }
-  abstract readonly uniqueElement: Locator;
   readonly closeButton = this.page.getByRole('button', {
     name: 'Close',
   });

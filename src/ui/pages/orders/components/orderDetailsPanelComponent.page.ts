@@ -1,7 +1,7 @@
-import { SalesPortalPage } from 'ui/pages/salesPortal.page';
+import { PageHolder } from 'ui/pages/pageHolder.page';
 import { logStep } from 'utils/reporter.utils';
 
-export class OrderDetailsPanelComponent extends SalesPortalPage {
+export class OrderDetailsPanelComponent extends PageHolder {
   readonly backToOrdersLink = this.page.getByRole('link', { name: 'Orders' });
   readonly title = this.page.getByRole('heading', {
     name: 'Order Details',
@@ -114,5 +114,19 @@ export class OrderDetailsPanelComponent extends SalesPortalPage {
   @logStep('Get Created On Date value')
   async getCreatedOnDate() {
     return await this.createdOnDateValue.textContent();
+  }
+
+  @logStep('Get Total Price, Delivery Date and Created On Date values')
+  async getOrderDetails() {
+    const [totalPrice, deliveryDate, createdOnDate] = await Promise.all([
+      this.getTotalPrice(),
+      this.getDeliveryDate(),
+      this.getCreatedOnDate(),
+    ]);
+    return {
+      totalPrice,
+      deliveryDate,
+      createdOnDate,
+    };
   }
 }

@@ -1,25 +1,15 @@
-import { Locator, Page } from '@playwright/test';
 import { BaseModal } from '../baseModal.page';
 import { logStep } from 'utils/reporter.utils';
 
-export type ManagerModalType = 'Assign Manager' | 'Edit Assigned Manager';
-
-export class ManagerActionModal extends BaseModal {
-  private readonly titleForManagerModal: ManagerModalType;
-  readonly uniqueElement: Locator;
-
-  constructor(page: Page, modalType: ManagerModalType) {
-    super(page);
-    this.titleForManagerModal = modalType;
-    this.uniqueElement = this.page.getByRole('heading', {
-      name: this.titleForManagerModal,
-      exact: true,
-    });
-  }
-
+export class assignManagerModal extends BaseModal {
+  readonly modalTitle = this.page.getByRole('heading', {
+    name: 'Assign Manage',
+    exact: true,
+  });
   readonly managerSearchInput = this.page.locator('#manager-search-input');
   readonly managerList = this.page.locator('#manager-list');
   readonly saveButton = this.page.locator('#update-manager-btn');
+  uniqueElement = this.modalTitle;
 
   @logStep('Get modal title')
   async getModalTitle() {

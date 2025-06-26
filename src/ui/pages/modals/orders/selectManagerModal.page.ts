@@ -1,14 +1,12 @@
 import { BaseModal } from '../baseModal.page';
 import { logStep } from 'utils/reporter.utils';
 
-export class assignManagerModal extends BaseModal {
-  readonly modalTitle = this.page.getByRole('heading', {
-    name: 'Assign Manage',
-    exact: true,
-  });
+export class SelectManagerModal extends BaseModal {
+  readonly modalTitle = this.page.locator('h5.modal-title');
   readonly managerSearchInput = this.page.locator('#manager-search-input');
   readonly managerList = this.page.locator('#manager-list');
   readonly saveButton = this.page.locator('#update-manager-btn');
+
   uniqueElement = this.modalTitle;
 
   @logStep('Get modal title')
@@ -16,7 +14,7 @@ export class assignManagerModal extends BaseModal {
     return await this.uniqueElement.innerText();
   }
 
-  @logStep('fill the manager search input')
+  @logStep('Fill the manager search input')
   async fillManagerSearchInput(managerName: string) {
     await this.managerSearchInput.fill(managerName);
   }

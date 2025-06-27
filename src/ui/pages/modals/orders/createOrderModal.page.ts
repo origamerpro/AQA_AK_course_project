@@ -32,7 +32,7 @@ export class createOrderModal extends BaseModal {
   }
 
   @logStep('Select product in specific position')
-  async selectProductAtPosition(productName: string, position: number) {
+  async selectProductAtPosition(productName: string, position = 0) {
     // position начинается с 1 для лучшей читаемости в тестах
     await this.productsList
       .nth(position - 1)

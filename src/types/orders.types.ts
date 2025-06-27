@@ -78,11 +78,12 @@ export interface IProductFromOrder extends IProduct {
 }
 
 export interface IAddress {
+  location?: string;
   country: COUNTRIES;
   city: string;
   street: string;
-  house: number;
-  flat: number;
+  house: string;
+  flat: string;
 }
 
 export interface IDelivery {

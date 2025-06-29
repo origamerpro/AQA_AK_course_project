@@ -1,11 +1,16 @@
-import { OrdersListColumn } from 'data/orders/ordersListColumn.data';
+import test from '@playwright/test';
+import {
+  OrdersListColumn,
+  OrdersListColumnForSorting,
+} from 'data/orders/ordersListColumn.data';
+import { sortDirection } from 'types/api.types';
 import { SalesPortalPage } from 'ui/pages/salesPortal.page';
 import { logStep } from 'utils/reporter.utils';
 
-export class OrdersListPage extends SalesPortalPage {
+export class OrdersPage extends SalesPortalPage {
   // Верхняя часть страницы Orders List
   readonly ordersListTitle = this.page.getByRole('heading', {
-    name: 'Orders List',
+    name: 'Orders List ',
   });
   readonly createOrderButton = this.page.getByRole('button', {
     name: 'Create Order',
@@ -16,8 +21,15 @@ export class OrdersListPage extends SalesPortalPage {
   readonly chipButtonsContainer = this.page.locator('#chip-buttons');
   readonly allChips = this.chipButtonsContainer.locator('.chip');
   readonly allChipCloseButtons = this.chipButtonsContainer.locator('.closebtn');
-
-  uniqueElement = this.ordersListTitle;
+  getChipByText(chipText: string) {
+    return this.chipButtonsContainer.locator(`.chip:has-text("${chipText}")`);
+  }
+  getChipCloseButtonByText(chipText: string) {
+    return this.getChipByText(chipText).locator('.close');
+  }
+  getChipButtonByIndex(index: number) {
+    return this.allChips.nth(index);
+  }
 
   // Табличная часть страницы Orders List
   readonly tableContainer = this.page.locator('#table-orders');
@@ -69,9 +81,26 @@ export class OrdersListPage extends SalesPortalPage {
   readonly nextPageButton = this.paginationButtonsContainer.locator(
     'button[title="Next"]',
   );
+  getPageByNumber(pageNumber: number) {
+    return this.paginationButtonsContainer.getByRole('button', {
+      name: String(pageNumber),
+      exact: true,
+    });
+  }
+  detailsButtonByOrderNumber(orderNumber: string) {
+    return this.tableRowByOrderNumber(orderNumber).locator(
+      'a.btn-link.table-btn:has(i.bi-card-text)',
+    );
+  }
+  reopenButtonByOrderNumber(orderNumber: string) {
+    return this.tableRowByOrderNumber(orderNumber).locator(
+      'button.btn-link.table-btn i.bi-box-arrow-in-right',
+    );
+  }
+
+  uniqueElement = this.ordersListTitle;
 
   // Методы для работы с Orders List
-
   @logStep('Get Orders List Title')
   async getOrdersListTitle() {
     return this.ordersListTitle.innerText();
@@ -96,37 +125,6 @@ export class OrdersListPage extends SalesPortalPage {
   async clickFilterButton() {
     await this.filterButton.click();
   }
-
-  getChipByText(chipText: string) {
-    return this.chipButtonsContainer.locator(`.chip:has-text("${chipText}")`);
-  }
-
-  getChipCloseButtonByText(chipText: string) {
-    return this.getChipByText(chipText).locator('.close');
-  }
-
-  getChipButtonByIndex(index: number) {
-    return this.allChips.nth(index);
-  }
-
-  getPageByNumber(pageNumber: number) {
-    return this.paginationButtonsContainer.getByRole('button', {
-      name: String(pageNumber),
-      exact: true,
-    });
-  }
-  detailsButtonByOrderNumber(orderNumber: string) {
-    return this.tableRowByOrderNumber(orderNumber).locator(
-      'a.btn-link.table-btn:has(i.bi-card-text)',
-    );
-  }
-
-  reopenButtonByOrderNumber(orderNumber: string) {
-    return this.tableRowByOrderNumber(orderNumber).locator(
-      'button.btn-link.table-btn i.bi-box-arrow-in-right',
-    );
-  }
-  ////////////
 
   async getCellTextByOrderNumberAndColumn(
     orderNumber: string,
@@ -158,7 +156,7 @@ export class OrdersListPage extends SalesPortalPage {
     await reopenButton.click();
   }
 
-  async clickColumnHeaderForSort(columnName: OrdersListColumn) {
+  async clickColumnHeaderForSort(columnName: OrdersListColumnForSorting) {
     const columnHeader = this.tableHeader.locator(
       'th div[onclick*="sortOrdersInTable"]',
       { hasText: columnName },
@@ -166,6 +164,65 @@ export class OrdersListPage extends SalesPortalPage {
     await columnHeader.click();
   }
 
+  private getSortableColumnHeaderLocator(
+    columnName: OrdersListColumnForSorting,
+  ) {
+    return this.tableHeader.locator('th div[onclick*="sortOrdersInTable"]', {
+      hasText: columnName,
+    });
+  }
+
+  async getCurrentSortDirection(columnName: OrdersListColumnForSorting) {
+    return await test.step(`Get current sort direction for column ${columnName}`, async () => {
+      const columnHeader = this.getSortableColumnHeaderLocator(columnName);
+
+      const isCurrent = await columnHeader.getAttribute('current');
+
+      if (isCurrent === 'true') {
+        const direction = await columnHeader.getAttribute('direction');
+        if (direction === 'asc' || direction === 'desc') {
+          return direction;
+        }
+      }
+      return 'none';
+    });
+  }
+
+  async sortColumnBy(
+    columnName: OrdersListColumnForSorting,
+    direction: sortDirection,
+  ) {
+    return await test.step(`Sort column ${columnName} by ${direction} direction`, async () => {
+      const currentDirection = await this.getCurrentSortDirection(columnName);
+
+      if (currentDirection === direction) {
+        // 1. Колонка уже отсортирована в нужном направлении - выходим.
+        return;
+      } else if (currentDirection === 'none') {
+        // 2. Колонка не отсортирована.
+        // Нужно один или два клика, чтобы достичь нужного направления (none -> asc -> desc)
+        await this.clickColumnHeaderForSort(columnName); // Первый клик: none -> asc
+        const afterFirstClickDirection =
+          await this.getCurrentSortDirection(columnName);
+
+        if (afterFirstClickDirection !== direction) {
+          await this.clickColumnHeaderForSort(columnName); // Второй клик: asc -> desc
+        }
+      } else {
+        // 3. Колонка отсортирована, но в другом направлении (asc -> desc или desc -> asc/none).
+        // Достаточно одного клика, чтобы переключиться на следующее состояние.
+        await this.clickColumnHeaderForSort(columnName);
+      }
+
+      // Финальная проверка, чтобы убедиться, что сортировка установлена правильно
+      const finalDirection = await this.getCurrentSortDirection(columnName);
+      if (finalDirection !== direction) {
+        throw new Error(
+          `Failed to sort column "${columnName}" to "${direction}" direction. Current: "${finalDirection}".`,
+        );
+      }
+    });
+  }
   async getRowCount() {
     return await this.allTableRows.count();
   }

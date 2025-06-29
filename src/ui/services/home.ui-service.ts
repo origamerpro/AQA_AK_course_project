@@ -3,9 +3,11 @@ import { ModuleName } from 'types/home.types';
 import { HomePage } from 'ui/pages/home.page';
 import { logStep } from 'utils/reporter.utils';
 import { BaseUIService } from './base.ui-service';
+import { OrdersPage } from 'ui/pages/orders/orders.page';
 
 export class HomeUIService extends BaseUIService {
   readonly homePage = new HomePage(this.page);
+  readonly ordersPage = new OrdersPage(this.page);
 
   async openModule(moduleName: ModuleName) {
     return await test.step(`Open ${moduleName} module on Home Page`, async () => {

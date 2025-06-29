@@ -31,15 +31,15 @@ export class SalesPortalPage extends PageHolder {
 
   uniqueElement = this.portalTitle;
 
-  @logStep('Navigate to {name}')
+  @logStep('Navigate to a page')
   async navigateTo(
     name: 'home' | 'orders' | 'products' | 'customers' | 'managers',
   ) {
     await this.navItem(name).click();
   }
 
-  @logStep('Check if {name} is active')
-  async isNavItemActive(name: string): Promise<boolean> {
+  @logStep('Check if the navigation item is active')
+  async isNavItemActive(name: string): Promise<boolean | undefined> {
     const classes = await this.navItem(name).getAttribute('class');
     return classes?.includes('active');
   }
@@ -50,12 +50,12 @@ export class SalesPortalPage extends PageHolder {
   }
 
   @logStep('Toggle theme')
-  async toggleTheme() {
+  async clickToggleTheme() {
     await this.userControls.themeToggle.click();
   }
 
   @logStep('Open notifications')
-  async openNotifications() {
+  async clickOpenNotifications() {
     await this.notifications.button.click();
   }
 
@@ -67,7 +67,7 @@ export class SalesPortalPage extends PageHolder {
   }
 
   @logStep('Sign out')
-  async signOut() {
+  async clickSignOut() {
     await this.userControls.signOutButton.click();
   }
 

@@ -41,7 +41,7 @@ export class SalesPortalPage extends PageHolder {
   @logStep('Check if {name} is active')
   async isNavItemActive(name: string): Promise<boolean> {
     const classes = await this.navItem(name).getAttribute('class');
-    return classes?.includes('active') ?? false;
+    return classes?.includes('active');
   }
 
   @logStep('Get current active navigation item')

@@ -1,10 +1,10 @@
 import { BaseModal } from '../baseModal.page';
 import { logStep } from 'utils/reporter.utils';
 export class ConfirmationModal extends BaseModal {
-  readonly modalTitle = this.page.locator('.modal-header h5');
-  readonly confirmButton = this.page.locator('.modal-footer .btn-danger');
-  readonly modalContent = this.page.locator('.modal-body-text > p');
-
+  readonly modalContainer = this.page.locator('.modal-content');
+  readonly modalTitle = this.modalContainer.locator('h5.modal-title');
+  readonly confirmButton = this.modalContainer.locator('button.btn-primary');
+  readonly modalContent = this.modalContainer.locator('.modal-body-text > p');
   uniqueElement = this.modalTitle;
 
   @logStep('Get modal title')

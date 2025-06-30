@@ -33,13 +33,14 @@ export class DataDisposalUtils {
   async clearOrders(orderIds: string[] | string) {
     orderIds = await this.normalizeIds(orderIds);
     if (!orderIds.length) return;
+    console.log(` Deleting ${orderIds} orderIds`);
     const authToken = await this.getToken();
 
     for (const orderId of orderIds) {
       try {
         await this.ordersApiService.deleteOrder(orderId, authToken);
       } catch (error) {
-        console.error(` The product ${orderId} was not deleted}`, error);
+        console.error(` The order ${orderId} was not deleted}`, error);
       }
     }
   }
@@ -62,13 +63,14 @@ export class DataDisposalUtils {
   async clearCustomers(customerIds: string[] | string) {
     customerIds = await this.normalizeIds(customerIds);
     if (!customerIds.length) return;
+    console.log(` Deleting ${customerIds} customersIds`);
     const authToken = await this.getToken();
 
     for (const customerId of customerIds) {
       try {
         await this.customersApiService.deleteCustomer(customerId, authToken);
       } catch (error) {
-        console.error(` The product ${customerId} was not deleted}`, error);
+        console.error(` The customer ${customerId} was not deleted}`, error);
       }
     }
   }

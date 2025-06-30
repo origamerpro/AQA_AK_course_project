@@ -75,11 +75,7 @@ export class NotificationsModal extends BaseModal {
     const isRead =
       (await this.notificationContents.nth(index).getAttribute('data-read')) ===
       'true';
-    const fontWeight = await this.notificationTexts
-      .nth(index)
-      .evaluate((el) => window.getComputedStyle(el).fontWeight);
-
-    return !isRead && (fontWeight === '700' || fontWeight === 'bold');
+    return !isRead;
   }
 
   @logStep('Click on notification content by index')

@@ -1,3 +1,4 @@
+import { expect } from '@playwright/test';
 import { SalesPortalPage } from 'ui/pages/salesPortal.page';
 
 export class OrderDetailsReceivedProductsSection extends SalesPortalPage {
@@ -15,25 +16,25 @@ export class OrderDetailsReceivedProductsSection extends SalesPortalPage {
   );
   readonly allProductAccordionHeaders =
     this.productsAccordionSection.locator('.accordion-header');
-  readonly productAccordionHeaderButtonByName = (productName: string) =>
+  productAccordionHeaderButtonByName = (productName: string) =>
     this.productsAccordionSection.locator('button.accordion-button', {
       hasText: productName,
     });
-  productDetailsPanelByName(productName: string) {
-    const productHeader = this.productsAccordionSection.locator(
+  productDetailsPanelByName = (productName: string) => {
+    const productHeaders = this.productsAccordionSection.locator(
       `div.accordion-header:has(button:has-text("${productName}"))`,
     );
-    return productHeader.locator('+ .accordion-collapse .accordion-body');
-  }
+    return productHeaders.locator('+ .accordion-collapse .accordion-body');
+  };
   readonly allReceivedStatusSpans = this.productsAccordionSection.locator(
     'span.received-label',
   );
-  receivedStatusSpanTextByProductName(productName: string) {
-    const productHeader = this.productsAccordionSection.locator(
+  receivedStatusSpanTextByProductName = (productName: string) => {
+    const productHeaders = this.productsAccordionSection.locator(
       `div.accordion-header:has(button:has-text("${productName}"))`,
     );
-    return productHeader.locator('span.received-label');
-  }
+    return productHeaders.locator('span.received-label');
+  };
 
   // Локаторы раздела "Received Products" для заказа в статусе "In Process"
   readonly receiveButton = this.productsContainer.locator(
@@ -48,25 +49,25 @@ export class OrderDetailsReceivedProductsSection extends SalesPortalPage {
   );
 
   readonly selectAllCheckbox = this.productsContainer.locator('#selectAll');
-  productReceivedCheckboxByName(productName: string) {
-    const productHeader = this.productsAccordionSection.locator(
+  productReceivedCheckboxByName = (productName: string) => {
+    const productHeaders = this.productsAccordionSection.locator(
       `div.accordion-header:has(button:has-text("${productName}"))`,
     );
-    return productHeader.locator(
+    return productHeaders.locator(
       'div.received-label input.form-check-input[type="checkbox"][name="product"]',
     );
-  }
+  };
   readonly allReceivedCheckboxesLabels = this.productsAccordionSection.locator(
     'div.received-label label.form-check-label',
   );
-  receivedCheckboxLabelTextByProductName(productName: string) {
-    const productHeader = this.productsAccordionSection.locator(
+  receivedCheckboxLabelTextByProductName = (productName: string) => {
+    const productHeaders = this.productsAccordionSection.locator(
       `div.accordion-header:has(button:has-text("${productName}"))`,
     );
-    return productHeader.locator(
+    return productHeaders.locator(
       'div.received-label label.form-check-label[for^="check"]',
     );
-  }
+  };
 
   uniqueElement = this.title;
 
@@ -83,28 +84,33 @@ export class OrderDetailsReceivedProductsSection extends SalesPortalPage {
     return await this.allProductAccordionHeaders.count();
   }
 
-  async clickProductAccordionHeaderButton(productName: string) {
-    await this.productAccordionHeaderButtonByName(productName).click();
+  async clickProductAccordionHeaderButton(
+    productName: string,
+    index: number = 0,
+  ) {
+    await this.productAccordionHeaderButtonByName(productName)
+      .nth(index)
+      .click();
   }
 
-  async isProductAccordionExpanded(productName: string) {
-    const button = this.productAccordionHeaderButtonByName(productName);
-    console.log('Value of button:', button);
-
-    console.log(
-      'Value of aria-expanded:',
-      await button.getAttribute('aria-expanded'),
-    );
+  async isProductAccordionExpanded(productName: string, index: number = 0) {
+    const button =
+      this.productAccordionHeaderButtonByName(productName).nth(index);
+    await expect(button).toBeVisible();
     return (await button.getAttribute('aria-expanded')) === 'true';
   }
 
-  async isProductAccordionCollapsed(productName: string) {
-    const button = this.productAccordionHeaderButtonByName(productName);
+  async isProductAccordionCollapsed(productName: string, index: number = 0) {
+    const button =
+      this.productAccordionHeaderButtonByName(productName).nth(index);
+    await expect(button).toBeVisible();
     return (await button.getAttribute('aria-expanded')) === 'false';
   }
 
-  async getProductDetailsAsObject(productName: string) {
-    const detailsPanel = this.productDetailsPanelByName(productName);
+  async getProductDetailsAsObject(productName: string, index: number = 0) {
+    const detailsPanel = this.productDetailsPanelByName(productName).nth(index);
+    await expect(detailsPanel).toBeVisible();
+
     const detailElements = await detailsPanel.locator('div.c-details').all();
 
     const productDetails: Record<string, string> = {};
@@ -126,10 +132,11 @@ export class OrderDetailsReceivedProductsSection extends SalesPortalPage {
     return await this.allReceivedStatusSpans.allInnerTexts();
   }
 
-  async getProductReceivedStatusText(productName: string) {
-    return await this.receivedStatusSpanTextByProductName(
-      productName,
-    ).innerText();
+  async getProductReceivedStatusText(productName: string, index: number = 0) {
+    const statusSpan =
+      this.receivedStatusSpanTextByProductName(productName).nth(index);
+    await expect(statusSpan).toBeVisible();
+    return await statusSpan.innerText();
   }
 
   // Методы для взаимодействия с элементами раздела "Received Products" для заказа в статусе "In Process"
@@ -150,19 +157,30 @@ export class OrderDetailsReceivedProductsSection extends SalesPortalPage {
     await this.selectAllCheckbox.click();
   }
 
-  async setProductReceivedCheckbox(productName: string, checkState: boolean) {
-    const checkbox = this.productReceivedCheckboxByName(productName);
+  async setProductReceivedCheckbox(
+    productName: string,
+    checkState: boolean,
+    index: number = 0,
+  ) {
+    const checkbox = this.productReceivedCheckboxByName(productName).nth(index);
+    await expect(checkbox).toBeVisible();
     await (checkState ? checkbox.check() : checkbox.uncheck());
   }
 
-  async isProductReceivedCheckboxChecked(productName: string) {
-    return await this.productReceivedCheckboxByName(productName).isChecked();
+  async isProductReceivedCheckboxChecked(
+    productName: string,
+    index: number = 0,
+  ) {
+    const checkbox = this.productReceivedCheckboxByName(productName).nth(index);
+    await expect(checkbox).toBeVisible();
+    return await checkbox.isChecked();
   }
 
-  async getProductReceivedLabelText(productName: string) {
-    return await this.receivedCheckboxLabelTextByProductName(
-      productName,
-    ).innerText();
+  async getProductReceivedLabelText(productName: string, index: number = 0) {
+    const label =
+      this.receivedCheckboxLabelTextByProductName(productName).nth(index);
+    await expect(label).toBeVisible();
+    return await label.innerText();
   }
 
   async isSelectAllCheckboxChecked() {

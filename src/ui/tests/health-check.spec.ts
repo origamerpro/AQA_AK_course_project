@@ -33,58 +33,58 @@ test.describe('[UI] [Sales Portal]', () => {
     );
   });
   test.describe('Orders Details - Received Products section - Orders in Draft', () => {
-    const TEST_ORDER_ID = '68605c421c508c5d5e6ac054';
-    const PRODUCT_NAME_1 = 'Product 1751120780123';
+    const TEST_ORDER_ID = '68618f821c508c5d5e6b9842';
+    const PRODUCT_NAME_1 = 'Product 1751224193253 vUjpOfYLCt';
     test('Verify section title "Requested Products"', async ({
       homeUIService,
       ordersPage,
-      ordersDetailsReceivedProductsSection,
+      orderDetailsPage,
     }) => {
       await homeUIService.openAsLoggedInUser();
       await homeUIService.openModule('Orders');
       await ordersPage.waitForOpened();
       await ordersPage.clickDetailsButton(TEST_ORDER_ID);
-      await ordersDetailsReceivedProductsSection.waitForOpened();
-      const title = await ordersDetailsReceivedProductsSection.getTitle();
+      await orderDetailsPage.receivedProductsSection.waitForOpened();
+      const title = await orderDetailsPage.receivedProductsSection.getTitle();
       await expect(title).toBe('Requested Products');
     });
 
     test('Verify products accordion count', async ({
       homeUIService,
       ordersPage,
-      ordersDetailsReceivedProductsSection,
+      orderDetailsPage,
     }) => {
       await homeUIService.openAsLoggedInUser();
       await homeUIService.openModule('Orders');
       await ordersPage.waitForOpened();
       await ordersPage.clickDetailsButton(TEST_ORDER_ID);
-      await ordersDetailsReceivedProductsSection.waitForOpened();
+      await orderDetailsPage.receivedProductsSection.waitForOpened();
 
       const productCount =
-        await ordersDetailsReceivedProductsSection.getProductsAccordionCount();
-      await expect(productCount).toEqual(2);
+        await orderDetailsPage.receivedProductsSection.getProductsAccordionCount();
+      await expect(productCount).toEqual(1);
     });
 
     test('Verify product received statuses', async ({
       homeUIService,
       ordersPage,
-      ordersDetailsReceivedProductsSection,
+      orderDetailsPage,
     }) => {
       await homeUIService.openAsLoggedInUser();
       await homeUIService.openModule('Orders');
       await ordersPage.waitForOpened();
       await ordersPage.clickDetailsButton(TEST_ORDER_ID);
-      await ordersDetailsReceivedProductsSection.waitForOpened();
+      await orderDetailsPage.receivedProductsSection.waitForOpened();
 
       const productCount =
-        await ordersDetailsReceivedProductsSection.getProductsAccordionCount();
+        await orderDetailsPage.receivedProductsSection.getProductsAccordionCount();
       const allStatuses =
-        await ordersDetailsReceivedProductsSection.getAllProductReceivedStatusTexts();
+        await orderDetailsPage.receivedProductsSection.getAllProductReceivedStatusTexts();
       await expect(allStatuses.length).toBe(productCount);
       await expect(allStatuses).toContain('Not Received');
 
       const status1 =
-        await ordersDetailsReceivedProductsSection.getProductReceivedStatusText(
+        await orderDetailsPage.receivedProductsSection.getProductReceivedStatusText(
           PRODUCT_NAME_1,
         );
       await expect(status1).toBe('Not Received');
@@ -93,37 +93,33 @@ test.describe('[UI] [Sales Portal]', () => {
     test(
       'Verify product accordion expanded/collapsed state',
       { tag: [TAGS.SMOKE] },
-      async ({
-        homeUIService,
-        ordersPage,
-        ordersDetailsReceivedProductsSection,
-      }) => {
+      async ({ homeUIService, ordersPage, orderDetailsPage }) => {
         await homeUIService.openAsLoggedInUser();
         await homeUIService.openModule('Orders');
         await ordersPage.waitForOpened();
         await ordersPage.clickDetailsButton(TEST_ORDER_ID);
-        await ordersDetailsReceivedProductsSection.waitForOpened();
+        await orderDetailsPage.receivedProductsSection.waitForOpened();
 
         let isExpanded1 =
-          await ordersDetailsReceivedProductsSection.isProductAccordionExpanded(
+          await orderDetailsPage.receivedProductsSection.isProductAccordionExpanded(
             PRODUCT_NAME_1,
           );
         let isCollapsed1 =
-          await ordersDetailsReceivedProductsSection.isProductAccordionCollapsed(
+          await orderDetailsPage.receivedProductsSection.isProductAccordionCollapsed(
             PRODUCT_NAME_1,
           );
         await expect(isExpanded1).toBe(false);
         await expect(isCollapsed1).toBe(true);
 
-        await ordersDetailsReceivedProductsSection.clickProductAccordionHeaderButton(
+        await orderDetailsPage.receivedProductsSection.clickProductAccordionHeaderButton(
           PRODUCT_NAME_1,
         );
         isExpanded1 =
-          await ordersDetailsReceivedProductsSection.isProductAccordionExpanded(
+          await orderDetailsPage.receivedProductsSection.isProductAccordionExpanded(
             PRODUCT_NAME_1,
           );
         isCollapsed1 =
-          await ordersDetailsReceivedProductsSection.isProductAccordionCollapsed(
+          await orderDetailsPage.receivedProductsSection.isProductAccordionCollapsed(
             PRODUCT_NAME_1,
           );
         await expect(isExpanded1).toBe(true);
@@ -134,46 +130,38 @@ test.describe('[UI] [Sales Portal]', () => {
     test(
       'Verify clickEditProductsPencilButton',
       { tag: [TAGS.SMOKE] },
-      async ({
-        homeUIService,
-        ordersPage,
-        ordersDetailsReceivedProductsSection,
-      }) => {
+      async ({ homeUIService, ordersPage, orderDetailsPage }) => {
         await homeUIService.openAsLoggedInUser();
         await homeUIService.openModule('Orders');
         await ordersPage.waitForOpened();
         await ordersPage.clickDetailsButton(TEST_ORDER_ID);
-        await ordersDetailsReceivedProductsSection.waitForOpened();
+        await orderDetailsPage.receivedProductsSection.waitForOpened();
 
-        await ordersDetailsReceivedProductsSection.clickEditProductsPencilButton();
+        await orderDetailsPage.receivedProductsSection.clickEditProductsPencilButton();
       },
     );
 
     test(
       'Verify product details as object',
       { tag: [TAGS.SMOKE] },
-      async ({
-        homeUIService,
-        ordersPage,
-        ordersDetailsReceivedProductsSection,
-      }) => {
+      async ({ homeUIService, ordersPage, orderDetailsPage }) => {
         await homeUIService.openAsLoggedInUser();
         await homeUIService.openModule('Orders');
         await ordersPage.waitForOpened();
         await ordersPage.clickDetailsButton(TEST_ORDER_ID);
-        await ordersDetailsReceivedProductsSection.waitForOpened();
+        await orderDetailsPage.receivedProductsSection.waitForOpened();
 
-        await ordersDetailsReceivedProductsSection.clickProductAccordionHeaderButton(
+        await orderDetailsPage.receivedProductsSection.clickProductAccordionHeaderButton(
           PRODUCT_NAME_1,
         );
         const expandedForDetails1 =
-          await ordersDetailsReceivedProductsSection.isProductAccordionExpanded(
+          await orderDetailsPage.receivedProductsSection.isProductAccordionExpanded(
             PRODUCT_NAME_1,
           );
         await expect(expandedForDetails1).toBe(true);
 
         const details1 =
-          await ordersDetailsReceivedProductsSection.getProductDetailsAsObject(
+          await orderDetailsPage.receivedProductsSection.getProductDetailsAsObject(
             PRODUCT_NAME_1,
           );
         await expect(details1.Name).toBe(PRODUCT_NAME_1);
@@ -185,101 +173,97 @@ test.describe('[UI] [Sales Portal]', () => {
     );
   });
   test.describe('Orders Details - Received Products section - Orders in Progress', () => {
-    const TEST_ORDER_ID = '686152581c508c5d5e6b5360';
-    const PRODUCT_NAME_1 = 'Product 1751208537175';
+    const TEST_ORDER_ID = '68618f821c508c5d5e6b9842';
+    const PRODUCT_NAME_1 = 'Product 1751224193253 vUjpOfYLCt';
     test('Verify click on Receive button', async ({
       homeUIService,
       ordersPage,
-      ordersDetailsReceivedProductsSection,
+      orderDetailsPage,
     }) => {
       await homeUIService.openAsLoggedInUser();
       await homeUIService.openModule('Orders');
       await ordersPage.waitForOpened();
       await ordersPage.clickDetailsButton(TEST_ORDER_ID);
-      await ordersDetailsReceivedProductsSection.waitForOpened();
+      await orderDetailsPage.receivedProductsSection.waitForOpened();
 
-      await ordersDetailsReceivedProductsSection.clickReceiveButton();
+      await orderDetailsPage.receivedProductsSection.clickReceiveButton();
     });
 
     test('Verify "Select All" checkbox', async ({
       homeUIService,
       ordersPage,
-      ordersDetailsReceivedProductsSection,
+      orderDetailsPage,
     }) => {
       await homeUIService.openAsLoggedInUser();
       await homeUIService.openModule('Orders');
       await ordersPage.waitForOpened();
       await ordersPage.clickDetailsButton(TEST_ORDER_ID);
-      await ordersDetailsReceivedProductsSection.waitForOpened();
+      await orderDetailsPage.receivedProductsSection.waitForOpened();
 
       await expect(
-        ordersDetailsReceivedProductsSection.receiveButton,
+        orderDetailsPage.receivedProductsSection.receiveButton,
       ).toBeVisible();
-      await ordersDetailsReceivedProductsSection.clickReceiveButton();
+      await orderDetailsPage.receivedProductsSection.clickReceiveButton();
 
       await expect(
-        ordersDetailsReceivedProductsSection.cancelReceivingButton,
+        orderDetailsPage.receivedProductsSection.cancelReceivingButton,
       ).toBeVisible();
       await expect(
-        ordersDetailsReceivedProductsSection.saveReceivedProductsButton,
+        orderDetailsPage.receivedProductsSection.saveReceivedProductsButton,
       ).toBeVisible();
 
       const initialSelectAllChecked =
-        await ordersDetailsReceivedProductsSection.isSelectAllCheckboxChecked();
+        await orderDetailsPage.receivedProductsSection.isSelectAllCheckboxChecked();
       await expect(initialSelectAllChecked).toBe(false);
 
-      await ordersDetailsReceivedProductsSection.clickSelectAllCheckbox();
+      await orderDetailsPage.receivedProductsSection.clickSelectAllCheckbox();
       const afterClickSelectAllChecked =
-        await ordersDetailsReceivedProductsSection.isSelectAllCheckboxChecked();
+        await orderDetailsPage.receivedProductsSection.isSelectAllCheckboxChecked();
       await expect(afterClickSelectAllChecked).toBe(true);
 
-      await ordersDetailsReceivedProductsSection.clickSelectAllCheckbox();
+      await orderDetailsPage.receivedProductsSection.clickSelectAllCheckbox();
       const afterUncheckSelectAllChecked =
-        await ordersDetailsReceivedProductsSection.isSelectAllCheckboxChecked();
+        await orderDetailsPage.receivedProductsSection.isSelectAllCheckboxChecked();
       await expect(afterUncheckSelectAllChecked).toBe(false);
     });
 
     test(
       'Verify individual product received checkbox',
       { tag: [TAGS.SMOKE] },
-      async ({
-        homeUIService,
-        ordersPage,
-        ordersDetailsReceivedProductsSection,
-      }) => {
+      async ({ homeUIService, ordersPage, orderDetailsPage }) => {
         await homeUIService.openAsLoggedInUser();
         await homeUIService.openModule('Orders');
         await ordersPage.waitForOpened();
         await ordersPage.clickDetailsButton(TEST_ORDER_ID);
-        await ordersDetailsReceivedProductsSection.waitForOpened();
+        await orderDetailsPage.receivedProductsSection.waitForOpened();
 
         await expect(
-          ordersDetailsReceivedProductsSection.receiveButton,
+          orderDetailsPage.receivedProductsSection.receiveButton,
         ).toBeVisible();
-        await ordersDetailsReceivedProductsSection.clickReceiveButton();
+        await orderDetailsPage.receivedProductsSection.clickReceiveButton();
 
         const initialChecked =
-          await ordersDetailsReceivedProductsSection.isProductReceivedCheckboxChecked(
+          await orderDetailsPage.receivedProductsSection.isProductReceivedCheckboxChecked(
             PRODUCT_NAME_1,
           );
         await expect(initialChecked).toBe(false);
 
-        await ordersDetailsReceivedProductsSection.setProductReceivedCheckbox(
+        await orderDetailsPage.receivedProductsSection.setProductReceivedCheckbox(
           PRODUCT_NAME_1,
           true,
         );
         const afterCheck =
-          await ordersDetailsReceivedProductsSection.isProductReceivedCheckboxChecked(
+          await orderDetailsPage.receivedProductsSection.isProductReceivedCheckboxChecked(
             PRODUCT_NAME_1,
           );
         await expect(afterCheck).toBe(true);
 
-        await ordersDetailsReceivedProductsSection.setProductReceivedCheckbox(
+        await orderDetailsPage.receivedProductsSection.setProductReceivedCheckbox(
           PRODUCT_NAME_1,
           false,
         );
         const afterUncheck =
-          await ordersDetailsReceivedProductsSection.isProductReceivedCheckboxChecked(
+          await orderDetailsPage.receivedProductsSection.isProductReceivedCheckboxChecked(
             PRODUCT_NAME_1,
           );
         await expect(afterUncheck).toBe(false);
@@ -289,42 +273,38 @@ test.describe('[UI] [Sales Portal]', () => {
     test(
       'Verify Cancel Receiving button',
       { tag: [TAGS.SMOKE] },
-      async ({
-        homeUIService,
-        ordersPage,
-        ordersDetailsReceivedProductsSection,
-      }) => {
+      async ({ homeUIService, ordersPage, orderDetailsPage }) => {
         await homeUIService.openAsLoggedInUser();
         await homeUIService.openModule('Orders');
         await ordersPage.waitForOpened();
         await ordersPage.clickDetailsButton(TEST_ORDER_ID);
-        await ordersDetailsReceivedProductsSection.waitForOpened();
+        await orderDetailsPage.receivedProductsSection.waitForOpened();
 
         await expect(
-          ordersDetailsReceivedProductsSection.receiveButton,
+          orderDetailsPage.receivedProductsSection.receiveButton,
         ).toBeVisible();
-        await ordersDetailsReceivedProductsSection.clickReceiveButton();
+        await orderDetailsPage.receivedProductsSection.clickReceiveButton();
 
-        await ordersDetailsReceivedProductsSection.setProductReceivedCheckbox(
+        await orderDetailsPage.receivedProductsSection.setProductReceivedCheckbox(
           PRODUCT_NAME_1,
           true,
         );
         await expect(
-          await ordersDetailsReceivedProductsSection.isProductReceivedCheckboxChecked(
+          await orderDetailsPage.receivedProductsSection.isProductReceivedCheckboxChecked(
             PRODUCT_NAME_1,
           ),
         ).toBe(true);
 
-        await ordersDetailsReceivedProductsSection.clickCancelReceivingButton();
+        await orderDetailsPage.receivedProductsSection.clickCancelReceivingButton();
 
         await expect(
-          ordersDetailsReceivedProductsSection.cancelReceivingButton,
+          orderDetailsPage.receivedProductsSection.cancelReceivingButton,
         ).not.toBeVisible();
         await expect(
-          ordersDetailsReceivedProductsSection.saveReceivedProductsButton,
+          orderDetailsPage.receivedProductsSection.saveReceivedProductsButton,
         ).not.toBeVisible();
         await expect(
-          ordersDetailsReceivedProductsSection.receiveButton,
+          orderDetailsPage.receivedProductsSection.receiveButton,
         ).toBeVisible();
       },
     );
@@ -332,36 +312,32 @@ test.describe('[UI] [Sales Portal]', () => {
     test(
       'Verify "Save Received Products" button',
       { tag: [TAGS.SMOKE] },
-      async ({
-        homeUIService,
-        ordersPage,
-        ordersDetailsReceivedProductsSection,
-      }) => {
+      async ({ homeUIService, ordersPage, orderDetailsPage }) => {
         await homeUIService.openAsLoggedInUser();
         await homeUIService.openModule('Orders');
         await ordersPage.waitForOpened();
         await ordersPage.clickDetailsButton(TEST_ORDER_ID);
-        await ordersDetailsReceivedProductsSection.waitForOpened();
+        await orderDetailsPage.receivedProductsSection.waitForOpened();
 
         await expect(
-          ordersDetailsReceivedProductsSection.receiveButton,
+          orderDetailsPage.receivedProductsSection.receiveButton,
         ).toBeVisible();
-        await ordersDetailsReceivedProductsSection.clickReceiveButton();
-        await ordersDetailsReceivedProductsSection.waitForOpened();
-        await ordersDetailsReceivedProductsSection.setProductReceivedCheckbox(
+        await orderDetailsPage.receivedProductsSection.clickReceiveButton();
+        await orderDetailsPage.receivedProductsSection.waitForOpened();
+        await orderDetailsPage.receivedProductsSection.setProductReceivedCheckbox(
           PRODUCT_NAME_1,
           true,
         );
         await expect(
-          await ordersDetailsReceivedProductsSection.isProductReceivedCheckboxChecked(
+          await orderDetailsPage.receivedProductsSection.isProductReceivedCheckboxChecked(
             PRODUCT_NAME_1,
           ),
         ).toBe(true);
 
-        await ordersDetailsReceivedProductsSection.clickSaveReceivedProductsButton();
-        await ordersDetailsReceivedProductsSection.waitForOpened();
+        await orderDetailsPage.receivedProductsSection.clickSaveReceivedProductsButton();
+        await orderDetailsPage.receivedProductsSection.waitForOpened();
         const updatedStatus =
-          await ordersDetailsReceivedProductsSection.getProductReceivedStatusText(
+          await orderDetailsPage.receivedProductsSection.getProductReceivedStatusText(
             PRODUCT_NAME_1,
           );
         await expect(updatedStatus).toBe('Received');
@@ -525,7 +501,7 @@ test.describe('[UI] [Sales Portal]', () => {
     );
   });
   test.describe('Order Details Page - Top Panel and Received Products Section', () => {
-    const TEST_ORDER_ID = '6861529a1c508c5d5e6b53aa';
+    const TEST_ORDER_ID = '68618f851c508c5d5e6b9983';
     test(
       'should verify order details from top panel and add a received product',
       { tag: [TAGS.SMOKE] },

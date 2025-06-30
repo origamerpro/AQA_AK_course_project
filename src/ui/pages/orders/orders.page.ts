@@ -196,25 +196,19 @@ export class OrdersPage extends SalesPortalPage {
       const currentDirection = await this.getCurrentSortDirection(columnName);
 
       if (currentDirection === direction) {
-        // 1. Колонка уже отсортирована в нужном направлении - выходим.
         return;
       } else if (currentDirection === 'none') {
-        // 2. Колонка не отсортирована.
-        // Нужно один или два клика, чтобы достичь нужного направления (none -> asc -> desc)
-        await this.clickColumnHeaderForSort(columnName); // Первый клик: none -> asc
+        await this.clickColumnHeaderForSort(columnName);
         const afterFirstClickDirection =
           await this.getCurrentSortDirection(columnName);
 
         if (afterFirstClickDirection !== direction) {
-          await this.clickColumnHeaderForSort(columnName); // Второй клик: asc -> desc
+          await this.clickColumnHeaderForSort(columnName);
         }
       } else {
-        // 3. Колонка отсортирована, но в другом направлении (asc -> desc или desc -> asc/none).
-        // Достаточно одного клика, чтобы переключиться на следующее состояние.
         await this.clickColumnHeaderForSort(columnName);
       }
 
-      // Финальная проверка, чтобы убедиться, что сортировка установлена правильно
       const finalDirection = await this.getCurrentSortDirection(columnName);
       if (finalDirection !== direction) {
         throw new Error(

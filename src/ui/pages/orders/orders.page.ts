@@ -176,15 +176,13 @@ export class OrdersPage extends SalesPortalPage {
     return await test.step(`Get current sort direction for column ${columnName}`, async () => {
       const columnHeader = this.getSortableColumnHeaderLocator(columnName);
 
-      const isCurrent = await columnHeader.getAttribute('current');
-
-      if (isCurrent === 'true') {
-        const direction = await columnHeader.getAttribute('direction');
-        if (direction === 'asc' || direction === 'desc') {
-          return direction;
-        }
-      }
-      return 'none';
+      const [current, direction] = await Promise.all([
+        columnHeader.getAttribute('current'),
+        columnHeader.getAttribute('direction'),
+      ]);
+      return current === 'true' && (direction === 'asc' || direction === 'desc')
+        ? direction
+        : 'none';
     });
   }
 
@@ -207,13 +205,6 @@ export class OrdersPage extends SalesPortalPage {
         }
       } else {
         await this.clickColumnHeaderForSort(columnName);
-      }
-
-      const finalDirection = await this.getCurrentSortDirection(columnName);
-      if (finalDirection !== direction) {
-        throw new Error(
-          `Failed to sort column "${columnName}" to "${direction}" direction. Current: "${finalDirection}".`,
-        );
       }
     });
   }

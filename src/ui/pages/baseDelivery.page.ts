@@ -1,8 +1,10 @@
+import { expect } from '@playwright/test';
 import { logStep } from 'utils/reporter.utils';
 import { SalesPortalPage } from './salesPortal.page';
 import { IAddress, IDelivery } from 'types/orders.types';
+import { DELIVERY, LOCATION } from 'data/orders/delivery.data';
 
-export class deliveryPage extends SalesPortalPage {
+export abstract class BaseDeliveryPage extends SalesPortalPage {
   readonly deliveryType = this.page.locator('#inputType');
   readonly deliveryDate = this.page.locator('#date-input');
   readonly location = this.page.locator('#inputLocation');
@@ -15,6 +17,12 @@ export class deliveryPage extends SalesPortalPage {
   readonly cancelButton = this.page.locator('#back-to-order-details-page');
 
   uniqueElement = this.deliveryType;
+  abstract expectedTitle: string;
+
+  async verifyPageTitle() {
+    const titleLocator = this.page.locator('#title h2.fw-bold');
+    await expect(titleLocator).toHaveText(this.expectedTitle);
+  }
 
   @logStep('Select delivery type')
   async selectDeliveryType(type: string) {
@@ -23,20 +31,40 @@ export class deliveryPage extends SalesPortalPage {
 
   @logStep('Set delivery date')
   async setDeliveryDate(date: string) {
-    await this.deliveryDate.fill(date);
+    const targetDate = new Date(date);
+    const day = targetDate.getDate();
+
+    await this.deliveryDate.click();
+    await this.page.waitForSelector('.datepicker-days', { state: 'visible' });
+
+    const daySelector = `.datepicker-days td.day:not(.disabled):has-text("${day}")`;
+    const dayCell = await this.page.locator(daySelector).first();
+
+    if ((await dayCell.count()) === 0) {
+      throw new Error(`Дата ${date} недоступна для выбора`);
+    }
+    await dayCell.click();
   }
 
   @logStep('Fill address form')
-  async fillAddress(address: IAddress) {
-    if (address.location && (await this.location.isVisible())) {
-      await this.location.fill(address.location);
+  async fillAddress(address: IAddress, deliveryType: DELIVERY) {
+    if (deliveryType === DELIVERY.DELIVERY) {
+      if (address.location === LOCATION.OTHER) {
+        if (await this.location.isVisible()) {
+          await this.location.selectOption({ label: address.location });
+        }
+        await this.country.selectOption({ label: address.country });
+      } else if (address.location === LOCATION.HOME) {
+        await this.country.fill(address.country);
+      }
+    } else if (deliveryType === DELIVERY.PICKUP) {
+      await this.country.selectOption({ label: address.country });
     }
 
-    await this.country.fill(address.country);
     await this.city.fill(address.city);
     await this.street.fill(address.street);
-    await this.house.fill(address.house);
-    await this.flat.fill(address.flat);
+    await this.house.fill(address.house.toString());
+    await this.flat.fill(address.flat.toString());
   }
 
   @logStep('Click Save Delivery button')
@@ -56,6 +84,6 @@ export class deliveryPage extends SalesPortalPage {
     await this.waitForOpened();
     await this.selectDeliveryType(data.condition);
     await this.setDeliveryDate(data.finalDate);
-    await this.fillAddress(data.address);
+    await this.fillAddress(data.address, data.condition);
   }
 }

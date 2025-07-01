@@ -82,8 +82,8 @@ export interface IAddress {
   country: COUNTRIES;
   city: string;
   street: string;
-  house: string;
-  flat: string;
+  house: number;
+  flat: number;
 }
 
 export interface IDelivery {

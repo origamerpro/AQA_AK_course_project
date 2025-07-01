@@ -3,6 +3,7 @@ import { logStep } from 'utils/reporter.utils';
 import { BaseUIService } from './base.ui-service';
 import { OrdersPage } from 'ui/pages/orders/orders.page';
 import { OrderDetailsPage } from 'ui/pages/orders/orderDetails.page';
+import { PRODUCT_STATUS } from 'data/orders/productStatuses.data';
 
 export class OrderDetailsService extends BaseUIService {
   readonly orderDetailsPage = new OrderDetailsPage(this.page);
@@ -26,7 +27,7 @@ export class OrderDetailsService extends BaseUIService {
         await this.orderDetailsPage.receivedProductsSection.allReceivedStatusSpans
           .nth(i)
           .innerText();
-      expect(statusText).toBe('Received');
+      expect(statusText).toBe(PRODUCT_STATUS.RECEIVED);
     }
   }
 

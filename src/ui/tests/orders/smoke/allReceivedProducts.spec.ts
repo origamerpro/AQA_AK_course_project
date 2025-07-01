@@ -1,3 +1,4 @@
+import { PRODUCT_STATUS } from 'data/orders/productStatuses.data';
 import { TAGS } from 'data/testTags.data';
 
 import { expect, test } from 'fixtures/ordersCustom.fixture';
@@ -30,7 +31,7 @@ test.describe('[UI] [Orders] [Orders Details] [Received Products Section] Order 
       const initialProductStatusTexts =
         await orderDetailsPage.receivedProductsSection.getAllProductReceivedStatusTexts();
       initialProductStatusTexts.forEach((status) =>
-        expect(status).toBe('Not Received'),
+        expect(status).toBe(PRODUCT_STATUS.NOT_RECEIVED),
       );
       await orderDetailsService.receiveAllProducts();
       await orderDetailsService.verifyAllProductsReceived();
@@ -39,7 +40,6 @@ test.describe('[UI] [Orders] [Orders Details] [Received Products Section] Order 
 });
 
 test.describe('[UI] [Orders] [Orders Details] [Received Products Section] Order with Partially Received Products', () => {
-  let orderId: string;
   let totalProductsCount: number;
   const RECEIVED_AT_START = 1;
 
@@ -51,11 +51,10 @@ test.describe('[UI] [Orders] [Orders Details] [Received Products Section] Order 
       orderDetailsPage,
     }) => {
       const PRODUCTS_TO_CREATE_COUNT = 3;
-      const { id, productsIds } = await orderPartiallyReceivedStatus(
+      const { id: orderId, productsIds } = await orderPartiallyReceivedStatus(
         PRODUCTS_TO_CREATE_COUNT,
         RECEIVED_AT_START,
       );
-      orderId = id;
       totalProductsCount = productsIds.length;
 
       await homeUIService.openAsLoggedInUser();
@@ -73,10 +72,10 @@ test.describe('[UI] [Orders] [Orders Details] [Received Products Section] Order 
       const initialProductStatusTexts =
         await orderDetailsPage.receivedProductsSection.getAllProductReceivedStatusTexts();
       const initiallyReceivedCount = initialProductStatusTexts.filter(
-        (status) => status === 'Received',
+        (status) => status === PRODUCT_STATUS.RECEIVED,
       ).length;
       const initiallyNotReceivedCount = initialProductStatusTexts.filter(
-        (status) => status === 'Not Received',
+        (status) => status === PRODUCT_STATUS.NOT_RECEIVED,
       ).length;
 
       expect(initiallyReceivedCount).toBe(RECEIVED_AT_START);

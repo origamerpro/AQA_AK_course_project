@@ -1,5 +1,6 @@
 import { TAGS } from 'data/testTags.data';
-import { expect, test } from 'fixtures/index2.fixture';
+
+import { expect, test } from 'fixtures/ordersCustom.fixture';
 
 test.describe('[UI] [Orders] [Orders Details] [Received Products Section] Order without Received Products', () => {
   test.beforeEach(

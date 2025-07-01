@@ -26,8 +26,8 @@ orderDraftStatus.describe('[API] [Orders] Update delivery', () => {
         orderDraftStatus(
           `Should update delivery: ${name}`,
           { tag: [TAGS.API, TAGS.ORDERS, TAGS.SMOKE, TAGS.REGRESSION] },
-          async ({ ordersController, orderData }) => {
-            const { id: orderId } = await orderData();
+          async ({ ordersController, orderDraftStatus }) => {
+            const { id: orderId } = await orderDraftStatus();
 
             const response = await ordersController.updateDelivery(
               orderId,
@@ -63,8 +63,8 @@ orderDraftStatus.describe('[API] [Orders] Update delivery', () => {
         orderDraftStatus(
           `Should NOT update delivery: ${name}`,
           { tag: [TAGS.API, TAGS.ORDERS, TAGS.REGRESSION] },
-          async ({ ordersController, orderData }) => {
-            const { id: orderId } = await orderData();
+          async ({ ordersController, orderDraftStatus }) => {
+            const { id: orderId } = await orderDraftStatus();
 
             const response = await ordersController.updateDelivery(
               orderId,
@@ -95,8 +95,8 @@ orderDraftStatus.describe('[API] [Orders] Update delivery', () => {
         orderDraftStatus(
           `Should NOT update delivery: ${name}`,
           { tag: [TAGS.API, TAGS.ORDERS, TAGS.REGRESSION] },
-          async ({ ordersController, orderData }) => {
-            const { id: orderId } = await orderData();
+          async ({ ordersController, orderDraftStatus }) => {
+            const { id: orderId } = await orderDraftStatus();
 
             const response = await ordersController.updateDelivery(
               orderId,

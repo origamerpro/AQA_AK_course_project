@@ -28,8 +28,8 @@ orderDraftStatus.describe('[API][Orders] Draft - Canceled', () => {
     orderDraftStatus(
       'Successful order status update from "Draft" to "Canceled"',
       { tag: [TAGS.API, TAGS.ORDERS, TAGS.SMOKE] },
-      async ({ orderData, ordersController }) => {
-        const { id: orderId } = await orderData();
+      async ({ orderDraftStatus, ordersController }) => {
+        const { id: orderId } = await orderDraftStatus();
         const response = await ordersController.updateStatus(
           orderId,
           ORDER_STATUS.CANCELED,
@@ -71,8 +71,8 @@ orderDraftWithDeliveryStatus.describe(
       orderDraftWithDeliveryStatus(
         'Successful order status update from "Draft with delivery" to "In Process"',
         { tag: [TAGS.API, TAGS.ORDERS, TAGS.SMOKE] },
-        async ({ orderData, ordersController }) => {
-          const { id: orderId } = await orderData();
+        async ({ orderDraftWithDeliveryStatus, ordersController }) => {
+          const { id: orderId } = await orderDraftWithDeliveryStatus();
           const response = await ordersController.updateStatus(
             orderId,
             ORDER_STATUS.IN_PROCESS,
@@ -102,8 +102,8 @@ orderDraftWithDeliveryStatus.describe(
       orderDraftWithDeliveryStatus(
         'Successful order status update from "Draft with delivery" to "Cancelled"',
         { tag: [TAGS.API, TAGS.ORDERS, TAGS.SMOKE] },
-        async ({ orderData, ordersController }) => {
-          const { id: orderId } = await orderData();
+        async ({ orderDraftWithDeliveryStatus, ordersController }) => {
+          const { id: orderId } = await orderDraftWithDeliveryStatus();
           const response = await ordersController.updateStatus(
             orderId,
             ORDER_STATUS.CANCELED,
@@ -145,8 +145,8 @@ orderCanceledStatus.describe(
       orderCanceledStatus(
         'Successful order status update from "Canceled" to "Draft"',
         { tag: [TAGS.API, TAGS.ORDERS, TAGS.SMOKE] },
-        async ({ orderData, ordersController }) => {
-          const { id: orderId } = await orderData();
+        async ({ orderCanceledStatus, ordersController }) => {
+          const { id: orderId } = await orderCanceledStatus();
           const response = await ordersController.updateStatus(
             orderId,
             ORDER_STATUS.DRAFT,
@@ -178,8 +178,8 @@ orderCanceledStatus.describe(
       orderCanceledStatus(
         'Update status to In Process for Canceled order',
         { tag: [TAGS.API, TAGS.ORDERS] },
-        async ({ orderData, ordersController }) => {
-          const { id: orderId } = await orderData();
+        async ({ orderCanceledStatus, ordersController }) => {
+          const { id: orderId } = await orderCanceledStatus();
           const response = await ordersController.updateStatus(
             orderId,
             ORDER_STATUS.IN_PROCESS,
@@ -211,8 +211,8 @@ orderInProcessStatus.describe(
       orderInProcessStatus(
         'Successful order status update from "Canceled" to "In Process"',
         { tag: [TAGS.API, TAGS.ORDERS, TAGS.SMOKE] },
-        async ({ orderData, ordersController }) => {
-          const { id: orderId } = await orderData();
+        async ({ orderInProcessStatus, ordersController }) => {
+          const { id: orderId } = await orderInProcessStatus();
           const response = await ordersController.updateStatus(
             orderId,
             ORDER_STATUS.IN_PROCESS,
@@ -241,8 +241,8 @@ orderInProcessStatus.describe(
       orderInProcessStatus(
         'Successful order status update from "In Process" to "Canceled"',
         { tag: [TAGS.API, TAGS.ORDERS, TAGS.SMOKE] },
-        async ({ orderData, ordersController }) => {
-          const { id: orderId } = await orderData();
+        async ({ orderInProcessStatus, ordersController }) => {
+          const { id: orderId } = await orderInProcessStatus();
           const response = await ordersController.updateStatus(
             orderId,
             ORDER_STATUS.CANCELED,
@@ -271,8 +271,8 @@ orderInProcessStatus.describe(
       orderInProcessStatus(
         'Update status to Draft for In Process order',
         { tag: [TAGS.API, TAGS.ORDERS] },
-        async ({ orderData, ordersController }) => {
-          const { id: orderId } = await orderData();
+        async ({ orderInProcessStatus, ordersController }) => {
+          const { id: orderId } = await orderInProcessStatus();
           const response = await ordersController.updateStatus(
             orderId,
             ORDER_STATUS.DRAFT,
@@ -291,8 +291,8 @@ orderInProcessStatus.describe(
       orderInProcessStatus(
         'Update order status to "Received" from "In Process"',
         { tag: [TAGS.API, TAGS.ORDERS] },
-        async ({ orderData, ordersController }) => {
-          const { id: orderId } = await orderData();
+        async ({ orderInProcessStatus, ordersController }) => {
+          const { id: orderId } = await orderInProcessStatus();
           const response = await ordersController.updateStatus(
             orderId,
             ORDER_STATUS.RECEIVED,
@@ -311,8 +311,8 @@ orderInProcessStatus.describe(
       orderInProcessStatus(
         'Update order status to "Partially Received" from "In Process"',
         { tag: [TAGS.API, TAGS.ORDERS] },
-        async ({ orderData, ordersController }) => {
-          const { id: orderId } = await orderData();
+        async ({ orderInProcessStatus, ordersController }) => {
+          const { id: orderId } = await orderInProcessStatus();
           const response = await ordersController.updateStatus(
             orderId,
             ORDER_STATUS.PARTIALLY_RECEIVED,
@@ -351,8 +351,8 @@ orderInProcessStatus.describe(
       orderInProcessStatus(
         'Should return 401 when using invalid token',
         { tag: [TAGS.API, TAGS.ORDERS, TAGS.REGRESSION] },
-        async ({ orderData, ordersController }) => {
-          const { id: orderId } = await orderData();
+        async ({ orderInProcessStatus, ordersController }) => {
+          const { id: orderId } = await orderInProcessStatus();
 
           const response = await ordersController.updateStatus(
             orderId,
@@ -372,8 +372,8 @@ orderInProcessStatus.describe(
       orderInProcessStatus(
         'Should return 401 when using empty token',
         { tag: [TAGS.API, TAGS.ORDERS, TAGS.REGRESSION] },
-        async ({ orderData, ordersController }) => {
-          const { id: orderId } = await orderData();
+        async ({ orderInProcessStatus, ordersController }) => {
+          const { id: orderId } = await orderInProcessStatus();
 
           const response = await ordersController.updateStatus(
             orderId,
@@ -403,8 +403,8 @@ orderInProcessStatus.describe(
           orderPartiallyReceivedStatus(
             'Update order status to "Received" from "Partially Received"',
             { tag: [TAGS.API, TAGS.ORDERS] },
-            async ({ orderData, ordersController }) => {
-              const { id: orderId } = await orderData();
+            async ({ orderPartiallyReceivedStatus, ordersController }) => {
+              const { id: orderId } = await orderPartiallyReceivedStatus();
               const response = await ordersController.updateStatus(
                 orderId,
                 ORDER_STATUS.RECEIVED,
@@ -433,8 +433,8 @@ orderInProcessStatus.describe(
         orderReceivedStatus(
           'Update order status to "In Process" from "Received"',
           { tag: [TAGS.API, TAGS.ORDERS] },
-          async ({ orderData, ordersController }) => {
-            const { id: orderId } = await orderData();
+          async ({ orderReceivedStatus, ordersController }) => {
+            const { id: orderId } = await orderReceivedStatus();
             const response = await ordersController.updateStatus(
               orderId,
               ORDER_STATUS.IN_PROCESS,

@@ -29,8 +29,8 @@ orderInProcessStatus.describe(
       orderInProcessStatus(
         'Should successfully mark all products as received - 200 OK',
         { tag: [TAGS.API, TAGS.ORDERS, TAGS.SMOKE] },
-        async ({ orderData, ordersController }) => {
-          const { id: orderId, productsIds } = await orderData();
+        async ({ orderInProcessStatus, ordersController }) => {
+          const { id: orderId, productsIds } = await orderInProcessStatus();
           const response = await ordersController.receiveProducts(
             orderId,
             productsIds,
@@ -63,8 +63,8 @@ orderInProcessStatus.describe(
       orderInProcessStatus(
         'Should successfully mark one product as received - Partial Receipt',
         { tag: [TAGS.API, TAGS.ORDERS, TAGS.REGRESSION] },
-        async ({ orderData, ordersController }) => {
-          const { id: orderId, productsIds } = await orderData(2);
+        async ({ orderInProcessStatus, ordersController }) => {
+          const { id: orderId, productsIds } = await orderInProcessStatus(2);
           const response = await ordersController.receiveProducts(
             orderId,
             [productsIds[0]],
@@ -104,8 +104,12 @@ orderInProcessStatus.describe(
       orderInProcessStatus(
         'Should return error when products do not exist in order - 400 Bad Request',
         { tag: [TAGS.API, TAGS.ORDERS] },
-        async ({ orderData, ordersController, ordersApiService }) => {
-          const { id: orderId } = await orderData();
+        async ({
+          orderInProcessStatus,
+          ordersController,
+          ordersApiService,
+        }) => {
+          const { id: orderId } = await orderInProcessStatus();
 
           const orderBefore = await ordersApiService.getOrderByID(
             orderId,
@@ -134,8 +138,8 @@ orderInProcessStatus.describe(
       orderInProcessStatus(
         'Should return 401 when using empty token',
         { tag: [TAGS.API, TAGS.ORDERS, TAGS.REGRESSION] },
-        async ({ orderData, ordersController }) => {
-          const { id: orderId, productsIds } = await orderData();
+        async ({ orderInProcessStatus, ordersController }) => {
+          const { id: orderId, productsIds } = await orderInProcessStatus();
 
           const response = await ordersController.receiveProducts(
             orderId,
@@ -155,8 +159,8 @@ orderInProcessStatus.describe(
       orderInProcessStatus(
         'Should return 401 when using invalid token',
         { tag: [TAGS.API, TAGS.ORDERS, TAGS.REGRESSION] },
-        async ({ orderData, ordersController }) => {
-          const { id: orderId, productsIds } = await orderData();
+        async ({ orderInProcessStatus, ordersController }) => {
+          const { id: orderId, productsIds } = await orderInProcessStatus();
 
           const response = await ordersController.receiveProducts(
             orderId,
@@ -188,8 +192,9 @@ orderPartiallyReceivedStatus.describe(
     orderPartiallyReceivedStatus(
       'Should successfully mark all products as received from Partially Received status - 200 OK',
       { tag: [TAGS.API, TAGS.ORDERS, TAGS.SMOKE] },
-      async ({ orderData, ordersController }) => {
-        const { id: orderId, productsIds } = await orderData();
+      async ({ orderPartiallyReceivedStatus, ordersController }) => {
+        const { id: orderId, productsIds } =
+          await orderPartiallyReceivedStatus();
 
         const fullResponse = await ordersController.receiveProducts(
           orderId,
@@ -231,8 +236,8 @@ orderReceivedStatus.describe(
     orderReceivedStatus(
       'Should return error when trying to receive already received products - 400 Bad Request',
       { tag: [TAGS.API, TAGS.ORDERS] },
-      async ({ orderData, ordersController, ordersApiService }) => {
-        const { id: orderId, productsIds } = await orderData();
+      async ({ orderReceivedStatus, ordersController, ordersApiService }) => {
+        const { id: orderId, productsIds } = await orderReceivedStatus();
 
         const orderBefore = await ordersApiService.getOrderByID(orderId, token);
         expect(orderBefore.status).toBe(ORDER_STATUS.RECEIVED);
@@ -266,8 +271,8 @@ orderDraftStatus.describe(
     orderDraftStatus(
       'Should return error when trying to receive products for Draft order - 400 Bad Request',
       { tag: [TAGS.API, TAGS.ORDERS] },
-      async ({ orderData, ordersController }) => {
-        const { id: orderId, productsIds } = await orderData();
+      async ({ orderDraftStatus, ordersController }) => {
+        const { id: orderId, productsIds } = await orderDraftStatus();
 
         const response = await ordersController.receiveProducts(
           orderId,
@@ -298,8 +303,8 @@ orderCanceledStatus.describe(
     orderCanceledStatus.skip(
       'Should return error when trying to receive products for Canceled order - 400 Bad Request',
       { tag: [TAGS.API, TAGS.ORDERS] },
-      async ({ orderData, ordersController }) => {
-        const { id: orderId, productsIds } = await orderData();
+      async ({ orderCanceledStatus, ordersController }) => {
+        const { id: orderId, productsIds } = await orderCanceledStatus();
 
         const response = await ordersController.receiveProducts(
           orderId,

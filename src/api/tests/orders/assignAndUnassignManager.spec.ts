@@ -22,8 +22,8 @@ orderDraftStatus.describe('[API] [Orders] Assign manager', () => {
     orderDraftStatus(
       `Should assign manager`,
       { tag: [TAGS.API, TAGS.ORDERS, TAGS.SMOKE, TAGS.REGRESSION] },
-      async ({ ordersController, orderData }) => {
-        const { id: orderId } = await orderData();
+      async ({ ordersController, orderDraftStatus }) => {
+        const { id: orderId } = await orderDraftStatus();
 
         const response = await ordersController.assignManager(
           orderId,
@@ -45,8 +45,8 @@ orderDraftStatus.describe('[API] [Orders] Assign manager', () => {
     orderDraftStatus(
       'Should return 401 when using invalid token',
       { tag: [TAGS.API, TAGS.ORDERS, TAGS.REGRESSION] },
-      async ({ orderData, ordersController }) => {
-        const { id: orderId } = await orderData();
+      async ({ orderDraftStatus, ordersController }) => {
+        const { id: orderId } = await orderDraftStatus();
         const response = await ordersController.assignManager(
           orderId,
           managerId,
@@ -66,8 +66,8 @@ orderDraftStatus.describe('[API] [Orders] Assign manager', () => {
     orderDraftStatus(
       'Should return 401 when using empty token',
       { tag: [TAGS.API, TAGS.ORDERS, TAGS.REGRESSION] },
-      async ({ orderData, ordersController }) => {
-        const { id: orderId } = await orderData();
+      async ({ orderDraftStatus, ordersController }) => {
+        const { id: orderId } = await orderDraftStatus();
         const response = await ordersController.assignManager(
           orderId,
           managerId,
@@ -87,8 +87,8 @@ orderDraftStatus.describe('[API] [Orders] Assign manager', () => {
     orderDraftStatus(
       'Should return 404 when invalid Manager id',
       { tag: [TAGS.API, TAGS.ORDERS, TAGS.REGRESSION] },
-      async ({ orderData, ordersController }) => {
-        const { id: orderId } = await orderData();
+      async ({ orderDraftStatus, ordersController }) => {
+        const { id: orderId } = await orderDraftStatus();
         const invalidManagerId = '000000000000000000000000';
         const response = await ordersController.assignManager(
           orderId,
@@ -119,8 +119,8 @@ orderDraftStatus.describe('[API] [Orders] Unassign manager', () => {
     orderDraftStatus(
       `Should unassign manager`,
       { tag: [TAGS.API, TAGS.ORDERS, TAGS.SMOKE, TAGS.REGRESSION] },
-      async ({ ordersController, orderData }) => {
-        const { id: orderId } = await orderData();
+      async ({ ordersController, orderDraftStatus }) => {
+        const { id: orderId } = await orderDraftStatus();
 
         await ordersController.assignManager(orderId, managerId, token);
 
@@ -141,8 +141,8 @@ orderDraftStatus.describe('[API] [Orders] Unassign manager', () => {
     orderDraftStatus(
       'Should return 401 when using invalid token',
       { tag: [TAGS.API, TAGS.ORDERS, TAGS.REGRESSION] },
-      async ({ orderData, ordersController }) => {
-        const { id: orderId } = await orderData();
+      async ({ orderDraftStatus, ordersController }) => {
+        const { id: orderId } = await orderDraftStatus();
         const response = await ordersController.unassignManager(
           orderId,
           'Invalid access token',
@@ -161,8 +161,8 @@ orderDraftStatus.describe('[API] [Orders] Unassign manager', () => {
     orderDraftStatus(
       'Should return 401 when using empty token',
       { tag: [TAGS.API, TAGS.ORDERS, TAGS.REGRESSION] },
-      async ({ orderData, ordersController }) => {
-        const { id: orderId } = await orderData();
+      async ({ orderDraftStatus, ordersController }) => {
+        const { id: orderId } = await orderDraftStatus();
         const response = await ordersController.unassignManager(orderId, '');
 
         validateResponse(

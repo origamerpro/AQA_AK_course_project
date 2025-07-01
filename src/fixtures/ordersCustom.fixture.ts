@@ -9,11 +9,19 @@ export interface ICreateOrderData {
   customerId: string;
 }
 interface ICustomOrder {
-  orderData: (count?: number) => Promise<ICreateOrderData>;
+  orderInProcessStatus: (count?: number) => Promise<ICreateOrderData>;
+  orderDraftStatus: (count?: number) => Promise<ICreateOrderData>;
+  orderDraftWithDeliveryStatus: (count?: number) => Promise<ICreateOrderData>;
+  orderCanceledStatus: (count?: number) => Promise<ICreateOrderData>;
+  orderPartiallyReceivedStatus: (
+    count?: number,
+    receivedCount?: number,
+  ) => Promise<ICreateOrderData>;
+  orderReceivedStatus: (count?: number) => Promise<ICreateOrderData>;
 }
 
 export const orderInProcessStatus = base.extend<ICustomOrder>({
-  orderData: async (
+  orderInProcessStatus: async (
     { signInApiService, ordersApiService, dataDisposalUtils },
     use,
   ) => {
@@ -36,7 +44,7 @@ export const orderInProcessStatus = base.extend<ICustomOrder>({
 });
 
 export const orderDraftStatus = base.extend<ICustomOrder>({
-  orderData: async (
+  orderDraftStatus: async (
     { signInApiService, ordersApiService, dataDisposalUtils },
     use,
   ) => {
@@ -59,7 +67,7 @@ export const orderDraftStatus = base.extend<ICustomOrder>({
 });
 
 export const orderDraftWithDeliveryStatus = base.extend<ICustomOrder>({
-  orderData: async (
+  orderDraftWithDeliveryStatus: async (
     { signInApiService, ordersApiService, dataDisposalUtils },
     use,
   ) => {
@@ -82,7 +90,7 @@ export const orderDraftWithDeliveryStatus = base.extend<ICustomOrder>({
 });
 
 export const orderCanceledStatus = base.extend<ICustomOrder>({
-  orderData: async (
+  orderCanceledStatus: async (
     { signInApiService, ordersApiService, dataDisposalUtils },
     use,
   ) => {
@@ -105,7 +113,7 @@ export const orderCanceledStatus = base.extend<ICustomOrder>({
 });
 
 export const orderPartiallyReceivedStatus = base.extend<ICustomOrder>({
-  orderData: async (
+  orderPartiallyReceivedStatus: async (
     { signInApiService, ordersApiService, dataDisposalUtils },
     use,
   ) => {
@@ -134,7 +142,7 @@ export const orderPartiallyReceivedStatus = base.extend<ICustomOrder>({
 });
 
 export const orderReceivedStatus = base.extend<ICustomOrder>({
-  orderData: async (
+  orderReceivedStatus: async (
     { signInApiService, ordersApiService, dataDisposalUtils },
     use,
   ) => {
@@ -160,7 +168,10 @@ export const orderReceivedStatus = base.extend<ICustomOrder>({
 export const test = mergeTests(
   orderInProcessStatus,
   orderDraftStatus,
+  orderDraftWithDeliveryStatus,
   orderCanceledStatus,
   orderPartiallyReceivedStatus,
   orderReceivedStatus,
 );
+
+export { expect } from '@playwright/test';

@@ -78,6 +78,7 @@ export interface IProductFromOrder extends IProduct {
 }
 
 export interface IAddress {
+  location?: string;
   country: COUNTRIES;
   city: string;
   street: string;

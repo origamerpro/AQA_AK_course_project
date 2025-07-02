@@ -15,13 +15,20 @@ export abstract class BaseDeliveryPage extends SalesPortalPage {
   readonly flat = this.page.locator('#inputFlat');
   readonly saveButton = this.page.locator('#save-delivery');
   readonly cancelButton = this.page.locator('#back-to-order-details-page');
+  readonly titleLocator = this.page.locator('#title h2.fw-bold');
+  readonly datepicker = this.page.locator('.datepicker-days');
+
+  getDayCell(day: number) {
+    return this.datepicker
+      .locator(`td.day:not(.disabled):has-text("${day}")`)
+      .first();
+  }
 
   uniqueElement = this.deliveryType;
   abstract expectedTitle: string;
 
   async verifyPageTitle() {
-    const titleLocator = this.page.locator('#title h2.fw-bold');
-    await expect(titleLocator).toHaveText(this.expectedTitle);
+    await expect(this.titleLocator).toHaveText(this.expectedTitle);
   }
 
   @logStep('Select delivery type')
@@ -35,14 +42,14 @@ export abstract class BaseDeliveryPage extends SalesPortalPage {
     const day = targetDate.getDate();
 
     await this.deliveryDate.click();
-    await this.page.waitForSelector('.datepicker-days', { state: 'visible' });
+    await this.datepicker.waitFor({ state: 'visible' });
 
-    const daySelector = `.datepicker-days td.day:not(.disabled):has-text("${day}")`;
-    const dayCell = await this.page.locator(daySelector).first();
+    const dayCell = this.getDayCell(day);
 
     if ((await dayCell.count()) === 0) {
       throw new Error(`Дата ${date} недоступна для выбора`);
     }
+
     await dayCell.click();
   }
 
@@ -73,7 +80,7 @@ export abstract class BaseDeliveryPage extends SalesPortalPage {
     await this.waitForSpinner();
   }
 
-  @logStep('Click Cancel and return to order details')
+  @logStep('Click Cancel button')
   async cancel() {
     await this.cancelButton.click();
     await this.waitForSpinner();

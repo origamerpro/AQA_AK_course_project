@@ -6,36 +6,21 @@ export class OrderCustomerDetailsComponentPage extends SalesPortalPage {
 
   readonly title = this.uniqueElement.getByRole('heading', { name: 'Customer Details' });
   readonly editCustomerButton = this.uniqueElement.locator('#edit-customer-pencil');
-  readonly customerEmail = this.uniqueElement.locator(
-    '.c-details:has(span:has-text("Email")) > span.s-span:last-of-type',
+
+  readonly valueByField = (name: string) => this.uniqueElement.locator(
+    `.c-details:has(span:has-text("${name}")) > span.s-span:last-of-type`,
   );
-  readonly customerName = this.uniqueElement.locator(
-    '.c-details:has(span:has-text("Name")) > span.s-span:last-of-type',
-  );
-  readonly customerCountry = this.uniqueElement.locator(
-    '.c-details:has(span:has-text("Country")) > span.s-span:last-of-type',
-  );
-  readonly customerCity = this.uniqueElement.locator(
-    '.c-details:has(span:has-text("City")) > span.s-span:last-of-type',
-  );
-  readonly customerStreet = this.uniqueElement.locator(
-    '.c-details:has(span:has-text("Street")) > span.s-span:last-of-type',
-  );
-  readonly customerHouse = this.uniqueElement.locator(
-    '.c-details:has(span:has-text("House")) > span.s-span:last-of-type',
-  );
-  readonly customerFlat = this.uniqueElement.locator(
-    '.c-details:has(span:has-text("Flat")) > span.s-span:last-of-type',
-  );
-  readonly customerPhone = this.uniqueElement.locator(
-    '.c-details:has(span:has-text("Phone")) > span.s-span:last-of-type',
-  );
-  readonly customerCreatedOn = this.uniqueElement.locator(
-    '.c-details:has(span:has-text("Created On")) > span.s-span:last-of-type',
-  );
-  readonly customerNotes = this.uniqueElement.locator(
-    '.c-details:has(span:has-text("Notes")) > span.s-span:last-of-type',
-  );
+
+  readonly customerEmail = this.valueByField('Email');
+  readonly customerName = this.valueByField('Name');
+  readonly customerCountry = this.valueByField('Country');
+  readonly customerCity = this.valueByField('City');
+  readonly customerStreet = this.valueByField('Street');
+  readonly customerHouse = this.valueByField('House');
+  readonly customerFlat = this.valueByField('Flat');
+  readonly customerPhone = this.valueByField('Phone');
+  readonly customerCreatedOn = this.valueByField('Created On');
+  readonly customerNotes = this.valueByField('Notes');
 
   @logStep('Get Customer Details Title')
   async getCustomerDetailsTitle() {

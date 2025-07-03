@@ -91,7 +91,7 @@ test.describe('[UI] [Orders] [Orders Details] [Edit Products] Replace/add/delete
 
       expect(
         updatedProductNames.filter((name) => name === firstProductName).length,
-      ).toBeGreaterThan(1);
+      ).toEqual(2);
     },
   );
 

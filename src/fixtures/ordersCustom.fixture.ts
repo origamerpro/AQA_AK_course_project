@@ -18,6 +18,7 @@ interface ICustomOrder {
     receivedCount?: number,
   ) => Promise<ICreateOrderData>;
   orderReceivedStatus: (count?: number) => Promise<ICreateOrderData>;
+  orderManagerAssignedStatus: (count?: number) => Promise<ICreateOrderData>;
 }
 
 export const orderInProcessStatus = base.extend<ICustomOrder>({
@@ -165,6 +166,30 @@ export const orderReceivedStatus = base.extend<ICustomOrder>({
   },
 });
 
+export const orderManagerAssignedStatus = base.extend<ICustomOrder>({
+  orderManagerAssignedStatus: async (
+    { signInApiService, ordersApiService, dataDisposalUtils },
+    use,
+  ) => {
+    let order: IOrderFromResponse;
+    let id: string = '',
+      productsIds: string[] = [],
+      customerId: string = '';
+
+    const orderDataFactory = async (count: number = 1) => {
+      const token = await signInApiService.loginAsLocalUser();
+
+      order = await ordersApiService.createManagerAssignedOrder(count, token);
+
+      ({ id, productsIds, customerId } = extractTestData(order));
+      return { id, productsIds, customerId };
+    };
+    await use(orderDataFactory);
+
+    await dataDisposalUtils.tearDown([id], productsIds, [customerId]);
+  },
+});
+
 export const test = mergeTests(
   orderInProcessStatus,
   orderDraftStatus,
@@ -172,6 +197,7 @@ export const test = mergeTests(
   orderCanceledStatus,
   orderPartiallyReceivedStatus,
   orderReceivedStatus,
+  orderManagerAssignedStatus,
 );
 
 export { expect } from '@playwright/test';

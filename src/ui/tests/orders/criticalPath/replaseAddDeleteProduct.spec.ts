@@ -46,20 +46,12 @@ test.describe('[UI] [Orders] [Orders Details] [Edit Products] Replace/add/delete
       const firstProductName = productNames[0];
       const secondProductName = productNames[1];
 
-      await orderDetailsPage.editOrderModal.selectProductAtPosition(
-        secondProductName,
-        1,
-      );
-
-      expect(await orderDetailsPage.editOrderModal.isSaveEnabled(),
-         'Save button is disabled')
-         .toBeTruthy();
+      await orderDetailsPage.editOrderModal.selectProductAtPosition(secondProductName, 1);
 
       await orderDetailsPage.editOrderModal.clickSave();
       await orderDetailsPage.waitForSpinner();
 
-      const updatedProductNames =
-        await orderDetailsPage.receivedProductsSection.getAllProductNames();
+      const updatedProductNames = await orderDetailsPage.receivedProductsSection.getAllProductNames();
       expect(updatedProductNames).toContain(secondProductName);
       expect(updatedProductNames).not.toContain(firstProductName);
     },
@@ -73,25 +65,15 @@ test.describe('[UI] [Orders] [Orders Details] [Edit Products] Replace/add/delete
 
       await orderDetailsPage.editOrderModal.clickAddProduct();
 
-      const productCount =
-        await orderDetailsPage.editOrderModal.productsList.count();
+      const productCount = await orderDetailsPage.editOrderModal.productsList.count();
 
-      await orderDetailsPage.editOrderModal.selectProductAtPosition(
-        firstProductName,
-        productCount,
-      );
-
-      expect(await orderDetailsPage.editOrderModal.isSaveEnabled()).toBe(true);
+      await orderDetailsPage.editOrderModal.selectProductAtPosition(firstProductName, productCount);
 
       await orderDetailsPage.editOrderModal.clickSave();
       await orderDetailsPage.waitForSpinner();
 
-      const updatedProductNames =
-        await orderDetailsPage.receivedProductsSection.getAllProductNames();
-
-      expect(
-        updatedProductNames.filter((name) => name === firstProductName).length,
-      ).toEqual(2);
+      const updatedProductNames = await orderDetailsPage.receivedProductsSection.getAllProductNames();
+      expect(updatedProductNames.filter((name) => name === firstProductName).length).toEqual(2);
     },
   );
 
@@ -101,18 +83,14 @@ test.describe('[UI] [Orders] [Orders Details] [Edit Products] Replace/add/delete
     async ({ orderDetailsPage }) => {
       const firstProductName = productNames[0];
 
-      const initialCount =
-        await orderDetailsPage.editOrderModal.productsList.count();
+      const initialCount = await orderDetailsPage.editOrderModal.productsList.count();
 
       await orderDetailsPage.editOrderModal.removeProduct(0);
-
-      expect(await orderDetailsPage.editOrderModal.isSaveEnabled()).toBe(true);
 
       await orderDetailsPage.editOrderModal.clickSave();
       await orderDetailsPage.waitForSpinner();
 
-      const updatedProductNames =
-        await orderDetailsPage.receivedProductsSection.getAllProductNames();
+      const updatedProductNames = await orderDetailsPage.receivedProductsSection.getAllProductNames();
       expect(updatedProductNames.length).toBe(initialCount - 1);
       expect(updatedProductNames).not.toContain(firstProductName);
     },

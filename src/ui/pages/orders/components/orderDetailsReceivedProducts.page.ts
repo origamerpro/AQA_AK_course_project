@@ -186,4 +186,12 @@ export class OrderDetailsReceivedProductsSection extends SalesPortalPage {
   async isSelectAllCheckboxChecked() {
     return await this.selectAllCheckbox.isChecked();
   }
+  async getAllProductNames() {
+    const texts = await this.allProductAccordionHeaders
+      .locator('button.accordion-button')
+      .allInnerTexts();
+    return texts.map(t => t.split('\n')[0].trim());
+  }
+
+
 }

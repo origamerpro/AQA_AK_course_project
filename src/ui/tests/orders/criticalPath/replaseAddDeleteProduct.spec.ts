@@ -51,7 +51,9 @@ test.describe('[UI] [Orders] [Orders Details] [Edit Products] Replace/add/delete
         1,
       );
 
-      expect(await orderDetailsPage.editOrderModal.isSaveEnabled()).toBe(true);
+      expect(await orderDetailsPage.editOrderModal.isSaveEnabled(),
+         'Save button is disabled')
+         .toBeTruthy();
 
       await orderDetailsPage.editOrderModal.clickSave();
       await orderDetailsPage.waitForSpinner();

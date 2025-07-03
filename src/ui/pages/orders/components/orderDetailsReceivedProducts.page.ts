@@ -188,14 +188,11 @@ export class OrderDetailsReceivedProductsSection extends SalesPortalPage {
   }
 
   async getAllProductNames() {
-    const count = await this.allProductAccordionHeaders.count();
-    const names = [];
-    for (let i = 0; i < count; i++) {
-      const header = this.allProductAccordionHeaders.nth(i);
-      const button = header.locator('button.accordion-button');
-      const name = await button.innerText();
-      names.push(name.trim());
-    }
+    const namesLocator = await this.allProductAccordionHeaders.locator('#products-accordion-section .accordion-header button').all();
+  
+  const names = await Promise.all(
+    namesLocator.map(async (locator) => const text = await locator.innerText().trim())
+  );
     return names;
   }
 }

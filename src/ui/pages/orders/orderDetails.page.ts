@@ -5,7 +5,6 @@ import { OrderCommentsTab } from './components/orderDetailsCommentsComponent.pag
 import { EditOrderModal } from '../modals/orders/editProductsInOrderModal.page';
 import { OrderCustomerDetailsComponentPage } from './components/orderCustomerDetailsComponent.page';
 
-
 export class OrderDetailsPage extends SalesPortalPage {
   topPanel = new OrderDetailsPanelComponent(this.page);
   receivedProductsSection = new OrderDetailsReceivedProductsSection(this.page);

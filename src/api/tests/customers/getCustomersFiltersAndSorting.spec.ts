@@ -18,7 +18,11 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
   });
 
   test.afterEach(async ({ customersApiService }) => {
-    await Promise.all(createdCustomerIds.map((id) => customersApiService.deleteCustomer(id, token).catch(() => {})));
+    await Promise.all(
+      createdCustomerIds.map((id) =>
+        customersApiService.deleteCustomer(id, token).catch(() => {}),
+      ),
+    );
     createdCustomerIds.length = 0;
   });
 
@@ -30,7 +34,10 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
       },
       async ({ customersController }) => {
         const testCustomer = generateCustomerData();
-        const createResponse = await customersController.create(testCustomer, token);
+        const createResponse = await customersController.create(
+          testCustomer,
+          token,
+        );
         createdCustomerIds.push(createResponse.body.Customer._id);
 
         const params: ICustomerFilterParams = {
@@ -39,14 +46,21 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
           sortOrder: 'desc',
         };
 
-        const response = await customersController.getFilteredCustomers(token, params);
+        const response = await customersController.getFilteredCustomers(
+          token,
+          params,
+        );
 
         validateResponse(response, STATUS_CODES.OK, true, null);
         validateSchema(customersListSchema, response.body);
 
         expect(response.body.Customers.length).toBeGreaterThan(0);
         expect(response.body.search).toBe(testCustomer.name);
-        expect(response.body.Customers.every((c) => c.name.includes(testCustomer.name))).toBeTruthy();
+        expect(
+          response.body.Customers.every((c) =>
+            c.name.includes(testCustomer.name),
+          ),
+        ).toBeTruthy();
       },
     );
 
@@ -57,7 +71,10 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
       },
       async ({ customersController }) => {
         const testCustomer = generateCustomerData();
-        const createResponse = await customersController.create(testCustomer, token);
+        const createResponse = await customersController.create(
+          testCustomer,
+          token,
+        );
         createdCustomerIds.push(createResponse.body.Customer._id);
 
         const params: ICustomerFilterParams = {
@@ -66,14 +83,21 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
           sortOrder: 'desc',
         };
 
-        const response = await customersController.getFilteredCustomers(token, params);
+        const response = await customersController.getFilteredCustomers(
+          token,
+          params,
+        );
 
         validateResponse(response, STATUS_CODES.OK, true, null);
         validateSchema(customersListSchema, response.body);
 
         expect(response.body.Customers.length).toBeGreaterThan(0);
         expect(response.body.country).toEqual([testCustomer.country]);
-        expect(response.body.Customers.every((c) => c.country === testCustomer.country)).toBeTruthy();
+        expect(
+          response.body.Customers.every(
+            (c) => c.country === testCustomer.country,
+          ),
+        ).toBeTruthy();
       },
     );
 
@@ -98,18 +122,30 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
           sortOrder: 'desc',
         };
 
-        const response = await customersController.getFilteredCustomers(token, params);
+        const response = await customersController.getFilteredCustomers(
+          token,
+          params,
+        );
 
         validateResponse(response, STATUS_CODES.OK, true, null);
         validateSchema(customersListSchema, response.body);
 
         expect(response.body.Customers.length).toBeGreaterThan(0);
-        expect(response.body.country).toEqual(expect.arrayContaining(countries));
-        expect(response.body.Customers.every((c) => countries.includes(c.country as COUNTRIES))).toBeTruthy();
+        expect(response.body.country).toEqual(
+          expect.arrayContaining(countries),
+        );
+        expect(
+          response.body.Customers.every((c) =>
+            countries.includes(c.country as COUNTRIES),
+          ),
+        ).toBeTruthy();
       },
     );
 
-    test('Sort by createdOn ascending', async ({ customersApiService, customersController }) => {
+    test('Sort by createdOn ascending', async ({
+      customersApiService,
+      customersController,
+    }) => {
       // 1. Создаем данные через сервис
       const users = await customersApiService.createTestUsers(token, 3);
       createdCustomerIds.push(...users.map((u) => u._id));
@@ -122,7 +158,9 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
       validateResponse(response, STATUS_CODES.OK, true, null);
 
       // 3. Проверяем данные из body
-      const dates = response.body.Customers.map((c) => new Date(c.createdOn).getTime());
+      const dates = response.body.Customers.map((c) =>
+        new Date(c.createdOn).getTime(),
+      );
       for (let i = 0; i < dates.length - 1; i++) {
         expect(dates[i]).toBeLessThanOrEqual(dates[i + 1]);
       }
@@ -144,7 +182,9 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
 
         validateResponse(response, STATUS_CODES.OK, true, null);
 
-        const dates = response.body.Customers.map((c) => new Date(c.createdOn).getTime());
+        const dates = response.body.Customers.map((c) =>
+          new Date(c.createdOn).getTime(),
+        );
         for (let i = 0; i < dates.length - 1; i++) {
           expect(dates[i]).toBeGreaterThanOrEqual(dates[i + 1]);
         }
@@ -172,7 +212,9 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
 
         const names = response.body.Customers.map((c) => c.name.toLowerCase());
         for (let i = 0; i < names.length - 1; i++) {
-          expect(names[i].localeCompare(names[i + 1])).toBeGreaterThanOrEqual(0);
+          expect(names[i].localeCompare(names[i + 1])).toBeGreaterThanOrEqual(
+            0,
+          );
         }
 
         expect(response.body.sorting.sortField).toBe('name');
@@ -215,7 +257,10 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
       async ({ customersController }) => {
         const testCountry = COUNTRIES.BELARUS;
         const testCustomer = generateCustomerData({ country: testCountry });
-        const createResponse = await customersController.create(testCustomer, token);
+        const createResponse = await customersController.create(
+          testCustomer,
+          token,
+        );
         createdCustomerIds.push(createResponse.body.Customer._id);
 
         const params: ICustomerFilterParams = {
@@ -225,7 +270,10 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
           sortOrder: 'desc',
         };
 
-        const response = await customersController.getFilteredCustomers(token, params);
+        const response = await customersController.getFilteredCustomers(
+          token,
+          params,
+        );
 
         validateResponse(response, STATUS_CODES.OK, true, null);
         validateSchema(customersListSchema, response.body);
@@ -233,7 +281,11 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
         expect(response.body.Customers.length).toBeGreaterThan(0);
         expect(response.body.search).toBe(testCustomer.email);
         expect(response.body.country).toEqual([testCountry]);
-        expect(response.body.Customers.some((c) => c._id === createResponse.body.Customer._id)).toBeTruthy();
+        expect(
+          response.body.Customers.some(
+            (c) => c._id === createResponse.body.Customer._id,
+          ),
+        ).toBeTruthy();
       },
     );
 
@@ -257,9 +309,13 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
         expect(response.body.sorting.sortField).toBe('email');
         expect(response.body.sorting.sortOrder).toBe('asc');
 
-        const emails = response.body.Customers.map((c) => c.email?.toLowerCase()).filter(Boolean);
+        const emails = response.body.Customers.map((c) =>
+          c.email?.toLowerCase(),
+        ).filter(Boolean);
         for (let i = 0; i < emails.length - 1; i++) {
-          expect(emails[i]!.localeCompare(emails[i + 1]!)).toBeLessThanOrEqual(0);
+          expect(emails[i]!.localeCompare(emails[i + 1]!)).toBeLessThanOrEqual(
+            0,
+          );
         }
       },
     );
@@ -284,9 +340,13 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
         expect(response.body.sorting.sortField).toBe('email');
         expect(response.body.sorting.sortOrder).toBe('desc');
 
-        const emails = response.body.Customers.map((c) => c.email?.toLowerCase()).filter(Boolean) as string[];
+        const emails = response.body.Customers.map((c) =>
+          c.email?.toLowerCase(),
+        ).filter(Boolean) as string[];
         for (let i = 0; i < emails.length - 1; i++) {
-          expect(emails[i].localeCompare(emails[i + 1])).toBeGreaterThanOrEqual(0);
+          expect(emails[i].localeCompare(emails[i + 1])).toBeGreaterThanOrEqual(
+            0,
+          );
         }
       },
     );
@@ -297,8 +357,19 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
         tag: [TAGS.API, TAGS.CUSTOMERS, TAGS.REGRESSION],
       },
       async ({ customersController }) => {
-        const testCountries = [COUNTRIES.BELARUS, COUNTRIES.USA, COUNTRIES.GERMANY];
-        await Promise.all(testCountries.map((country) => customersController.create({ ...generateCustomerData(), country }, token)));
+        const testCountries = [
+          COUNTRIES.BELARUS,
+          COUNTRIES.USA,
+          COUNTRIES.GERMANY,
+        ];
+        await Promise.all(
+          testCountries.map((country) =>
+            customersController.create(
+              { ...generateCustomerData(), country },
+              token,
+            ),
+          ),
+        );
 
         const response = await customersController.getFilteredCustomers(token, {
           sortField: 'country',
@@ -312,7 +383,9 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
         expect(response.body.sorting.sortOrder).toBe('desc');
 
         const countries = response.body.Customers.map((c) => c.country);
-        const expectedSorted = [...countries].sort((a, b) => b.localeCompare(a, undefined, { sensitivity: 'base' }));
+        const expectedSorted = [...countries].sort((a, b) =>
+          b.localeCompare(a, undefined, { sensitivity: 'base' }),
+        );
         expect(countries).toEqual(expectedSorted);
       },
     );
@@ -323,8 +396,19 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
         tag: [TAGS.API, TAGS.CUSTOMERS, TAGS.REGRESSION],
       },
       async ({ customersController }) => {
-        const testCountries = [COUNTRIES.BELARUS, COUNTRIES.USA, COUNTRIES.GERMANY];
-        await Promise.all(testCountries.map((country) => customersController.create({ ...generateCustomerData(), country }, token)));
+        const testCountries = [
+          COUNTRIES.BELARUS,
+          COUNTRIES.USA,
+          COUNTRIES.GERMANY,
+        ];
+        await Promise.all(
+          testCountries.map((country) =>
+            customersController.create(
+              { ...generateCustomerData(), country },
+              token,
+            ),
+          ),
+        );
 
         const response = await customersController.getFilteredCustomers(token, {
           sortField: 'country',
@@ -338,7 +422,9 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
         expect(response.body.sorting.sortOrder).toBe('asc');
 
         const countries = response.body.Customers.map((c) => c.country);
-        const expectedSorted = [...countries].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+        const expectedSorted = [...countries].sort((a, b) =>
+          a.localeCompare(b, undefined, { sensitivity: 'base' }),
+        );
         expect(countries).toEqual(expectedSorted);
       },
     );
@@ -372,7 +458,9 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
 
         const firstPageIds = firstPage.body.Customers.map((c) => c._id);
         const secondPageIds = secondPage.body.Customers.map((c) => c._id);
-        expect(firstPageIds.some((id) => secondPageIds.includes(id))).toBe(false);
+        expect(firstPageIds.some((id) => secondPageIds.includes(id))).toBe(
+          false,
+        );
       },
     );
 
@@ -385,7 +473,10 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
         const testName = 'BrycenQuigley';
         const testCustomer = { ...generateCustomerData(), name: testName };
 
-        const createResponse = await customersController.create(testCustomer, token);
+        const createResponse = await customersController.create(
+          testCustomer,
+          token,
+        );
         createdCustomerIds.push(createResponse.body.Customer._id);
 
         const params: ICustomerFilterParams = {
@@ -394,14 +485,19 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
           sortOrder: 'desc',
         };
 
-        const response = await customersController.getFilteredCustomers(token, params);
+        const response = await customersController.getFilteredCustomers(
+          token,
+          params,
+        );
 
         validateResponse(response, STATUS_CODES.OK, true, null);
         validateSchema(customersListSchema, response.body);
 
         expect(response.body.Customers.length).toBeGreaterThan(0);
         expect(response.body.search).toBe(testName);
-        expect(response.body.Customers.every((c) => c.name.includes(testName))).toBeTruthy();
+        expect(
+          response.body.Customers.every((c) => c.name.includes(testName)),
+        ).toBeTruthy();
       },
     );
 
@@ -414,7 +510,10 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
         const testCustomer = generateCustomerData();
         const testCountry = testCustomer.country;
 
-        const createResponse = await customersController.create(testCustomer, token);
+        const createResponse = await customersController.create(
+          testCustomer,
+          token,
+        );
         createdCustomerIds.push(createResponse.body.Customer._id);
 
         const params: ICustomerFilterParams = {
@@ -423,14 +522,19 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
           sortOrder: 'desc',
         };
 
-        const response = await customersController.getFilteredCustomers(token, params);
+        const response = await customersController.getFilteredCustomers(
+          token,
+          params,
+        );
 
         validateResponse(response, STATUS_CODES.OK, true, null);
         validateSchema(customersListSchema, response.body);
 
         expect(response.body.Customers.length).toBeGreaterThan(0);
         expect(response.body.search).toBe(testCountry);
-        expect(response.body.Customers.every((c) => c.country === testCountry)).toBe(true);
+        expect(
+          response.body.Customers.every((c) => c.country === testCountry),
+        ).toBe(true);
       },
     );
   });
@@ -443,7 +547,10 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
       },
       async ({ customersController }) => {
         const testCustomer = generateCustomerData();
-        const createResponse = await customersController.create(testCustomer, token);
+        const createResponse = await customersController.create(
+          testCustomer,
+          token,
+        );
         createdCustomerIds.push(createResponse.body.Customer._id);
 
         const response = await customersController.getFilteredCustomers(token, {
@@ -468,12 +575,18 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
       },
       async ({ customersController }) => {
         const testCustomer = generateCustomerData();
-        const createResponse = await customersController.create(testCustomer, token);
+        const createResponse = await customersController.create(
+          testCustomer,
+          token,
+        );
         createdCustomerIds.push(createResponse.body.Customer._id);
 
-        const response = await customersController.getCustomersWithPagination(token, {
-          page: 1,
-        });
+        const response = await customersController.getCustomersWithPagination(
+          token,
+          {
+            page: 1,
+          },
+        );
 
         validateResponse(response, STATUS_CODES.OK, true, null);
         validateSchema(customersListSchema, response.body);
@@ -492,12 +605,18 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
       },
       async ({ customersController }) => {
         const testCustomer = generateCustomerData();
-        const createResponse = await customersController.create(testCustomer, token);
+        const createResponse = await customersController.create(
+          testCustomer,
+          token,
+        );
         createdCustomerIds.push(createResponse.body.Customer._id);
 
-        const response = await customersController.getCustomersWithPagination(token, {
-          limit: 10,
-        });
+        const response = await customersController.getCustomersWithPagination(
+          token,
+          {
+            limit: 10,
+          },
+        );
 
         validateResponse(response, STATUS_CODES.OK, true, null);
         validateSchema(customersListSchema, response.body);
@@ -516,18 +635,25 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
       },
       async ({ customersController }) => {
         const testCustomer = generateCustomerData();
-        const createResponse = await customersController.create(testCustomer, token);
+        const createResponse = await customersController.create(
+          testCustomer,
+          token,
+        );
         createdCustomerIds.push(createResponse.body.Customer._id);
 
-        const allCustomersResponse = await customersController.getAllCustomers(token);
+        const allCustomersResponse =
+          await customersController.getAllCustomers(token);
         const totalCustomers = allCustomersResponse.body.Customers.length;
         const limit = 10;
         const firstNonexistentPage = Math.ceil(totalCustomers / limit) + 1;
 
-        const response = await customersController.getCustomersWithPagination(token, {
-          page: firstNonexistentPage,
-          limit: limit,
-        });
+        const response = await customersController.getCustomersWithPagination(
+          token,
+          {
+            page: firstNonexistentPage,
+            limit: limit,
+          },
+        );
 
         validateResponse(response, STATUS_CODES.OK, true, null);
         validateSchema(customersListSchema, response.body);
@@ -545,7 +671,10 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
       },
       async ({ customersController }) => {
         const testCustomer = generateCustomerData();
-        const createResponse = await customersController.create(testCustomer, token);
+        const createResponse = await customersController.create(
+          testCustomer,
+          token,
+        );
         createdCustomerIds.push(createResponse.body.Customer._id);
 
         const response = await customersController.getFilteredCustomers(token, {
@@ -567,7 +696,10 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
       },
       async ({ customersController }) => {
         const testCustomer = generateCustomerData();
-        const createResponse = await customersController.create(testCustomer, token);
+        const createResponse = await customersController.create(
+          testCustomer,
+          token,
+        );
         createdCustomerIds.push(createResponse.body.Customer._id);
 
         const response = await customersController.getFilteredCustomers(token, {
@@ -589,7 +721,10 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
       },
       async ({ customersController }) => {
         const testCustomer = generateCustomerData();
-        const createResponse = await customersController.create(testCustomer, token);
+        const createResponse = await customersController.create(
+          testCustomer,
+          token,
+        );
         createdCustomerIds.push(createResponse.body.Customer._id);
 
         const response = await customersController.getFilteredCustomers(token, {
@@ -609,7 +744,10 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
       },
       async ({ customersController }) => {
         const testCustomer = generateCustomerData();
-        const createResponse = await customersController.create(testCustomer, token);
+        const createResponse = await customersController.create(
+          testCustomer,
+          token,
+        );
         createdCustomerIds.push(createResponse.body.Customer._id);
 
         const response = await customersController.getFilteredCustomers(token, {
@@ -629,8 +767,14 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
         tag: [TAGS.API, TAGS.CUSTOMERS, TAGS.REGRESSION],
       },
       async ({ customersController }) => {
-        const response = await customersController.getAllCustomers('invalid_token');
-        validateResponse(response, STATUS_CODES.UNAUTHORIZED, false, ERROR_MESSAGES.INVALID_ACCESS_TOKEN);
+        const response =
+          await customersController.getAllCustomers('invalid_token');
+        validateResponse(
+          response,
+          STATUS_CODES.UNAUTHORIZED,
+          false,
+          ERROR_MESSAGES.INVALID_ACCESS_TOKEN,
+        );
       },
     );
 
@@ -641,7 +785,12 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
       },
       async ({ customersController }) => {
         const response = await customersController.getAllCustomers('');
-        validateResponse(response, STATUS_CODES.UNAUTHORIZED, false, ERROR_MESSAGES.NOT_AUTHORIZED);
+        validateResponse(
+          response,
+          STATUS_CODES.UNAUTHORIZED,
+          false,
+          ERROR_MESSAGES.NOT_AUTHORIZED,
+        );
       },
     );
 
@@ -652,10 +801,16 @@ test.describe('[API][Customers] GET /api/customers filters and sorting', () => {
       },
       async ({ customersController }) => {
         const testCustomer = generateCustomerData();
-        const createResponse = await customersController.create(testCustomer, token);
+        const createResponse = await customersController.create(
+          testCustomer,
+          token,
+        );
         createdCustomerIds.push(createResponse.body.Customer._id);
 
-        const response = await customersController.getFilteredCustomers(token, {});
+        const response = await customersController.getFilteredCustomers(
+          token,
+          {},
+        );
 
         validateResponse(response, STATUS_CODES.OK, true, null);
         validateSchema(customersListSchema, response.body);

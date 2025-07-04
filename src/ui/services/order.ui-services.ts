@@ -3,17 +3,12 @@ import { OrdersPage } from 'ui/pages/orders/orders.page';
 import { logStep } from 'utils/reporter.utils';
 import { BaseUIService } from './base.ui-service';
 import { HomeUIService } from './home.ui-service';
-import { ICreateOrderData, ICustomOrder as OrderCreationFixtures } from 'fixtures/ordersCustom.fixture';
+import {
+  ICreateOrderData,
+  ICustomOrder as OrderCreationFixtures,
+} from 'fixtures/ordersCustom.fixture';
 import { Page } from '@playwright/test';
-
-export enum OrderSetupStatus {
-  IN_PROCESS = 'IN_PROCESS',
-  DRAFT = 'DRAFT',
-  DRAFT_WITH_DELIVERY = 'DRAFT_WITH_DELIVERY',
-  CANCELED = 'CANCELED',
-  PARTIALLY_RECEIVED = 'PARTIALLY_RECEIVED',
-  RECEIVED = 'RECEIVED',
-}
+import { ORDER_STATUS } from 'data/orders/statuses.data';
 
 export class OrderSetupService extends BaseUIService {
   readonly homeUIService = new HomeUIService(this.page);
@@ -25,29 +20,33 @@ export class OrderSetupService extends BaseUIService {
     super(page);
     this.orderFixtures = orderFixtures;
   }
-  // Хранилище функций-фикстур
 
   @logStep('Create order and navigate to details')
-  async createOrderAndNavigateToDetails(status: OrderSetupStatus, productsCount: number = 1, receivedCount?: number): Promise<string> {
-    let orderCreationFn: (count?: number, receivedCount?: number) => Promise<ICreateOrderData>;
+  async createOrderAndNavigateToDetails(
+    status: ORDER_STATUS,
+    productsCount: number = 1,
+    receivedCount?: number,
+  ): Promise<string> {
+    let orderCreationFn: (
+      count?: number,
+      receivedCount?: number,
+    ) => Promise<ICreateOrderData>;
 
     switch (status) {
-      case OrderSetupStatus.IN_PROCESS:
+      case ORDER_STATUS.IN_PROCESS:
         orderCreationFn = this.orderFixtures.orderInProcessStatus;
         break;
-      case OrderSetupStatus.DRAFT:
+      case ORDER_STATUS.DRAFT:
         orderCreationFn = this.orderFixtures.orderDraftStatus;
         break;
-      case OrderSetupStatus.DRAFT_WITH_DELIVERY:
-        orderCreationFn = this.orderFixtures.orderDraftWithDeliveryStatus;
-        break;
-      case OrderSetupStatus.CANCELED:
+      case ORDER_STATUS.CANCELED:
         orderCreationFn = this.orderFixtures.orderCanceledStatus;
         break;
-      case OrderSetupStatus.PARTIALLY_RECEIVED:
-        orderCreationFn = (count, recCount) => this.orderFixtures.orderPartiallyReceivedStatus(count, recCount);
+      case ORDER_STATUS.PARTIALLY_RECEIVED:
+        orderCreationFn = (count, recCount) =>
+          this.orderFixtures.orderPartiallyReceivedStatus(count, recCount);
         break;
-      case OrderSetupStatus.RECEIVED:
+      case ORDER_STATUS.RECEIVED:
         orderCreationFn = this.orderFixtures.orderReceivedStatus;
         break;
 

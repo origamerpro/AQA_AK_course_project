@@ -1,8 +1,16 @@
 import { COUNTRIES } from 'data/customers/countries.data';
-import { baseSchemaPart, customersMetaSchema, sortingSchemaPart } from 'data/schemas/base.schema';
+import {
+  baseSchemaPart,
+  customersMetaSchema,
+  sortingSchemaPart,
+} from 'data/schemas/base.schema';
 import { productInOrderSchema } from 'data/schemas/product.schema';
 import { ORDER_STATUS } from 'data/orders/statuses.data';
-import { commentSchema, deliverySchema, orderHistorySchema } from './order.schema';
+import {
+  commentSchema,
+  deliverySchema,
+  orderHistorySchema,
+} from './order.schema';
 
 export const customerSchema = {
   type: 'object',
@@ -43,7 +51,18 @@ export const customerSchema = {
       type: 'string',
     },
   },
-  required: ['_id', 'email', 'name', 'country', 'street', 'city', 'createdOn', 'house', 'flat', 'phone'],
+  required: [
+    '_id',
+    'email',
+    'name',
+    'country',
+    'street',
+    'city',
+    'createdOn',
+    'house',
+    'flat',
+    'phone',
+  ],
 };
 
 export const oneCustomerSchema = {
@@ -84,7 +103,17 @@ export const customersListSchema = {
     ...customersMetaSchema,
     ...baseSchemaPart,
   },
-  required: ['Customers', 'sorting', 'IsSuccess', 'ErrorMessage', 'total', 'page', 'limit', 'search', 'country'],
+  required: [
+    'Customers',
+    'sorting',
+    'IsSuccess',
+    'ErrorMessage',
+    'total',
+    'page',
+    'limit',
+    'search',
+    'country',
+  ],
 };
 
 export const addressSchema = {
@@ -135,7 +164,14 @@ export const customerAssociatedOrdersSchema = {
       items: orderHistorySchema,
     },
   },
-  required: ['_id', 'status', 'customer', 'products', 'total_price', 'createdOn'],
+  required: [
+    '_id',
+    'status',
+    'customer',
+    'products',
+    'total_price',
+    'createdOn',
+  ],
 };
 
 export const orderListSchema = {

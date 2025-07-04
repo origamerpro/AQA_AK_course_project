@@ -50,7 +50,14 @@ export const orderHistorySchema = {
     },
     changedOn: { type: 'string' },
   },
-  required: ['status', 'customer', 'products', 'total_price', 'action', 'changedOn'],
+  required: [
+    'status',
+    'customer',
+    'products',
+    'total_price',
+    'action',
+    'changedOn',
+  ],
 };
 
 export const createOrderPayloadSchema = {

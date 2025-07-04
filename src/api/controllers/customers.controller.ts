@@ -1,8 +1,18 @@
 import { APIRequestContext } from '@playwright/test';
 import { RequestApi } from 'api/apiClients/request';
 import { apiConfig } from 'config/api-config';
-import { customersSortField, IRequestOptions, sortDirection } from 'types/api.types';
-import { ICustomer, ICustomerFilterParams, ICustomerResponse, ICustomersAllResponse, ICustomersFilteredResponse } from 'types/customer.types';
+import {
+  customersSortField,
+  IRequestOptions,
+  sortDirection,
+} from 'types/api.types';
+import {
+  ICustomer,
+  ICustomerFilterParams,
+  ICustomerResponse,
+  ICustomersAllResponse,
+  ICustomersFilteredResponse,
+} from 'types/customer.types';
 import { logStep } from 'utils/reporter.utils';
 import { convertRequestParams } from 'utils/requestParams.utils';
 import { IOrdersResponse } from 'types/orders.types';
@@ -25,7 +35,12 @@ export class CustomersController {
     },
   ) {
     // Устанавливаем значения по умолчанию
-    const { page = 1, limit = 10, sortField = 'createdOn', sortOrder = 'desc' } = params || {};
+    const {
+      page = 1,
+      limit = 10,
+      sortField = 'createdOn',
+      sortOrder = 'desc',
+    } = params || {};
 
     const queryParams: Record<string, string> = {};
 
@@ -67,7 +82,9 @@ export class CustomersController {
   async getFilteredCustomers(token: string, params?: ICustomerFilterParams) {
     const options: IRequestOptions = {
       baseURL: apiConfig.BASE_URL,
-      url: apiConfig.ENDPOINTS.CUSTOMERS + (params ? convertRequestParams(params) : ''),
+      url:
+        apiConfig.ENDPOINTS.CUSTOMERS +
+        (params ? convertRequestParams(params) : ''),
       method: 'get',
       headers: {
         'content-type': 'application/json',

@@ -25,8 +25,16 @@ test.describe('[API][Customer] Get Customer By Id', () => {
         validateResponse(response, STATUS_CODES.DELETED);
         expect.soft(response.body).toBe('');
 
-        const responseAfterDelete = await customersController.getById(customer._id, token);
-        validateResponse(responseAfterDelete, STATUS_CODES.NOT_FOUND, false, ERROR_MESSAGES.CUSTOMER_NOT_FOUND(customer._id));
+        const responseAfterDelete = await customersController.getById(
+          customer._id,
+          token,
+        );
+        validateResponse(
+          responseAfterDelete,
+          STATUS_CODES.NOT_FOUND,
+          false,
+          ERROR_MESSAGES.CUSTOMER_NOT_FOUND(customer._id),
+        );
 
         validateSchema(validationErrorSchema, responseAfterDelete.body);
       },
@@ -39,7 +47,12 @@ test.describe('[API][Customer] Get Customer By Id', () => {
       async ({ customersController }) => {
         const incorrectID = `${customer._id.slice(13)}${Date.now()}`;
         const response = await customersController.delete(incorrectID, token);
-        validateResponse(response, STATUS_CODES.NOT_FOUND, false, ERROR_MESSAGES.CUSTOMER_NOT_FOUND(incorrectID));
+        validateResponse(
+          response,
+          STATUS_CODES.NOT_FOUND,
+          false,
+          ERROR_MESSAGES.CUSTOMER_NOT_FOUND(incorrectID),
+        );
         validateSchema(validationErrorSchema, response);
       },
     );
@@ -49,7 +62,12 @@ test.describe('[API][Customer] Get Customer By Id', () => {
       async ({ customersController }) => {
         const token = '';
         const response = await customersController.delete(customer._id, token);
-        validateResponse(response, STATUS_CODES.UNAUTHORIZED, false, ERROR_MESSAGES.NOT_AUTHORIZED);
+        validateResponse(
+          response,
+          STATUS_CODES.UNAUTHORIZED,
+          false,
+          ERROR_MESSAGES.NOT_AUTHORIZED,
+        );
       },
     );
 
@@ -59,7 +77,12 @@ test.describe('[API][Customer] Get Customer By Id', () => {
       async ({ customersController }) => {
         const token = 'Beer eyJhbGci';
         const response = await customersController.delete(customer._id, token);
-        validateResponse(response, STATUS_CODES.UNAUTHORIZED, false, ERROR_MESSAGES.INVALID_ACCESS_TOKEN);
+        validateResponse(
+          response,
+          STATUS_CODES.UNAUTHORIZED,
+          false,
+          ERROR_MESSAGES.INVALID_ACCESS_TOKEN,
+        );
       },
     );
   });

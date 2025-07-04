@@ -13,14 +13,18 @@ test.describe('[API] [Products] Get All Products', () => {
   });
 
   test.describe('Positive', () => {
-    test('Get all products - 200 OK', { tag: [TAGS.API, TAGS.PRODUCTS, TAGS.SMOKE, TAGS.REGRESSION] }, async ({ productsController }) => {
-      const response = await productsController.getAll(token);
-      validateResponse(response, STATUS_CODES.OK, true, null);
-      validateSchema(allProductsResponseSchema, response.body);
-      const products = response.body.Products;
-      expect.soft(Array.isArray(products)).toBeTruthy();
-      expect.soft(products.length).toBeGreaterThan(0);
-    });
+    test(
+      'Get all products - 200 OK',
+      { tag: [TAGS.API, TAGS.PRODUCTS, TAGS.SMOKE, TAGS.REGRESSION] },
+      async ({ productsController }) => {
+        const response = await productsController.getAll(token);
+        validateResponse(response, STATUS_CODES.OK, true, null);
+        validateSchema(allProductsResponseSchema, response.body);
+        const products = response.body.Products;
+        expect.soft(Array.isArray(products)).toBeTruthy();
+        expect.soft(products.length).toBeGreaterThan(0);
+      },
+    );
   });
 
   test.describe('Negative', () => {
@@ -30,7 +34,12 @@ test.describe('[API] [Products] Get All Products', () => {
       async ({ productsController }) => {
         const token = '';
         const response = await productsController.getAll(token);
-        validateResponse(response, STATUS_CODES.UNAUTHORIZED, false, 'Not authorized');
+        validateResponse(
+          response,
+          STATUS_CODES.UNAUTHORIZED,
+          false,
+          'Not authorized',
+        );
       },
     );
 
@@ -40,7 +49,12 @@ test.describe('[API] [Products] Get All Products', () => {
       async ({ productsController }) => {
         const token = 'Invalid access token';
         const response = await productsController.getAll(token);
-        validateResponse(response, STATUS_CODES.UNAUTHORIZED, false, 'Invalid access token');
+        validateResponse(
+          response,
+          STATUS_CODES.UNAUTHORIZED,
+          false,
+          'Invalid access token',
+        );
       },
     );
   });

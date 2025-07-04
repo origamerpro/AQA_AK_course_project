@@ -1,5 +1,9 @@
 import { COUNTRIES } from 'data/customers/countries.data';
-import { customersSortField, IResponseFields, sortDirection } from './api.types';
+import {
+  customersSortField,
+  IResponseFields,
+  sortDirection,
+} from './api.types';
 
 export interface ICustomer {
   email?: string;

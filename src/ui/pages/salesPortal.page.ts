@@ -16,7 +16,9 @@ export class SalesPortalPage extends PageHolder {
   readonly notifications = {
     button: this.header.locator('#notification-bell'),
     badge: this.header.locator('#notification-badge'),
-    badgeText: this.header.locator('#notification-badge').locator('xpath=./text()'),
+    badgeText: this.header
+      .locator('#notification-badge')
+      .locator('xpath=./text()'),
   };
 
   // Элементы управления пользователем
@@ -30,7 +32,9 @@ export class SalesPortalPage extends PageHolder {
   uniqueElement = this.portalTitle;
 
   @logStep('Navigate to a page')
-  async navigateTo(name: 'home' | 'orders' | 'products' | 'customers' | 'managers') {
+  async navigateTo(
+    name: 'home' | 'orders' | 'products' | 'customers' | 'managers',
+  ) {
     await this.navItem(name).click();
   }
 

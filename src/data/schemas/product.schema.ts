@@ -1,5 +1,9 @@
 import { MANUFACTURERS } from 'data/products/manufacturers.data';
-import { baseSchemaPart, productsMetaSchema, sortingSchemaPart } from 'data/schemas/base.schema';
+import {
+  baseSchemaPart,
+  productsMetaSchema,
+  sortingSchemaPart,
+} from 'data/schemas/base.schema';
 
 export const productSchema = {
   type: 'object',
@@ -70,7 +74,17 @@ export const productsListSchema = {
     ...productsMetaSchema,
     ...baseSchemaPart,
   },
-  required: ['Products', 'sorting', 'IsSuccess', 'ErrorMessage', 'total', 'page', 'limit', 'search', 'manufacturer'],
+  required: [
+    'Products',
+    'sorting',
+    'IsSuccess',
+    'ErrorMessage',
+    'total',
+    'page',
+    'limit',
+    'search',
+    'manufacturer',
+  ],
 };
 
 export const productInOrderSchema = {

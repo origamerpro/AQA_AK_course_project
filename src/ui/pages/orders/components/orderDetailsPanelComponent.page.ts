@@ -9,15 +9,16 @@ export class OrderDetailsPanelComponent extends SalesPortalPage {
   readonly orderNumberValue = this.page.locator(
     'span:has-text("Order number:") + span',
   );
-  readonly assignManagerButton = this.page.getByRole('button', {
-    name: 'Click to select manager',
-  });
-  readonly editAssignedManagerButton = this.page.getByRole('button', {
-    name: 'Edit Assigned Manager',
-  });
-  readonly removeAssignedManagerButton = this.page.getByRole('button', {
-    name: 'Remove Assigned Manager',
-  });
+  readonly assignManagerButton = this.page.locator(
+    'u[onclick="renderAssigneManagerModal()"]',
+  );
+  readonly editAssignedManagerButton = this.page.locator(
+    '#assigned-manager-container button[title="Edit Assigned Manager"]',
+  );
+
+  readonly removeAssignedManagerButton = this.page.locator(
+    '#assigned-manager-container button[title="Remove Assigned Manager"]',
+  );
   readonly assignedManagerLink = this.page.locator('#assigned-manager-link');
   readonly cancelOrderButton = this.page.locator('#cancel-order');
   readonly reopenOrderButton = this.page.locator('#reopen-order');
@@ -26,6 +27,7 @@ export class OrderDetailsPanelComponent extends SalesPortalPage {
   readonly orderStatusBarContainer = this.page.locator(
     '#order-status-bar-container',
   );
+
   readonly orderStatusValue = this.orderStatusBarContainer
     .locator('div:has(span.fw-bold:has-text("Order Status")) > span')
     .nth(1);
@@ -103,7 +105,7 @@ export class OrderDetailsPanelComponent extends SalesPortalPage {
 
   @logStep('Get Order Status value')
   async getOrderStatus() {
-    return await this.orderStatusValue.textContent();
+    return await this.orderStatusValue.innerText();
   }
 
   @logStep('Get Total Price value')

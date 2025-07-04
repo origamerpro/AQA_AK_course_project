@@ -17,6 +17,7 @@ import { SignInApiService } from './signIn.api-service';
 import { generateDeliveryData } from 'data/orders/generateDeliveryData.data';
 import { ICustomerFromResponse } from 'types/customer.types';
 import { IProductFromResponse } from 'types/products.types';
+import { MOCK_MANAGER_OLGA } from 'data/orders/mockOrders.data';
 
 export class OrdersAPIService {
   private controller: OrdersAPIController;
@@ -275,5 +276,22 @@ export class OrdersAPIService {
     await expect(draftOrderWithDelivery.status).toEqual(ORDER_STATUS.DRAFT);
 
     return draftOrderWithDelivery;
+  }
+
+  @logStep('Create manager assigned order via API')
+  async createManagerAssignedOrder(
+    count: number = 1,
+    token: string,
+    managerId: string = MOCK_MANAGER_OLGA._id,
+  ): Promise<IOrderFromResponse> {
+    const draftOrder = await this.createDraftOrder(count, token);
+    const assignedOrder = await this.assignManager(
+      draftOrder._id,
+      managerId,
+      token,
+    );
+    await expect(assignedOrder.assignedManager?._id).toEqual(managerId);
+
+    return assignedOrder;
   }
 }

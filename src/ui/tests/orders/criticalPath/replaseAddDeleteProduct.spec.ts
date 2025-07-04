@@ -46,9 +46,9 @@ test.describe('[UI] [Orders] [Orders Details] [Edit Products] Replace/add/delete
       const firstProductName = productNames[0];
       const secondProductName = productNames[1];
 
-      await orderDetailsPage.editOrderModal.selectProductAtPosition(secondProductName, 1);
+      await orderDetailsPage.editProductsInOrderModal.selectProductAtPosition(secondProductName, 1);
 
-      await orderDetailsPage.editOrderModal.clickSave();
+      await orderDetailsPage.editProductsInOrderModal.clickSave();
       await orderDetailsPage.waitForSpinner();
 
       const updatedProductNames = await orderDetailsPage.receivedProductsSection.getAllProductNames();
@@ -63,13 +63,13 @@ test.describe('[UI] [Orders] [Orders Details] [Edit Products] Replace/add/delete
     async ({ orderDetailsPage }) => {
       const firstProductName = productNames[0];
 
-      await orderDetailsPage.editOrderModal.clickAddProduct();
+      await orderDetailsPage.editProductsInOrderModal.clickAddProduct();
 
-      const productCount = await orderDetailsPage.editOrderModal.productsList.count();
+      const productCount = await orderDetailsPage.editProductsInOrderModal.productsList.count();
 
-      await orderDetailsPage.editOrderModal.selectProductAtPosition(firstProductName, productCount);
+      await orderDetailsPage.editProductsInOrderModal.selectProductAtPosition(firstProductName, productCount);
 
-      await orderDetailsPage.editOrderModal.clickSave();
+      await orderDetailsPage.editProductsInOrderModal.clickSave();
       await orderDetailsPage.waitForSpinner();
 
       const updatedProductNames = await orderDetailsPage.receivedProductsSection.getAllProductNames();
@@ -83,11 +83,11 @@ test.describe('[UI] [Orders] [Orders Details] [Edit Products] Replace/add/delete
     async ({ orderDetailsPage }) => {
       const firstProductName = productNames[0];
 
-      const initialCount = await orderDetailsPage.editOrderModal.productsList.count();
+      const initialCount = await orderDetailsPage.editProductsInOrderModal.productsList.count();
 
-      await orderDetailsPage.editOrderModal.removeProduct(0);
+      await orderDetailsPage.editProductsInOrderModal.removeProduct(0);
 
-      await orderDetailsPage.editOrderModal.clickSave();
+      await orderDetailsPage.editProductsInOrderModal.clickSave();
       await orderDetailsPage.waitForSpinner();
 
       const updatedProductNames = await orderDetailsPage.receivedProductsSection.getAllProductNames();

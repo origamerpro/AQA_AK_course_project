@@ -8,23 +8,17 @@ export interface ICreateOrderData {
   productsIds: string[];
   customerId: string;
 }
-interface ICustomOrder {
+export interface ICustomOrder {
   orderInProcessStatus: (count?: number) => Promise<ICreateOrderData>;
   orderDraftStatus: (count?: number) => Promise<ICreateOrderData>;
   orderDraftWithDeliveryStatus: (count?: number) => Promise<ICreateOrderData>;
   orderCanceledStatus: (count?: number) => Promise<ICreateOrderData>;
-  orderPartiallyReceivedStatus: (
-    count?: number,
-    receivedCount?: number,
-  ) => Promise<ICreateOrderData>;
+  orderPartiallyReceivedStatus: (count?: number, receivedCount?: number) => Promise<ICreateOrderData>;
   orderReceivedStatus: (count?: number) => Promise<ICreateOrderData>;
 }
 
 export const orderInProcessStatus = base.extend<ICustomOrder>({
-  orderInProcessStatus: async (
-    { signInApiService, ordersApiService, dataDisposalUtils },
-    use,
-  ) => {
+  orderInProcessStatus: async ({ signInApiService, ordersApiService, dataDisposalUtils }, use) => {
     let order: IOrderFromResponse;
     let id: string = '',
       productsIds: string[] = [],
@@ -44,10 +38,7 @@ export const orderInProcessStatus = base.extend<ICustomOrder>({
 });
 
 export const orderDraftStatus = base.extend<ICustomOrder>({
-  orderDraftStatus: async (
-    { signInApiService, ordersApiService, dataDisposalUtils },
-    use,
-  ) => {
+  orderDraftStatus: async ({ signInApiService, ordersApiService, dataDisposalUtils }, use) => {
     let order: IOrderFromResponse;
     let id: string = '',
       productsIds: string[] = [],
@@ -67,10 +58,7 @@ export const orderDraftStatus = base.extend<ICustomOrder>({
 });
 
 export const orderDraftWithDeliveryStatus = base.extend<ICustomOrder>({
-  orderDraftWithDeliveryStatus: async (
-    { signInApiService, ordersApiService, dataDisposalUtils },
-    use,
-  ) => {
+  orderDraftWithDeliveryStatus: async ({ signInApiService, ordersApiService, dataDisposalUtils }, use) => {
     let order: IOrderFromResponse;
     let id: string = '',
       productsIds: string[] = [],
@@ -90,10 +78,7 @@ export const orderDraftWithDeliveryStatus = base.extend<ICustomOrder>({
 });
 
 export const orderCanceledStatus = base.extend<ICustomOrder>({
-  orderCanceledStatus: async (
-    { signInApiService, ordersApiService, dataDisposalUtils },
-    use,
-  ) => {
+  orderCanceledStatus: async ({ signInApiService, ordersApiService, dataDisposalUtils }, use) => {
     let order: IOrderFromResponse;
     let id: string = '',
       productsIds: string[] = [],
@@ -113,10 +98,7 @@ export const orderCanceledStatus = base.extend<ICustomOrder>({
 });
 
 export const orderPartiallyReceivedStatus = base.extend<ICustomOrder>({
-  orderPartiallyReceivedStatus: async (
-    { signInApiService, ordersApiService, dataDisposalUtils },
-    use,
-  ) => {
+  orderPartiallyReceivedStatus: async ({ signInApiService, ordersApiService, dataDisposalUtils }, use) => {
     let order: IOrderFromResponse;
     let id: string = '',
       productsIds: string[] = [],
@@ -126,11 +108,7 @@ export const orderPartiallyReceivedStatus = base.extend<ICustomOrder>({
       const productCount = Math.max(count, 2);
       const token = await signInApiService.loginAsLocalUser();
 
-      order = await ordersApiService.createPartiallyReceivedOrder(
-        receivedCount,
-        productCount,
-        token,
-      );
+      order = await ordersApiService.createPartiallyReceivedOrder(receivedCount, productCount, token);
 
       ({ id, productsIds, customerId } = extractTestData(order));
       return { id, productsIds, customerId };
@@ -142,10 +120,7 @@ export const orderPartiallyReceivedStatus = base.extend<ICustomOrder>({
 });
 
 export const orderReceivedStatus = base.extend<ICustomOrder>({
-  orderReceivedStatus: async (
-    { signInApiService, ordersApiService, dataDisposalUtils },
-    use,
-  ) => {
+  orderReceivedStatus: async ({ signInApiService, ordersApiService, dataDisposalUtils }, use) => {
     let order: IOrderFromResponse;
     let id: string = '',
       productsIds: string[] = [],

@@ -19,9 +19,7 @@ export abstract class BaseDeliveryPage extends SalesPortalPage {
   readonly datepicker = this.page.locator('.datepicker-days');
 
   getDayCell(day: number) {
-    return this.datepicker
-      .locator(`td.day:not(.disabled):has-text("${day}")`)
-      .first();
+    return this.datepicker.locator(`td.day:not(.disabled):has-text("${day}")`).first();
   }
 
   uniqueElement = this.deliveryType;

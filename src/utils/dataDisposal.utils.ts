@@ -75,11 +75,7 @@ export class DataDisposalUtils {
     }
   }
 
-  async tearDown(
-    orderIds: string[],
-    productsIds: string[],
-    customersIds: string[],
-  ) {
+  async tearDown(orderIds: string[], productsIds: string[], customersIds: string[]) {
     await this.clearOrders(orderIds);
     await this.clearProducts(productsIds);
     await this.clearCustomers(customersIds);

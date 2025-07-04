@@ -3,13 +3,7 @@ import { validateResponse } from 'utils/validations/responseValidation';
 import { STATUS_CODES } from 'data/statusCodes';
 import { OrdersAPIController } from '../controllers/orders.controller';
 import { APIRequestContext, expect } from '@playwright/test';
-import {
-  IDelivery,
-  IOrderData,
-  IOrderRequestParams,
-  IOrderFilteredResponse,
-  IOrderFromResponse,
-} from 'types/orders.types';
+import { IDelivery, IOrderData, IOrderRequestParams, IOrderFilteredResponse, IOrderFromResponse } from 'types/orders.types';
 import { ORDER_STATUS } from 'data/orders/statuses.data';
 import { CustomersApiService } from './customers.api-service';
 import { ProductsApiService } from './product.api-service';
@@ -39,10 +33,7 @@ export class OrdersAPIService {
   }
 
   @logStep('Get filtered and sorted list of orders via API')
-  async getFilteredOrders(
-    token: string,
-    params?: IOrderRequestParams,
-  ): Promise<IOrderFilteredResponse> {
+  async getFilteredOrders(token: string, params?: IOrderRequestParams): Promise<IOrderFilteredResponse> {
     const response = await this.controller.getFilteredOrders(token, params);
     validateResponse(response, STATUS_CODES.OK, true, null);
     return response.body;
@@ -56,11 +47,7 @@ export class OrdersAPIService {
   }
 
   @logStep('Update order via API')
-  async updateOrder(
-    id: string,
-    data: IOrderData,
-    token: string,
-  ): Promise<IOrderFromResponse> {
+  async updateOrder(id: string, data: IOrderData, token: string): Promise<IOrderFromResponse> {
     const response = await this.controller.updateOrder(id, data, token);
     validateResponse(response, STATUS_CODES.OK, true, null);
     return response.body.Order;
@@ -74,11 +61,7 @@ export class OrdersAPIService {
 
   @logStep('Assign manager to order via API')
   async assignManager(orderId: string, managerId: string, token: string) {
-    const response = await this.controller.assignManager(
-      orderId,
-      managerId,
-      token,
-    );
+    const response = await this.controller.assignManager(orderId, managerId, token);
     validateResponse(response, STATUS_CODES.OK, true, null);
     return response.body.Order;
   }
@@ -99,11 +82,7 @@ export class OrdersAPIService {
 
   @logStep('Delete order comment via API')
   async deleteComment(order_id: string, comment_id: string, token: string) {
-    const response = await this.controller.deleteComment(
-      order_id,
-      comment_id,
-      token,
-    );
+    const response = await this.controller.deleteComment(order_id, comment_id, token);
     validateResponse(response, STATUS_CODES.OK, null, null);
   }
 
@@ -116,24 +95,13 @@ export class OrdersAPIService {
 
   @logStep('Mark products as received in an order via API')
   async receiveProducts(id: string, productIds: string[], token: string) {
-    const response = await this.controller.receiveProducts(
-      id,
-      productIds,
-      token,
-    );
+    const response = await this.controller.receiveProducts(id, productIds, token);
     validateResponse(response, STATUS_CODES.OK, true, null);
     return response.body.Order;
   }
 
   @logStep('Update order status via API')
-  async updateStatus(
-    id: string,
-    status:
-      | ORDER_STATUS.DRAFT
-      | ORDER_STATUS.CANCELED
-      | ORDER_STATUS.IN_PROCESS,
-    token: string,
-  ) {
+  async updateStatus(id: string, status: ORDER_STATUS.DRAFT | ORDER_STATUS.CANCELED | ORDER_STATUS.IN_PROCESS, token: string) {
     const response = await this.controller.updateStatus(id, status, token);
     validateResponse(response, STATUS_CODES.OK, true, null);
     return response.body.Order;
@@ -141,11 +109,9 @@ export class OrdersAPIService {
 
   @logStep('Create draft order via API')
   async createDraftOrder(count: number = 1, token: string) {
-    const customer: ICustomerFromResponse =
-      await this.customersApiService.createCustomer(token);
+    const customer: ICustomerFromResponse = await this.customersApiService.createCustomer(token);
 
-    const products: IProductFromResponse[] =
-      await this.productsApiService.populate(count, token);
+    const products: IProductFromResponse[] = await this.productsApiService.populate(count, token);
 
     const orderData: IOrderData = {
       customer: customer._id,
@@ -162,17 +128,9 @@ export class OrdersAPIService {
     const draftOrder = await this.createDraftOrder(count, token);
 
     const deliveryData = generateDeliveryData();
-    const orderWithDelivery = await this.updateDelivery(
-      draftOrder._id,
-      deliveryData,
-      token,
-    );
+    const orderWithDelivery = await this.updateDelivery(draftOrder._id, deliveryData, token);
 
-    const inProcessOrder = await this.updateStatus(
-      orderWithDelivery._id,
-      ORDER_STATUS.IN_PROCESS,
-      token,
-    );
+    const inProcessOrder = await this.updateStatus(orderWithDelivery._id, ORDER_STATUS.IN_PROCESS, token);
 
     await expect(inProcessOrder.status).toEqual(ORDER_STATUS.IN_PROCESS);
 
@@ -180,26 +138,14 @@ export class OrdersAPIService {
   }
 
   @logStep('Create partially received order via API')
-  async createPartiallyReceivedOrder(
-    receivedProductsCount: number = 1,
-    countInOrder: number = 3,
-    token: string,
-  ) {
+  async createPartiallyReceivedOrder(receivedProductsCount: number = 1, countInOrder: number = 3, token: string) {
     const inProcessOrder = await this.createInProcessOrder(countInOrder, token);
 
-    const receivedProductsId = inProcessOrder.products
-      .slice(0, receivedProductsCount)
-      .map((p) => p._id);
+    const receivedProductsId = inProcessOrder.products.slice(0, receivedProductsCount).map((p) => p._id);
 
-    const partiallyReceivedOrder = await this.receiveProducts(
-      inProcessOrder._id,
-      receivedProductsId,
-      token,
-    );
+    const partiallyReceivedOrder = await this.receiveProducts(inProcessOrder._id, receivedProductsId, token);
 
-    await expect(partiallyReceivedOrder.status).toEqual(
-      ORDER_STATUS.PARTIALLY_RECEIVED,
-    );
+    await expect(partiallyReceivedOrder.status).toEqual(ORDER_STATUS.PARTIALLY_RECEIVED);
 
     return partiallyReceivedOrder;
   }
@@ -210,11 +156,7 @@ export class OrdersAPIService {
 
     const allProductIds = inProcessOrder.products.map((p) => p._id);
 
-    const receivedOrder = await this.receiveProducts(
-      inProcessOrder._id,
-      allProductIds,
-      token,
-    );
+    const receivedOrder = await this.receiveProducts(inProcessOrder._id, allProductIds, token);
 
     await expect(receivedOrder.status).toEqual(ORDER_STATUS.RECEIVED);
 
@@ -225,11 +167,7 @@ export class OrdersAPIService {
   async createCanceledOrder(count: number = 1, token: string) {
     const draftOrder = await this.createDraftOrder(count, token);
 
-    const canceledOrder = await this.updateStatus(
-      draftOrder._id,
-      ORDER_STATUS.CANCELED,
-      token,
-    );
+    const canceledOrder = await this.updateStatus(draftOrder._id, ORDER_STATUS.CANCELED, token);
 
     await expect(canceledOrder.status).toEqual(ORDER_STATUS.CANCELED);
 
@@ -237,23 +175,12 @@ export class OrdersAPIService {
   }
 
   @logStep('Create cancelled and reopened order via API')
-  async createCanceledAndReopenedOrder(
-    numProducts: number = 1,
-    token: string,
-  ): Promise<IOrderFromResponse> {
+  async createCanceledAndReopenedOrder(numProducts: number = 1, token: string): Promise<IOrderFromResponse> {
     const draftOrder = await this.createDraftOrder(numProducts, token);
 
-    const canceledOrder = await this.updateStatus(
-      draftOrder._id,
-      ORDER_STATUS.CANCELED,
-      token,
-    );
+    const canceledOrder = await this.updateStatus(draftOrder._id, ORDER_STATUS.CANCELED, token);
 
-    const reopenedOrder = await this.updateStatus(
-      canceledOrder._id,
-      ORDER_STATUS.DRAFT,
-      token,
-    );
+    const reopenedOrder = await this.updateStatus(canceledOrder._id, ORDER_STATUS.DRAFT, token);
 
     await expect(reopenedOrder.status).toEqual(ORDER_STATUS.DRAFT);
 
@@ -266,11 +193,7 @@ export class OrdersAPIService {
 
     const deliveryData = generateDeliveryData();
 
-    const draftOrderWithDelivery = await this.updateDelivery(
-      draftOrder._id,
-      deliveryData,
-      token,
-    );
+    const draftOrderWithDelivery = await this.updateDelivery(draftOrder._id, deliveryData, token);
 
     await expect(draftOrderWithDelivery.status).toEqual(ORDER_STATUS.DRAFT);
 

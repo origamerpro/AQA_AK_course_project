@@ -6,6 +6,7 @@ import {
 import { TAGS } from 'data/testTags.data';
 import { ORDER_STATUS } from 'data/orders/statuses.data';
 import { STATUS_CODES } from 'data/statusCodes';
+import { UI_TEXTS } from 'data/orders/uiTexts.data';
 
 test.describe('[UI] [Orders] [Orders List]', () => {
   test.beforeEach(async ({ homeUIService, ordersPage, mock }) => {
@@ -41,8 +42,8 @@ test.describe('[UI] [Orders] [Modals] [Create Order Modal]', () => {
       await ordersPage.clickCreateOrderButton();
 
       await expect(createOrderModal.modalTitle).toBeVisible();
-      const title = await createOrderModal.getModalTitle();
-      expect(title).toBe(' Create Order');
+      const title = (await createOrderModal.getModalTitle()).trim();
+      expect(title).toBe(UI_TEXTS.MODAL_TITLES.CREATE_ORDER);
       await expect(createOrderModal.customersList).toBeVisible();
       await expect(createOrderModal.productsList).toBeVisible();
       await expect(createOrderModal.createButton).toBeVisible();
@@ -79,10 +80,10 @@ test.describe('[UI] [Orders] [Modals] [Reopen Order Modal]', () => {
 
       await expect(confirmationModal.modalTitle).toBeVisible();
       await expect(confirmationModal.getModalTitle()).resolves.toBe(
-        'Reopen Order',
+        UI_TEXTS.MODAL_TITLES.REOPEN_ORDER,
       );
       await expect(confirmationModal.getModalContent()).resolves.toContain(
-        'Are you sure you want to reopen the order?',
+        UI_TEXTS.MODAL_CONTENT.REOPEN_ORDER_CONFIRMATION,
       );
       await expect(confirmationModal.confirmButton).toBeVisible();
       await confirmationModal.clickConfirmButton();
@@ -92,7 +93,9 @@ test.describe('[UI] [Orders] [Modals] [Reopen Order Modal]', () => {
 
       const updatedOrderStatus =
         await orderDetailsPage.topPanel.getOrderDetailsPanelTitle();
-      await expect(updatedOrderStatus).toBe('Order Details');
+      await expect(updatedOrderStatus).toBe(
+        UI_TEXTS.PANEL_TITLES.ORDER_DETAILS,
+      );
       const orderDetailsPageStatus =
         await orderDetailsPage.topPanel.getOrderStatus();
       await expect(orderDetailsPageStatus).toBe(ORDER_STATUS.DRAFT);
@@ -130,7 +133,7 @@ test.describe('[UI] [Orders] [Modals] [Assign Manager Modal]', () => {
 
       await expect(selectManagerModal.modalTitle).toBeVisible();
       await expect(selectManagerModal.getModalTitle()).resolves.toBe(
-        'Assign Manager',
+        UI_TEXTS.MODAL_TITLES.ASSIGN_MANAGER,
       );
       await expect(selectManagerModal.managerSearchInput).toBeVisible();
 
@@ -154,12 +157,31 @@ test.describe('[UI] [Orders] [Modals] [Assign Manager Modal]', () => {
 
       const updatedOrderStatusTitle =
         await orderDetailsPage.topPanel.getOrderDetailsPanelTitle();
-      await expect(updatedOrderStatusTitle).toBe(`Order Details`);
+      await expect(updatedOrderStatusTitle).toBe(
+        UI_TEXTS.PANEL_TITLES.ORDER_DETAILS,
+      );
       const assignedManagerName =
         await orderDetailsPage.topPanel.getAssignedManagerName();
       await expect(assignedManagerName).toBe(
         `${MOCK_MANAGER_OLGA.firstName} ${MOCK_MANAGER_OLGA.lastName}`,
       );
+      await expect(
+        orderDetailsPage.topPanel.editAssignedManagerButton,
+      ).toBeVisible();
+      await expect(
+        orderDetailsPage.topPanel.editAssignedManagerButton,
+      ).toBeEnabled();
+
+      await expect(
+        orderDetailsPage.topPanel.removeAssignedManagerButton,
+      ).toBeVisible();
+      await expect(
+        orderDetailsPage.topPanel.removeAssignedManagerButton,
+      ).toBeEnabled();
+
+      await expect(
+        orderDetailsPage.topPanel.assignManagerButton,
+      ).not.toBeVisible();
     },
   );
 });
@@ -193,10 +215,11 @@ test.describe('[UI] [Orders] [Modals] [Remove Manager Modal]', () => {
 
       await expect(confirmationModal.modalTitle).toBeVisible();
       const modalTitle = await confirmationModal.getModalTitle();
-      await expect(modalTitle).toBe('Unassign Manager');
+      await expect(modalTitle).toBe(UI_TEXTS.MODAL_TITLES.UNASSIGN_MANAGER);
+
       const modalContent = await confirmationModal.getModalContent();
       await expect(modalContent).toContain(
-        'Are you sure you want to unassign manager from order?',
+        UI_TEXTS.MODAL_CONTENT.UNASSIGN_MANAGER_CONFIRMATION,
       );
       await expect(confirmationModal.confirmButton).toBeVisible();
 
@@ -207,7 +230,10 @@ test.describe('[UI] [Orders] [Modals] [Remove Manager Modal]', () => {
 
       const updatedOrderStatusTitle =
         await orderDetailsPage.topPanel.getOrderDetailsPanelTitle();
-      await expect(updatedOrderStatusTitle).toBe(`Order Details`);
+      await expect(updatedOrderStatusTitle).toBe(
+        UI_TEXTS.PANEL_TITLES.ORDER_DETAILS,
+      );
+
       await expect(orderDetailsPage.topPanel.assignManagerButton).toBeVisible();
     },
   );

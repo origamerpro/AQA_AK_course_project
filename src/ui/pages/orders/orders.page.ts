@@ -55,10 +55,16 @@ export class OrdersPage extends SalesPortalPage {
   readonly actionsHeader = this.tableHeader.getByText('Actions', {
     exact: true,
   });
-
   readonly allTableRows = this.tableBody.locator('tr');
   tableRowByOrderNumber(orderNumber: string) {
     return this.tableBody.locator('tr', { hasText: orderNumber });
+  }
+  private getSortableColumnHeaderLocator(
+    columnName: OrdersListColumnForSorting,
+  ) {
+    return this.tableHeader.locator('th div[onclick*="sortOrdersInTable"]', {
+      hasText: columnName,
+    });
   }
 
   // Нижняя часть страницы Orders List (пагинация)
@@ -126,6 +132,7 @@ export class OrdersPage extends SalesPortalPage {
     await this.filterButton.click();
   }
 
+  @logStep('Get Cell Text By Order Number And Column')
   async getCellTextByOrderNumberAndColumn(
     orderNumber: string,
     columnName: OrdersListColumn,
@@ -140,6 +147,7 @@ export class OrdersPage extends SalesPortalPage {
     return await cell.innerText();
   }
 
+  @logStep('Click Details Button')
   async clickDetailsButton(orderNumber: string) {
     const row = this.tableRowByOrderNumber(orderNumber);
     const detailsButton = row
@@ -148,6 +156,7 @@ export class OrdersPage extends SalesPortalPage {
     await detailsButton.click();
   }
 
+  @logStep('Click Reopen Button')
   async clickReopenButton(orderNumber: string) {
     const row = this.tableRowByOrderNumber(orderNumber);
     const reopenButton = row
@@ -156,20 +165,13 @@ export class OrdersPage extends SalesPortalPage {
     await reopenButton.click();
   }
 
+  @logStep('Click Column Header For Sort')
   async clickColumnHeaderForSort(columnName: OrdersListColumnForSorting) {
     const columnHeader = this.tableHeader.locator(
       'th div[onclick*="sortOrdersInTable"]',
       { hasText: columnName },
     );
     await columnHeader.click();
-  }
-
-  private getSortableColumnHeaderLocator(
-    columnName: OrdersListColumnForSorting,
-  ) {
-    return this.tableHeader.locator('th div[onclick*="sortOrdersInTable"]', {
-      hasText: columnName,
-    });
   }
 
   async getCurrentSortDirection(columnName: OrdersListColumnForSorting) {
@@ -208,22 +210,28 @@ export class OrdersPage extends SalesPortalPage {
       }
     });
   }
+
+  @logStep('Get Row Count')
   async getRowCount() {
     return await this.allTableRows.count();
   }
 
+  @logStep('Select Items Per Page')
   async selectItemsPerPage(itemsPerPage: '10' | '25' | '50' | '100') {
     await this.paginationSelect.selectOption(itemsPerPage);
   }
 
+  @logStep('Click Previous Page Button')
   async clickPreviousPageButton() {
     await this.previousPageButton.click();
   }
 
+  @logStep('Click Next Page Button')
   async clickNextPageButton() {
     await this.nextPageButton.click();
   }
 
+  @logStep('Click Page Number Button')
   async clickPageNumberButton(pageNumber: number) {
     const button = this.getPageByNumber(pageNumber);
     await button.click();

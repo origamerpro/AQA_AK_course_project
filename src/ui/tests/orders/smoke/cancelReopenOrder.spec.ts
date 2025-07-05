@@ -37,8 +37,8 @@ test.describe('[UI] [Orders] Cancel Order', () => {
 
         const updatedStatus = await orderDetailsPage.topPanel.getOrderStatus();
 
-        await expect(updatedStatus).toBe(ORDER_STATUS.CANCELED);
-        await expect(orderDetailsPage.topPanel.reopenOrderButton).toBeVisible();
+        await expect(updatedStatus, 'Order status is incorrect').toBe(ORDER_STATUS.CANCELED);
+        await expect(orderDetailsPage.topPanel.reopenOrderButton, 'Reopen order button is not displayed').toBeVisible();
       },
     );
   });

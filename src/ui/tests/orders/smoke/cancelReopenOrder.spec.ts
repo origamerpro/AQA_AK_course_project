@@ -17,7 +17,7 @@ test.describe('[UI] [Orders] Cancel Order', () => {
     test.beforeEach(
       async ({ ordersApiService, signInApiService, homeUIService }) => {
         token = await signInApiService.loginAsLocalUser();
-        orderId = (await ordersApiService[item](1, token))._id;
+        orderId = (await ordersApiService[method](1, token))._id;
         await homeUIService.openAsLoggedInUser();
         await homeUIService.openModule('Orders');
       },

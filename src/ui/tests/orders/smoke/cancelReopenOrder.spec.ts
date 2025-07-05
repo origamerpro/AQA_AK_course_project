@@ -7,10 +7,12 @@ test.describe('[UI] [Orders] Cancel Order', () => {
   let orderId: string = '';
 
   const testCases = [
-    { testTitle: 'Canceled draft order', method: 'createDraftOrder', },
-    { testTitle: 'Canceled in process order', method: 'createInProcessOrder', },
-    { testTitle: 'Canceled draft with delivery order', method: 'createDraftOrderWithDelivery', },
-
+    { testTitle: 'Canceled draft order', method: 'createDraftOrder' },
+    { testTitle: 'Canceled in process order', method: 'createInProcessOrder' },
+    {
+      testTitle: 'Canceled draft with delivery order',
+      method: 'createDraftOrderWithDelivery',
+    },
   ] as const;
 
   testCases.forEach(({ testTitle, method }) => {
@@ -24,7 +26,7 @@ test.describe('[UI] [Orders] Cancel Order', () => {
     );
 
     test(
-      item,
+      testTitle,
       { tag: [TAGS.API, TAGS.ORDERS, TAGS.SMOKE] },
       async ({ orderDetailsPage, ordersPage, confirmationModal }) => {
         await ordersPage.clickDetailsButton(orderId);
@@ -37,8 +39,13 @@ test.describe('[UI] [Orders] Cancel Order', () => {
 
         const updatedStatus = await orderDetailsPage.topPanel.getOrderStatus();
 
-        await expect(updatedStatus, 'Order status is incorrect').toBe(ORDER_STATUS.CANCELED);
-        await expect(orderDetailsPage.topPanel.reopenOrderButton, 'Reopen order button is not displayed').toBeVisible();
+        await expect(updatedStatus, 'Order status is incorrect').toBe(
+          ORDER_STATUS.CANCELED,
+        );
+        await expect(
+          orderDetailsPage.topPanel.reopenOrderButton,
+          'Reopen order button is not displayed',
+        ).toBeVisible();
       },
     );
   });
@@ -70,8 +77,13 @@ test.describe('[UI] [Orders] Reopen order', () => {
       await orderDetailsPage.waitForSpinner();
 
       const updatedStatus = await orderDetailsPage.topPanel.getOrderStatus();
-      await expect(updatedStatus, 'Order status is incorrect').toBe(ORDER_STATUS.DRAFT);
-      await expect(orderDetailsPage.topPanel.cancelOrderButton, 'Cancel button is not displayed').toBeVisible();
+      await expect(updatedStatus, 'Order status is incorrect').toBe(
+        ORDER_STATUS.DRAFT,
+      );
+      await expect(
+        orderDetailsPage.topPanel.cancelOrderButton,
+        'Cancel button is not displayed',
+      ).toBeVisible();
     },
   );
 });

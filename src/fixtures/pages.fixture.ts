@@ -7,9 +7,10 @@ import { ConfirmationModal } from 'ui/pages/modals/orders/confirmationModal.page
 import { OrderDetailsPage } from 'ui/pages/orders/orderDetails.page';
 import { CreateOrderModal } from 'ui/pages/modals/orders/createOrderModal.page';
 import { EditCustomerModalPage } from 'ui/pages/modals/orders/editCustomerModal.page';
-import { EditOrderModal } from 'ui/pages/modals/orders/editOrderModal.page';
+
 import { FiltersModal } from 'ui/pages/modals/orders/orderListFilter.page';
 import { SelectManagerModal } from 'ui/pages/modals/orders/selectManagerModal.page';
+import { EditOrderModal } from 'ui/pages/modals/orders/editProductsInOrderModal.page';
 
 interface ISalesPortalPages {
   homePage: HomePage;

@@ -27,9 +27,10 @@ export class OrderDetailsPanelComponent extends SalesPortalPage {
   readonly orderStatusBarContainer = this.page.locator(
     '#order-status-bar-container',
   );
-  readonly orderStatusValue = this.orderStatusBarContainer.locator(
-    'span.fw-bold:has-text("Order Status") + br + span',
-  );
+
+  readonly orderStatusValue = this.orderStatusBarContainer
+    .locator('div:has(span.fw-bold:has-text("Order Status")) > span')
+    .nth(1);
   readonly totalPriceValue = this.orderStatusBarContainer.locator(
     'div:has-text("Total Price") > span.text-primary',
   );

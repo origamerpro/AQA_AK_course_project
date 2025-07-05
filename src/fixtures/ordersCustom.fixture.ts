@@ -8,7 +8,7 @@ export interface ICreateOrderData {
   productsIds: string[];
   customerId: string;
 }
-interface ICustomOrder {
+export interface ICustomOrder {
   orderInProcessStatus: (count?: number) => Promise<ICreateOrderData>;
   orderDraftStatus: (count?: number) => Promise<ICreateOrderData>;
   orderDraftWithDeliveryStatus: (count?: number) => Promise<ICreateOrderData>;

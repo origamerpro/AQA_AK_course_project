@@ -190,8 +190,6 @@ export class OrderDetailsReceivedProductsSection extends SalesPortalPage {
     const texts = await this.allProductAccordionHeaders
       .locator('button.accordion-button')
       .allInnerTexts();
-    return texts.map(t => t.split('\n')[0].trim());
+    return texts.map((t) => t.split('\n')[0].trim());
   }
-
-
 }

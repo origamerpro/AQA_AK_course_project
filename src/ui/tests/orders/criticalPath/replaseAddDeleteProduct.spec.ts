@@ -71,7 +71,6 @@ test.describe('[UI] [Orders] [Orders Details] [Edit Products] Replace/add/delete
 
       const productCount =
         await orderDetailsPage.editProductsInOrderModal.productsList.count();
-
       await orderDetailsPage.editProductsInOrderModal.selectProductAtPosition(
         firstProductName,
         productCount,
@@ -96,7 +95,6 @@ test.describe('[UI] [Orders] [Orders Details] [Edit Products] Replace/add/delete
 
       const initialCount =
         await orderDetailsPage.editProductsInOrderModal.productsList.count();
-
       await orderDetailsPage.editProductsInOrderModal.removeProduct(0);
 
       await orderDetailsPage.editProductsInOrderModal.clickSave();

@@ -46,12 +46,12 @@ test.describe('[UI] [Orders] [Orders Details] [Edit Products] Replace/add/delete
       const firstProductName = productNames[0];
       const secondProductName = productNames[1];
 
-      await orderDetailsPage.editOrderModal.selectProductAtPosition(
+      await orderDetailsPage.editProductsInOrderModal.selectProductAtPosition(
         secondProductName,
         1,
       );
 
-      await orderDetailsPage.editOrderModal.clickSave();
+      await orderDetailsPage.editProductsInOrderModal.clickSave();
       await orderDetailsPage.waitForSpinner();
 
       const updatedProductNames =
@@ -67,17 +67,16 @@ test.describe('[UI] [Orders] [Orders Details] [Edit Products] Replace/add/delete
     async ({ orderDetailsPage }) => {
       const firstProductName = productNames[0];
 
-      await orderDetailsPage.editOrderModal.clickAddProduct();
+      await orderDetailsPage.editProductsInOrderModal.clickAddProduct();
 
       const productCount =
-        await orderDetailsPage.editOrderModal.productsList.count();
-
-      await orderDetailsPage.editOrderModal.selectProductAtPosition(
+        await orderDetailsPage.editProductsInOrderModal.productsList.count();
+      await orderDetailsPage.editProductsInOrderModal.selectProductAtPosition(
         firstProductName,
         productCount,
       );
 
-      await orderDetailsPage.editOrderModal.clickSave();
+      await orderDetailsPage.editProductsInOrderModal.clickSave();
       await orderDetailsPage.waitForSpinner();
 
       const updatedProductNames =
@@ -95,11 +94,10 @@ test.describe('[UI] [Orders] [Orders Details] [Edit Products] Replace/add/delete
       const firstProductName = productNames[0];
 
       const initialCount =
-        await orderDetailsPage.editOrderModal.productsList.count();
+        await orderDetailsPage.editProductsInOrderModal.productsList.count();
+      await orderDetailsPage.editProductsInOrderModal.removeProduct(0);
 
-      await orderDetailsPage.editOrderModal.removeProduct(0);
-
-      await orderDetailsPage.editOrderModal.clickSave();
+      await orderDetailsPage.editProductsInOrderModal.clickSave();
       await orderDetailsPage.waitForSpinner();
 
       const updatedProductNames =

@@ -40,4 +40,8 @@ export class OrderDetailsService extends BaseUIService {
       this.orderDetailsPage.receivedProductsSection.receiveButton,
     ).not.toBeVisible();
   }
+
+  async refreshPage() {
+    await this.page.reload();
+  }
 }

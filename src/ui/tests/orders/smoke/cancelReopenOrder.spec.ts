@@ -70,8 +70,8 @@ test.describe('[UI] [Orders] Reopen order', () => {
       await orderDetailsPage.waitForSpinner();
 
       const updatedStatus = await orderDetailsPage.topPanel.getOrderStatus();
-      await expect(updatedStatus).toBe(ORDER_STATUS.DRAFT);
-      await expect(orderDetailsPage.topPanel.cancelOrderButton).toBeVisible();
+      await expect(updatedStatus, 'Order status is incorrect').toBe(ORDER_STATUS.DRAFT);
+      await expect(orderDetailsPage.topPanel.cancelOrderButton, 'Cancel button is not displayed').toBeVisible();
     },
   );
 });

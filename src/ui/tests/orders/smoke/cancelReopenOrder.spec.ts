@@ -1,143 +1,76 @@
 import { ORDER_STATUS } from 'data/orders/statuses.data';
 import { TAGS } from 'data/testTags.data';
-import {
-  expect,
-  orderCanceledStatus,
-  orderDraftStatus,
-  orderDraftWithDeliveryStatus,
-  orderInProcessStatus,
-  test,
-} from 'fixtures/ordersCustom.fixture';
+import { expect, test } from 'fixtures/ordersCustom.fixture';
 
-test.describe('[UI] [Orders] Order Status Changes', () => {
-  test.beforeEach(async ({ signInApiService, homeUIService }) => {
-    await signInApiService.loginAsLocalUser();
-    await homeUIService.openAsLoggedInUser();
-  });
+test.describe('[UI] [Orders] Cancel Order with status: draft, draft with delivery, in process', () => {
+  let token: string;
+  let orderId: string = '';
 
-  test.describe('Cancel/Reopen order', () => {
-    orderInProcessStatus(
-      'Should cancel in-process order',
-      { tag: [TAGS.ORDERS, TAGS.SMOKE] },
-      async ({
-        orderInProcessStatus,
-        ordersPage,
-        orderDetailsPage,
-        confirmationModal,
-        homeUIService,
-      }) => {
-        // Создаем заказ через API
-        const order = await orderInProcessStatus();
+  const testCases = [
+    'createDraftOrder',
+    'createInProcessOrder',
+    'createDraftOrderWithDelivery',
+  ] as const;
+
+  testCases.forEach((item) => {
+    test.beforeEach(
+      async ({ ordersApiService, signInApiService, homeUIService }) => {
+        token = await signInApiService.loginAsLocalUser();
+        orderId = (await ordersApiService[item](1, token))._id;
+        await homeUIService.openAsLoggedInUser();
         await homeUIService.openModule('Orders');
-        await orderDetailsPage.waitForOpened();
-        // Ищем и открываем заказ
-        await ordersPage.clickDetailsButton(order.id);
-        await orderDetailsPage.waitForOpened();
-
-        // Отменяем заказ
-        await orderDetailsPage.topPanel.clickCancelOrderButton();
-        await orderDetailsPage.waitForSpinner();
-        await confirmationModal.clickConfirmButton();
-        await orderDetailsPage.waitForSpinner();
-
-        // Проверяем результат
-        const updatedStatus = await orderDetailsPage.topPanel.getOrderStatus();
-        await expect(updatedStatus).toBe(ORDER_STATUS.CANCELED);
-        await expect(orderDetailsPage.topPanel.reopenOrderButton).toBeVisible();
       },
     );
 
-    orderDraftStatus(
-      'Should cancel draft order',
-      { tag: [TAGS.ORDERS, TAGS.SMOKE] },
-      async ({
-        orderDraftStatus,
-        ordersPage,
-        orderDetailsPage,
-        confirmationModal,
-        homeUIService,
-      }) => {
-        // Создаем заказ через API
-        const order = await orderDraftStatus();
-        await homeUIService.openModule('Orders');
+    test(
+      item,
+      { tag: [TAGS.API, TAGS.ORDERS, TAGS.SMOKE] },
+      async ({ orderDetailsPage, ordersPage, confirmationModal }) => {
+        await ordersPage.clickDetailsButton(orderId);
         await orderDetailsPage.waitForOpened();
-        // Ищем и открываем заказ
-        await ordersPage.clickDetailsButton(order.id);
-        await orderDetailsPage.waitForOpened();
-
-        // Отменяем заказ
         await orderDetailsPage.topPanel.clickCancelOrderButton();
+
         await orderDetailsPage.waitForSpinner();
         await confirmationModal.clickConfirmButton();
         await orderDetailsPage.waitForSpinner();
 
-        // Проверяем результат
         const updatedStatus = await orderDetailsPage.topPanel.getOrderStatus();
+
         await expect(updatedStatus).toBe(ORDER_STATUS.CANCELED);
         await expect(orderDetailsPage.topPanel.reopenOrderButton).toBeVisible();
-      },
-    );
-
-    orderDraftWithDeliveryStatus(
-      'Should cancel draft with delivery order',
-      { tag: [TAGS.ORDERS, TAGS.SMOKE] },
-      async ({
-        orderDraftWithDeliveryStatus,
-        ordersPage,
-        orderDetailsPage,
-        confirmationModal,
-        homeUIService,
-      }) => {
-        // Создаем заказ через API
-        const order = await orderDraftWithDeliveryStatus();
-        await homeUIService.openModule('Orders');
-        await orderDetailsPage.waitForOpened();
-        // Ищем и открываем заказ
-        await ordersPage.clickDetailsButton(order.id);
-        await orderDetailsPage.waitForOpened();
-
-        // Отменяем заказ
-        await orderDetailsPage.topPanel.clickCancelOrderButton();
-        await orderDetailsPage.waitForSpinner();
-        await confirmationModal.clickConfirmButton();
-        await orderDetailsPage.waitForSpinner();
-
-        // Проверяем результат
-        const updatedStatus = await orderDetailsPage.topPanel.getOrderStatus();
-        await expect(updatedStatus).toBe(ORDER_STATUS.CANCELED);
-        await expect(orderDetailsPage.topPanel.reopenOrderButton).toBeVisible();
-      },
-    );
-
-    orderCanceledStatus(
-      'Should reopen canceled order',
-      { tag: [TAGS.ORDERS, TAGS.SMOKE] },
-      async ({
-        orderCanceledStatus,
-        ordersPage,
-        orderDetailsPage,
-        confirmationModal,
-        homeUIService,
-      }) => {
-        // Создаем заказ через API
-        const order = await orderCanceledStatus();
-        await homeUIService.openModule('Orders');
-        await orderDetailsPage.waitForOpened();
-        // Ищем и открываем заказ
-        await ordersPage.clickDetailsButton(order.id);
-        await orderDetailsPage.waitForOpened();
-
-        // Отменяем заказ
-        await orderDetailsPage.topPanel.clickReopenOrderButton();
-        await orderDetailsPage.waitForSpinner();
-        await confirmationModal.clickConfirmButton();
-        await orderDetailsPage.waitForSpinner();
-
-        // Проверяем результат
-        const updatedStatus = await orderDetailsPage.topPanel.getOrderStatus();
-        await expect(updatedStatus).toBe(ORDER_STATUS.DRAFT);
-        await expect(orderDetailsPage.topPanel.cancelOrderButton).toBeVisible();
       },
     );
   });
+});
+
+test.describe('[UI] [Orders] Reopen order', () => {
+  let token: string;
+  let orderId: string = '';
+
+  test.beforeEach(
+    async ({ signInApiService, homeUIService, ordersApiService }) => {
+      token = await signInApiService.loginAsLocalUser();
+      orderId = (await ordersApiService.createCanceledOrder(1, token))._id;
+      await homeUIService.openAsLoggedInUser();
+      await homeUIService.openModule('Orders');
+    },
+  );
+
+  test(
+    'Reopen canceled order (in process)',
+    { tag: [TAGS.API, TAGS.ORDERS, TAGS.SMOKE] },
+    async ({ orderDetailsPage, ordersPage, confirmationModal }) => {
+      await ordersPage.clickDetailsButton(orderId);
+      await orderDetailsPage.waitForOpened();
+
+      await orderDetailsPage.topPanel.clickReopenOrderButton();
+      await orderDetailsPage.waitForSpinner();
+      await confirmationModal.clickConfirmButton();
+      await orderDetailsPage.waitForSpinner();
+
+      const updatedStatus = await orderDetailsPage.topPanel.getOrderStatus();
+      await expect(updatedStatus).toBe(ORDER_STATUS.DRAFT);
+      await expect(orderDetailsPage.topPanel.cancelOrderButton).toBeVisible();
+    },
+  );
 });

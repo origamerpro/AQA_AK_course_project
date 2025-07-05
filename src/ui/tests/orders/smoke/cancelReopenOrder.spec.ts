@@ -2,7 +2,7 @@ import { ORDER_STATUS } from 'data/orders/statuses.data';
 import { TAGS } from 'data/testTags.data';
 import { expect, test } from 'fixtures/ordersCustom.fixture';
 
-test.describe('[UI] [Orders] Cancel Order with status: draft, draft with delivery, in process', () => {
+test.describe('[UI] [Orders] Cancel Order', () => {
   let token: string;
   let orderId: string = '';
 

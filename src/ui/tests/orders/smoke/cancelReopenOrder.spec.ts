@@ -7,12 +7,13 @@ test.describe('[UI] [Orders] Cancel Order with status: draft, draft with deliver
   let orderId: string = '';
 
   const testCases = [
-    'createDraftOrder',
-    'createInProcessOrder',
-    'createDraftOrderWithDelivery',
+    { testTitle: 'Canceled draft order', method: 'createDraftOrder', },
+    { testTitle: 'Canceled in process order', method: 'createInProcessOrder', },
+    { testTitle: 'Canceled draft with delivery order', method: 'createDraftOrderWithDelivery', },
+
   ] as const;
 
-  testCases.forEach((item) => {
+  testCases.forEach(({ testTitle, method }) => {
     test.beforeEach(
       async ({ ordersApiService, signInApiService, homeUIService }) => {
         token = await signInApiService.loginAsLocalUser();

@@ -1,6 +1,6 @@
 import { expect, test } from 'fixtures/ordersCustom.fixture';
 import { TAGS } from 'data/testTags.data';
-import { OrderSetupService } from 'ui/services/order.ui-services';
+import { OrderSetupService } from 'ui/services/orderSetup.ui-service';
 import { ORDER_STATUS } from 'data/orders/statuses.data';
 test.describe('[UI] [Orders] [Customer]', () => {
   test.describe('[Positive]', () => {

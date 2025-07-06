@@ -25,6 +25,10 @@ export abstract class PageHolder extends BasePage {
     await expect(this.notification.last()).toHaveText(text);
   }
 
+  getNotificationByText(text: string) {
+    return this.page.locator('.toast-body', { hasText: text }).last();
+  }
+
   @logStep('Open Sales Portal')
   async openPortal() {
     await this.page.goto(SALES_PORTAL_URL);

@@ -19,8 +19,11 @@ export class SelectManagerModal extends BaseModal {
     await this.managerSearchInput.fill(managerName);
   }
 
-  getManagerListItem(managerName: string) {
-    return this.managerList.locator('li', { hasText: managerName });
+  getManagerListItem(managerUsername: string) {
+    // Ищем <li>, в котором есть <small> с точным текстом (username/email в скобках)
+    return this.managerList.locator(
+      `xpath=.//li[.//small[normalize-space(text())="(${managerUsername})"]]`,
+    );
   }
 
   @logStep('Click on the manager list item')

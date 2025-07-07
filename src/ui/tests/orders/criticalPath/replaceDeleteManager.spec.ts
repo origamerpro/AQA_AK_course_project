@@ -61,8 +61,8 @@ test.describe('[UI] [Orders] [Orders Details] [Edit Products] Replace/delete ass
       const updatedAssignedManager =
         await orderDetailsPage.topPanel.getAssignedManagerName();
       await expect
-        .soft(updatedAssignedManager, 'Manager name is different')
-        .toBe(managerFirstName + ' ' + managerLastName);
+        .soft(updatedAssignedManager, 'Manager name is incorrect')
+        .toBe(`${managerFirstName} ${managerLastName}`);
 
       //проверка уведомления в модалке уведомлений о назначении менеджером
       await ordersPage.clickOpenNotifications();

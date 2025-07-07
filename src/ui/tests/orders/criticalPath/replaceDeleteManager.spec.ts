@@ -93,11 +93,10 @@ test.describe('[UI] [Orders] [Orders Details] [Edit Products] Replace/delete ass
       await orderDetailsPage.waitForSpinner();
 
       //проверка что менеджер пропал из поля назначенный менеджер в заказе
-      const assignedManagerLink = orderDetailsPage.topPanel.assignedManagerLink;
       await expect(
-        assignedManagerLink,
-        'Manager should be empty',
-      ).not.toBeVisible();
+        orderDetailsPage.topPanel.assignManagerButton,
+        '"Click to select manager" button is not displayed',
+      ).toBeVisible();
     },
   );
 });

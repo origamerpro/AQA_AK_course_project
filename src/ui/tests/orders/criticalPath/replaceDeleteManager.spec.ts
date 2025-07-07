@@ -69,7 +69,7 @@ test.describe('[UI] [Orders] [Orders Details] [Edit Products] Replace/delete ass
       const notificationText = await notificationsModal.getNotificationText(0);
       await expect(
         notificationText,
-        'Should ger notification about assigned',
+        'Notification text is incorrect',
       ).toBe(UI_TEXTS.NOTIFICATION.MANAGER_ASSIGNED);
     },
   );

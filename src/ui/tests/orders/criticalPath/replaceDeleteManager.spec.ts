@@ -1,5 +1,6 @@
 import { MOCK_MANAGER_NASTYA } from 'data/orders/mockOrders.data';
-import { UI_TEXTS } from 'data/orders/uiTexts.data';
+import { NOTIFICATION } from 'data/orders/notification.data';
+import { TOASTER } from 'data/orders/toaster.data';
 import { TAGS } from 'data/testTags.data';
 import { expect, test } from 'fixtures/ordersCustom.fixture';
 
@@ -53,9 +54,8 @@ test.describe('[UI] [Orders] [Orders Details] [Edit Products] Replace/delete ass
 
       //проверка всплывающего уведомления о назначении менелджера
       await orderDetailsPage.waitForNotification(
-        UI_TEXTS.NOTIFICATION_TOASTER.MANAGER_SUCCESSFULLY_ASSIGNED,
+        TOASTER.MANAGER_SUCCESSFULLY_ASSIGNED,
       );
-      await orderDetailsPage.waitForSpinner();
 
       //проверка assigned manager в поле заказа
       const updatedAssignedManager =
@@ -67,10 +67,9 @@ test.describe('[UI] [Orders] [Orders Details] [Edit Products] Replace/delete ass
       //проверка уведомления в модалке уведомлений о назначении менеджером
       await ordersPage.clickOpenNotifications();
       const notificationText = await notificationsModal.getNotificationText(0);
-      await expect(
-        notificationText,
-        'Notification text is incorrect',
-      ).toBe(UI_TEXTS.NOTIFICATION.MANAGER_ASSIGNED);
+      await expect(notificationText, 'Notification text is incorrect').toBe(
+        NOTIFICATION.MANAGER_ASSIGNED,
+      );
     },
   );
 
@@ -88,9 +87,8 @@ test.describe('[UI] [Orders] [Orders Details] [Edit Products] Replace/delete ass
 
       //проверка всплывающего уведомления об удаление менелджера
       await orderDetailsPage.waitForNotification(
-        UI_TEXTS.NOTIFICATION_TOASTER.MANAGER_SUCCESSFULLY_UNASSIGNED,
+        TOASTER.MANAGER_SUCCESSFULLY_UNASSIGNED,
       );
-      await orderDetailsPage.waitForSpinner();
 
       //проверка что менеджер пропал из поля назначенный менеджер в заказе
       await expect(

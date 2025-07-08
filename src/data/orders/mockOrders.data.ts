@@ -26,6 +26,15 @@ export const MOCK_MANAGER_OLGA: IManager = {
   createdOn: '2025/04/26 21:17:49',
 };
 
+export const MOCK_MANAGER_NASTYA: IManager = {
+  _id: '680f4ee2d006ba3d47600a5c',
+  username: '2003@gmail.com',
+  firstName: 'Anastasia',
+  lastName: 'Super!',
+  roles: [ROLES.USER],
+  createdOn: '2025/04/28 09:48:18',
+};
+
 // Моковые клиенты (ICustomerFromResponse)
 export const MOCK_CUSTOMER_ALICE: ICustomerFromResponse = {
   _id: generateUniqueId(),

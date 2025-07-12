@@ -7,7 +7,7 @@ import { ICustomerFromResponse } from 'types/customer.types';
 import { IProduct } from 'types/products.types';
 import { COUNTRIES } from 'data/customers/countries.data';
 import { ORDER_STATUS } from 'data/orders/statuses.data';
-import { DELIVERY } from 'data/orders/delivery.data';
+import { DELIVERY, LOCATION } from 'data/orders/delivery.data';
 import { ORDER_HISTORY_ACTIONS } from 'data/orders/history.data';
 import { ROLES } from 'data/orders/roles.data';
 
@@ -78,12 +78,12 @@ export interface IProductFromOrder extends IProduct {
 }
 
 export interface IAddress {
-  location?: string;
-  country: COUNTRIES;
-  city: string;
-  street: string;
-  house: number;
-  flat: number;
+  location?: LOCATION;
+  country?: COUNTRIES;
+  city?: string;
+  street?: string;
+  house?: number;
+  flat?: number;
 }
 
 export interface IDelivery {

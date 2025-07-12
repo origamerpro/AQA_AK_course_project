@@ -4,6 +4,7 @@ import { OrderDetailsReceivedProductsSection } from './components/orderDetailsRe
 import { OrderCommentsTab } from './components/orderDetailsCommentsComponent.page';
 import { EditOrderModal } from '../modals/orders/editProductsInOrderModal.page';
 import { OrderCustomerDetailsComponentPage } from './components/orderCustomerDetailsComponent.page';
+import { OrderDeliveryTab } from './components/orderDetailsDeliveryComponent.page';
 import { SelectManagerModal } from '../modals/orders/selectManagerModal.page';
 
 export class OrderDetailsPage extends SalesPortalPage {
@@ -12,5 +13,6 @@ export class OrderDetailsPage extends SalesPortalPage {
   commentsSection = new OrderCommentsTab(this.page);
   editProductsInOrderModal = new EditOrderModal(this.page);
   customerDetailsSection = new OrderCustomerDetailsComponentPage(this.page);
+  deliverySection = new OrderDeliveryTab(this.page);
   editAssignedManagerInOrderModal = new SelectManagerModal(this.page);
 }

@@ -1,10 +1,14 @@
-import { expect } from '@playwright/test';
 import { logStep } from 'utils/reporter.utils';
 import { SalesPortalPage } from './salesPortal.page';
-import { IAddress, IDelivery } from 'types/orders.types';
-import { DELIVERY, LOCATION } from 'data/orders/delivery.data';
+import { IAddress } from 'types/orders.types';
+import {
+  DATE_PICKER_MONTHS,
+  DELIVERY,
+  LOCATION,
+} from 'data/orders/delivery.data';
 
 export abstract class BaseDeliveryPage extends SalesPortalPage {
+  readonly pageContainer = this.page.locator('#delivery-container');
   readonly deliveryType = this.page.locator('#inputType');
   readonly deliveryDate = this.page.locator('#date-input');
   readonly location = this.page.locator('#inputLocation');
@@ -16,62 +20,103 @@ export abstract class BaseDeliveryPage extends SalesPortalPage {
   readonly saveButton = this.page.locator('#save-delivery');
   readonly cancelButton = this.page.locator('#back-to-order-details-page');
   readonly titleLocator = this.page.locator('#title h2.fw-bold');
-  readonly datepicker = this.page.locator('.datepicker-days');
 
-  getDayCell(day: number) {
-    return this.datepicker
-      .locator(`td.day:not(.disabled):has-text("${day}")`)
-      .first();
-  }
+  // Datepicker
+  readonly dateInputField = this.pageContainer.locator('#date-input');
+  readonly dateInputIcon = this.pageContainer.locator('span.d-p-icon');
+  readonly datepicker = this.page.locator('.datepicker');
+  readonly datepickerSwitcherToMonths = this.datepicker.locator(
+    '.datepicker-days .datepicker-switch',
+  );
+  readonly datepickerSwitcherToYears = this.datepicker.locator(
+    '.datepicker-months .datepicker-switch',
+  );
+  readonly datepickerYear = (year: string) =>
+    this.datepicker.locator('.year', { hasText: year });
+  readonly datepickerMonth = (month: DATE_PICKER_MONTHS) =>
+    this.datepicker.locator('.month', { hasText: month });
+  readonly datepickerDay = (day: string) =>
+    this.datepicker.locator(
+      `td.day:not(.disabled):not(.old):not(.new):has-text('${day}')`,
+    );
 
   uniqueElement = this.deliveryType;
   abstract expectedTitle: string;
-
-  async verifyPageTitle() {
-    await expect(this.titleLocator).toHaveText(this.expectedTitle);
-  }
 
   @logStep('Select delivery type')
   async selectDeliveryType(type: string) {
     await this.deliveryType.selectOption(type);
   }
 
-  @logStep('Set delivery date')
-  async setDeliveryDate(date: string) {
-    const targetDate = new Date(date);
-    const day = targetDate.getDate();
+  private async fillDateInput(date: string) {
+    const parsedDate = new Date(date);
+    const day = parsedDate.getDate().toString();
+    const month = Object.values(DATE_PICKER_MONTHS)[parsedDate.getMonth()];
+    const year = parsedDate.getFullYear().toString();
 
-    await this.deliveryDate.click();
-    await this.datepicker.waitFor({ state: 'visible' });
+    await this.dateInputIcon.click();
+    await this.datepickerSwitcherToMonths.click();
+    await this.datepickerSwitcherToYears.click();
 
-    const dayCell = this.getDayCell(day);
+    await this.datepickerYear(year).click();
+    await this.datepickerMonth(month).click();
+    await this.page.waitForSelector('.datepicker-days', {
+      state: 'visible',
+      timeout: 5000,
+    });
 
-    if ((await dayCell.count()) === 0) {
-      throw new Error(`Дата ${date} недоступна для выбора`);
-    }
-
-    await dayCell.click();
+    await this.datepickerDay(day).click();
   }
 
-  @logStep('Fill address form')
-  async fillAddress(address: IAddress, deliveryType: DELIVERY) {
+  @logStep('Fill delivery form (date + address)')
+  async fillAddress(
+    address: IAddress & { finalDate: string },
+    deliveryType: DELIVERY,
+  ) {
+    if (address.finalDate) {
+      await this.fillDateInput(address.finalDate);
+    }
+
     if (deliveryType === DELIVERY.DELIVERY) {
       if (address.location === LOCATION.OTHER) {
         if (await this.location.isVisible()) {
           await this.location.selectOption({ label: address.location });
         }
-        await this.country.selectOption({ label: address.country });
-      } else if (address.location === LOCATION.HOME) {
-        await this.country.fill(address.country);
+
+        if (address.country) {
+          await this.country.selectOption({ label: address.country });
+        }
+        if (address.city) await this.city.fill(address.city);
+        if (address.street) await this.street.fill(address.street);
+        if (address.house !== undefined) {
+          await this.house.fill(address.house.toString());
+        }
+        if (address.flat !== undefined) {
+          await this.flat.fill(address.flat.toString());
+        }
       }
-    } else if (deliveryType === DELIVERY.PICKUP) {
-      await this.country.selectOption({ label: address.country });
+
+      if (address.location === LOCATION.HOME) {
+        if (await this.location.isVisible()) {
+          await this.location.selectOption({ label: address.location });
+        }
+      }
     }
 
-    await this.city.fill(address.city);
-    await this.street.fill(address.street);
-    await this.house.fill(address.house.toString());
-    await this.flat.fill(address.flat.toString());
+    if (deliveryType === DELIVERY.PICKUP) {
+      if (address.country) {
+        await this.country.selectOption({ label: address.country });
+      }
+
+      if (address.city) await this.city.fill(address.city);
+      if (address.street) await this.street.fill(address.street);
+      if (address.house !== undefined) {
+        await this.house.fill(address.house.toString());
+      }
+      if (address.flat !== undefined) {
+        await this.flat.fill(address.flat.toString());
+      }
+    }
   }
 
   @logStep('Click Save Delivery button')
@@ -84,13 +129,5 @@ export abstract class BaseDeliveryPage extends SalesPortalPage {
   async cancel() {
     await this.cancelButton.click();
     await this.waitForSpinner();
-  }
-
-  @logStep('Complete and submit delivery form')
-  async completeDeliveryForm(data: IDelivery) {
-    await this.waitForOpened();
-    await this.selectDeliveryType(data.condition);
-    await this.setDeliveryDate(data.finalDate);
-    await this.fillAddress(data.address, data.condition);
   }
 }

@@ -13,6 +13,7 @@ import { SelectManagerModal } from 'ui/pages/modals/orders/selectManagerModal.pa
 import { EditOrderModal } from 'ui/pages/modals/orders/editProductsInOrderModal.page';
 import { ScheduleDeliveryPage } from 'ui/pages/scheduleDelivery.page';
 import { EditDeliveryPage } from 'ui/pages/editDelivery.page';
+import { NotificationsModal } from 'ui/pages/modals/orders/notificationModal.page';
 
 interface ISalesPortalPages {
   homePage: HomePage;
@@ -27,6 +28,7 @@ interface ISalesPortalPages {
   selectManagerModal: SelectManagerModal;
   scheduleDeliveryPage: ScheduleDeliveryPage;
   editDeliveryPage: EditDeliveryPage;
+  notificationsModal: NotificationsModal;
 }
 
 export const test = base.extend<ISalesPortalPages>({
@@ -74,6 +76,9 @@ export const test = base.extend<ISalesPortalPages>({
   },
   editDeliveryPage: async ({ page }, use) => {
     await use(new EditDeliveryPage(page));
+
+  notificationsModal: async ({ page }, use) => {
+    await use(new NotificationsModal(page));
   },
 });
 

@@ -4,7 +4,7 @@ import { TAGS } from "data/testTags.data";
 import { validateResponse } from "utils/validations/responseValidation";
 import { validateSchema } from '../../../utils/validations/schemaValidation';
 import { getOrderByIDResponseSchema } from 'data/schemas/order.schema';
-import { MOCK_PRODUCT_ONE } from '../../../data/orders/mockOrders.data';
+import { MOCK_ORDER_DRAFT, MOCK_PRODUCT_ONE } from '../../../data/orders/mockOrders.data';
 import { ERROR_MESSAGES } from '../../../data/errorMessages';
 
 test.describe('[API] [Orders] Get order by id', () => {
@@ -30,7 +30,7 @@ test.describe('[API] [Orders] Get order by id', () => {
       test('404 Not Found - Get order by invalid id',
         { tag: [TAGS.API, TAGS.ORDERS, TAGS.REGRESSION] },
         async ({ ordersController, orderDraftStatus }) => {
-          const id = MOCK_PRODUCT_ONE._id;
+          const id = MOCK_ORDER_DRAFT._id;
 
           const response = await ordersController.getByID(id, token);
           validateResponse(response, STATUS_CODES.NOT_FOUND, false, `Order with id '${id}' wasn't found`);

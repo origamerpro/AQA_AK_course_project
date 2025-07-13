@@ -11,6 +11,7 @@ export interface ICreateOrderData {
 export interface ICustomOrder {
   orderInProcessStatus: (count?: number) => Promise<ICreateOrderData>;
   orderDraftStatus: (count?: number) => Promise<ICreateOrderData>;
+  orderDraftStatusWithPartialTeardown: (count?: number) => Promise<ICreateOrderData>;
   orderDraftWithDeliveryStatus: (count?: number) => Promise<ICreateOrderData>;
   orderCanceledStatus: (count?: number) => Promise<ICreateOrderData>;
   orderPartiallyReceivedStatus: (
@@ -64,6 +65,29 @@ export const orderDraftStatus = base.extend<ICustomOrder>({
     await use(orderDataFactory);
 
     await dataDisposalUtils.tearDown([id], productsIds, [customerId]);
+  },
+});
+
+export const orderDraftStatusWithPartialTeardown = base.extend<ICustomOrder>({
+  orderDraftStatusWithPartialTeardown: async (
+    { signInApiService, ordersApiService, dataDisposalUtils },
+    use,
+  ) => {
+    let order: IOrderFromResponse;
+    let id: string = '',
+      productsIds: string[] = [],
+      customerId: string = '';
+
+    const orderDataFactory = async (count: number = 1) => {
+      const token = await signInApiService.loginAsLocalUser();
+      order = await ordersApiService.createDraftOrder(count, token);
+
+      ({ id, productsIds, customerId } = extractTestData(order));
+      return { id, productsIds, customerId };
+    };
+    await use(orderDataFactory);
+
+    await dataDisposalUtils.partialTearDown(productsIds, [customerId]);
   },
 });
 
@@ -193,6 +217,7 @@ export const orderManagerAssignedStatus = base.extend<ICustomOrder>({
 export const test = mergeTests(
   orderInProcessStatus,
   orderDraftStatus,
+  orderDraftStatusWithPartialTeardown,
   orderDraftWithDeliveryStatus,
   orderCanceledStatus,
   orderPartiallyReceivedStatus,

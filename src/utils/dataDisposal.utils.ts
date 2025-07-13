@@ -85,6 +85,14 @@ export class DataDisposalUtils {
     await this.clearCustomers(customersIds);
   }
 
+  async partialTearDown(
+    productsIds: string[],
+    customersIds: string[],
+  ) {
+    await this.clearProducts(productsIds);
+    await this.clearCustomers(customersIds);
+  }
+
   async normalizeIds(input: string | string[]): Promise<string[]> {
     return (Array.isArray(input) ? input : [input]).filter((id) => id.trim());
   }

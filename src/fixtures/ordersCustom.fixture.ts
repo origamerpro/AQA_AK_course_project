@@ -87,7 +87,7 @@ export const orderDraftStatusWithPartialTeardown = base.extend<ICustomOrder>({
     };
     await use(orderDataFactory);
 
-    await dataDisposalUtils.partialTearDown( productsIds, [customerId]);
+    await dataDisposalUtils.partialTearDown(productsIds, [customerId]);
   },
 });
 

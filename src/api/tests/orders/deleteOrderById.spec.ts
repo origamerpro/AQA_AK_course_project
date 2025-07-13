@@ -50,7 +50,7 @@ test.describe('[API] [Orders] Delete order by id', () => {
         const fakeOrderId = generateUniqueId();
 
         const response = await ordersController.delete(fakeOrderId, token);
-        validateResponse(response, STATUS_CODES.NOT_FOUND, false, `Order with id '${fakeOrderId}' wasn't found`);
+        validateResponse(response, STATUS_CODES.NOT_FOUND, false, ERROR_MESSAGES.ORDER_NOT_FOUND_WITH_ID(fakeOrderId));
       });
   });
 });

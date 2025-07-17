@@ -11,7 +11,9 @@ export interface ICreateOrderData {
 export interface ICustomOrder {
   orderInProcessStatus: (count?: number) => Promise<ICreateOrderData>;
   orderDraftStatus: (count?: number) => Promise<ICreateOrderData>;
-  orderDraftStatusWithPartialTeardown: (count?: number) => Promise<ICreateOrderData>;
+  orderDraftStatusWithPartialTeardown: (
+    count?: number,
+  ) => Promise<ICreateOrderData>;
   orderDraftWithDeliveryStatus: (count?: number) => Promise<ICreateOrderData>;
   orderCanceledStatus: (count?: number) => Promise<ICreateOrderData>;
   orderPartiallyReceivedStatus: (

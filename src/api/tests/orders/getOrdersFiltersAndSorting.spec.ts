@@ -28,30 +28,30 @@ test.describe('[API] [Orders] GET /api/orders filters and sorting', () => {
     ordersAPIController = new OrdersAPIController(request);
     token = await signInApiService.loginAsLocalUser();
 
-    const draftOrder = await ordersApiService.createDraftOrder(
-      1,
-      token,
-    );
-    const partiallyReceivedOrder = await ordersApiService.createPartiallyReceivedOrder(
-      1,
-      3,
-      token,
-    );
+    const draftOrder = await ordersApiService.createDraftOrder(1, token);
+    const partiallyReceivedOrder =
+      await ordersApiService.createPartiallyReceivedOrder(1, 3, token);
     const inProcessOrder = await ordersApiService.createInProcessOrder(
       1,
       token,
     );
-    const receivedOrder = await ordersApiService.createReceivedOrder(
-      1,
-      token,
-    );
-    const canceledOrder = await ordersApiService.createCanceledOrder(
-      1,
-      token,
-    );
+    const receivedOrder = await ordersApiService.createReceivedOrder(1, token);
+    const canceledOrder = await ordersApiService.createCanceledOrder(1, token);
 
-    createdOrderIds.push(draftOrder._id, partiallyReceivedOrder._id, inProcessOrder._id, receivedOrder._id, canceledOrder._id);
-    createdCustomerIds.push(draftOrder.customer._id, partiallyReceivedOrder.customer._id, inProcessOrder.customer._id, receivedOrder.customer._id, canceledOrder.customer._id);
+    createdOrderIds.push(
+      draftOrder._id,
+      partiallyReceivedOrder._id,
+      inProcessOrder._id,
+      receivedOrder._id,
+      canceledOrder._id,
+    );
+    createdCustomerIds.push(
+      draftOrder.customer._id,
+      partiallyReceivedOrder.customer._id,
+      inProcessOrder.customer._id,
+      receivedOrder.customer._id,
+      canceledOrder.customer._id,
+    );
     draftOrder.products.map((p) => createdProductIds.push(p._id));
     partiallyReceivedOrder.products.map((p) => createdProductIds.push(p._id));
     inProcessOrder.products.map((p) => createdProductIds.push(p._id));
@@ -60,7 +60,6 @@ test.describe('[API] [Orders] GET /api/orders filters and sorting', () => {
   });
 
   test.afterEach(async ({ dataDisposalUtils }) => {
-
     await dataDisposalUtils.clearOrders(createdOrderIds);
     await dataDisposalUtils.clearProducts(createdProductIds);
     await dataDisposalUtils.clearCustomers(createdCustomerIds);
@@ -70,27 +69,23 @@ test.describe('[API] [Orders] GET /api/orders filters and sorting', () => {
     console.log(createdOrderIds, createdCustomerIds, createdProductIds);
   });
 
-    test.describe('Whitout Search', () => {
-        test.describe('Positive', () => {
-            test(
-    'Get all orders - 200 OK',
-    { tag: [TAGS.API, TAGS.ORDERS] },
-    async () => {
-      console.log(createdOrderIds.length);
-      const response = await ordersAPIController.getFilteredOrders(token);
-      validateResponse(response, STATUS_CODES.OK, true, null);
-    },
-  );  
+  test.describe('Whitout Search', () => {
+    test.describe('Positive', () => {
+      test(
+        'Get all orders - 200 OK',
+        { tag: [TAGS.API, TAGS.ORDERS] },
+        async () => {
+          console.log(createdOrderIds.length);
+          const response = await ordersAPIController.getFilteredOrders(token);
+          validateResponse(response, STATUS_CODES.OK, true, null);
+        },
+      );
     });
-        test.describe('Negative', () => {
-    });
-    });
-  
-    test.describe('With Search', () => {
-      
-        test.describe('Positive', () => {  
-    });
-        test.describe('Negative', () => {
-    });
-    });
+    test.describe('Negative', () => {});
+  });
+
+  test.describe('With Search', () => {
+    test.describe('Positive', () => {});
+    test.describe('Negative', () => {});
+  });
 });

@@ -85,10 +85,7 @@ export class DataDisposalUtils {
     await this.clearCustomers(customersIds);
   }
 
-  async partialTearDown(
-    productsIds: string[],
-    customersIds: string[],
-  ) {
+  async partialTearDown(productsIds: string[], customersIds: string[]) {
     await this.clearProducts(productsIds);
     await this.clearCustomers(customersIds);
   }

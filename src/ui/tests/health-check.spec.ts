@@ -4,7 +4,7 @@ import { OrdersListColumnForSorting } from 'data/orders/ordersListColumn.data';
 
 test.describe('[UI] [Sales Portal]', () => {
   test.describe('Login via services', () => {
-    test.skip(
+    test(
       'Should login to Sales Portal by openAsLoggedInUser and get token',
       { tag: [TAGS.SMOKE] },
       async ({ page, homeUIService }) => {
@@ -15,7 +15,7 @@ test.describe('[UI] [Sales Portal]', () => {
         console.log(`First token: ${token}`);
       },
     );
-    test.skip(
+    test(
       'Should login to Sales Portal by loginAsLocalUser and get token',
       { tag: [TAGS.SMOKE] },
       async ({ signInApiService }) => {
@@ -23,7 +23,7 @@ test.describe('[UI] [Sales Portal]', () => {
         console.log(`Second token: ${token}`);
       },
     );
-    test.skip(
+    test(
       'Should open Order module',
       { tag: [TAGS.SMOKE] },
       async ({ homeUIService }) => {
@@ -33,7 +33,7 @@ test.describe('[UI] [Sales Portal]', () => {
     );
   });
   test.describe('Orders Details - Received Products section - Orders in Draft', () => {
-    const TEST_ORDER_ID = '68618f821c508c5d5e6b9842';
+    const TEST_ORDER_ID = '6873a2451c508c5d5e909194';
     const PRODUCT_NAME_1 = 'Product 1751224193253 vUjpOfYLCt';
     test('Verify section title "Requested Products"', async ({
       homeUIService,
@@ -173,7 +173,7 @@ test.describe('[UI] [Sales Portal]', () => {
     );
   });
   test.describe('Orders Details - Received Products section - Orders in Progress', () => {
-    const TEST_ORDER_ID = '68618f821c508c5d5e6b9842';
+    const TEST_ORDER_ID = '6873a2451c508c5d5e909194';
     const PRODUCT_NAME_1 = 'Product 1751224193253 vUjpOfYLCt';
     test('Verify click on Receive button', async ({
       homeUIService,
@@ -415,7 +415,7 @@ test.describe('[UI] [Sales Portal]', () => {
         await homeUIService.openModule('Orders');
         await ordersPage.waitForOpened();
 
-        const orderNumberToClick = '68605f8e1c508c5d5e6ac297';
+        const orderNumberToClick = '6873a2451c508c5d5e909194';
 
         await ordersPage.clickDetailsButton(orderNumberToClick);
         await page.waitForURL(`**/orders/${orderNumberToClick}`);
@@ -430,7 +430,7 @@ test.describe('[UI] [Sales Portal]', () => {
         await homeUIService.openModule('Orders');
         await ordersPage.waitForOpened();
 
-        const orderNumberToReopen = '68603a701c508c5d5e6a9e7a';
+        const orderNumberToReopen = '6873a2451c508c5d5e909194';
 
         await ordersPage.clickReopenButton(orderNumberToReopen);
         await confirmationModal.waitForOpened();
@@ -501,7 +501,7 @@ test.describe('[UI] [Sales Portal]', () => {
     );
   });
   test.describe('Order Details Page - Top Panel and Received Products Section', () => {
-    const TEST_ORDER_ID = '68618f851c508c5d5e6b9983';
+    const TEST_ORDER_ID = '6873a2451c508c5d5e909194';
     test(
       'should verify order details from top panel and add a received product',
       { tag: [TAGS.SMOKE] },
